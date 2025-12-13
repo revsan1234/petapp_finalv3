@@ -1,0 +1,17 @@
+{
+  "name": "Name My Pet",
+  "short_name": "NameMyPet",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e889b5",
+  "theme_color": "#e889b5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

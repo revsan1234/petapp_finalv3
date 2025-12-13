@@ -1,0 +1,7 @@
+{
+  "name": "petapp_finalv2",
+  "description": "Generate unique and fun names for your new pet, and create funny edited pictures of them in costumes. Get name ideas based on personality, trends, and meanings, then save and share your favorites!",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
