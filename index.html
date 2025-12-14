@@ -1,212 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#e889b5" />
-    <title>Name My Pet App</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      :root {
-        /* Standard Mode (Pink/Green/White) */
-        --primary-color: #AA336A;
-        --secondary-color: #666666; /* Updated to Medium Grey */
-        --bg-gradient-start: #aab2a1;
-        --bg-gradient-end: #e889b5;
-        
-        /* Generic Card Background - Lighter Transparent Beige */
-        --card-bg: rgba(255, 252, 240, 0.65);
-        
-        --text-main: #666666; /* Updated to Medium Grey */
-        --btn-text: white;
-        --mascot-scale: 1;
 
-        /* Landing Page Feature Cards (Standard - Matching Shop Cards White Glass) */
-        --feature-bg-start: rgba(255, 255, 255, 0.8);
-        --feature-bg-end: rgba(255, 255, 255, 0.4);
-        --feature-text: #666666; /* Updated to Medium Grey */
-        --feature-title: #666666; /* Medium Grey Title */
-        --feature-desc: #AA336A;  /* Pink Description */
-        --feature-border: rgba(255, 255, 255, 0.5);
+import React, { useState, useEffect } from 'react';
+import { Partnerships } from './components/Partnerships';
+import { MainView } from './components/MainView';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsAndConditions } from './components/TermsAndConditions';
+import { TabNavigator, Tab } from './components/layout/TabNavigator';
+import { PhotoScreen } from './components/screens/PhotoScreen';
+import { PlayScreen } from './components/screens/PlayScreen';
+import { BioScreen } from './components/screens/BioScreen';
+import { AdoptScreen } from './components/screens/AdoptScreen';
+import { LandingPage } from './components/LandingPage';
+import { PetPersonalityResult, GeneratedName, PetInfo } from './types';
+import { BackgroundPattern } from './components/ui/BackgroundPattern';
+import { TabMascots } from './components/ui/TabMascots';
+import { CustomCursor } from './components/ui/CustomCursor';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
-        /* Blob Colors (Standard) */
-        --blob-1: rgba(205, 164, 133, 0.6);
-        --blob-2: rgba(255, 218, 185, 0.6);
-        --blob-3: rgba(222, 184, 135, 0.6);
+type View = 'app' | 'privacy' | 'terms';
+
+const AppContent: React.FC = () => {
+  const [view, setView] = useState<View>('app');
+  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [isChillMode, setIsChillMode] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+  
+  // Debug log to confirm app mount - VERSION 7
+  useEffect(() => {
+    console.log("Name My Pet App V7 - IMPORTMAP REMOVED CONFIRMED");
+  }, []);
+  
+  // Apply chill mode class to body
+  useEffect(() => {
+    if (isChillMode) {
+      document.body.classList.add('chill-mode');
+    } else {
+      document.body.classList.remove('chill-mode');
+    }
+  }, [isChillMode]);
+
+  // Update Document Title based on Language
+  useEffect(() => {
+    document.title = t.common.app_title;
+  }, [t.common.app_title]);
+
+  // Initialize savedNames from localStorage if available
+  const [savedNames, setSavedNames] = useState<GeneratedName[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('mySavedNames');
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        console.error("Failed to load saved names", e);
+        return [];
       }
+    }
+    return [];
+  });
 
-      body.chill-mode {
-        /* Chill Mode (Blues/Purples - Dark Mode) */
-        --primary-color: #818cf8; /* Indigo-400 */
-        --secondary-color: #e0e7ff; /* Indigo-100 */
-        
-        /* More interesting gradient: Deep Space Blue to Cosmic Purple */
-        --bg-gradient-start: #0f172a; /* Slate 900 */
-        --bg-gradient-end: #581c87; /* Purple 900 */
-        
-        /* More transparent card for glass effect */
-        --card-bg: rgba(15, 23, 42, 0.5); 
-        
-        --text-main: #e2e8f0; /* Slate-200 */
-        --btn-text: #ffffff;
-        --mascot-scale: 0.85; /* Smaller emojis */
+  const [petInfo, setPetInfo] = useState<PetInfo>({
+    type: 'Dog',
+    gender: 'Any',
+    personality: 'Playful',
+    style: 'Trending',
+  });
+  const [imageForBio, setImageForBio] = useState<string | null>(null);
 
-        /* Landing Page Feature Cards (Chill Mode - Dark Glass matching Shop) */
-        --feature-bg-start: rgba(30, 41, 59, 0.6);
-        --feature-bg-end: rgba(15, 23, 42, 0.8);
-        --feature-text: #e2e8f0;
-        --feature-title: #e2e8f0; /* Light Text for Dark Mode */
-        --feature-desc: #cbd5e1;  /* Slightly dimmer light text */
-        --feature-border: rgba(255, 255, 255, 0.1);
+  useEffect(() => {
+    localStorage.setItem('mySavedNames', JSON.stringify(savedNames));
+  }, [savedNames]);
 
-        /* Blob Colors (Chill - Neon/Cosmic) */
-        --blob-1: rgba(124, 58, 237, 0.3); /* Violet */
-        --blob-2: rgba(59, 130, 246, 0.3); /* Blue */
-        --blob-3: rgba(236, 72, 153, 0.3); /* Pink */
-      }
+  const navigate = (newView: View) => { setView(newView); window.scrollTo(0, 0); };
+  const handleSetTab = (tab: Tab) => { setView('app'); setActiveTab(tab); window.scrollTo(0, 0); };
+  const goHome = () => { handleSetTab('home'); };
 
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-      ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+  const addSavedName = (name: GeneratedName) => {
+    setSavedNames((prev) => {
+      if (!prev.find(n => n.id === name.id)) { return [...prev, name]; }
+      return prev;
+    });
+  };
+
+  const removeSavedName = (nameId: string) => { setSavedNames((prev) => prev.filter(n => n.id !== nameId)); };
+
+  const handleQuizComplete = (result: PetPersonalityResult) => {
+    setPetInfo(prev => ({ ...prev, personality: result.keywords.personality, style: result.keywords.style }));
+  };
+
+  const renderActiveTab = () => {
+    switch(activeTab) {
+      case 'home': return <LandingPage setTab={handleSetTab} />;
+      case 'generate': return <MainView savedNames={savedNames} addSavedName={addSavedName} removeSavedName={removeSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
+      case 'bio': return <BioScreen petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
+      case 'play': return <PlayScreen onQuizComplete={handleQuizComplete} savedNames={savedNames} addSavedName={addSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
+      case 'photo': return <PhotoScreen setActiveTab={handleSetTab} setImageForBio={setImageForBio} goHome={goHome} />;
+      case 'adopt': return <AdoptScreen goHome={goHome} />;
+      case 'partnerships': return <Partnerships goHome={goHome} />;
+      default: return <LandingPage setTab={handleSetTab} />;
+    }
+  };
+
+  if (view === 'privacy') return <PrivacyPolicy onBack={() => setView('app')} />;
+  if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
+
+  return (
+    <div className="pb-24 relative overflow-hidden min-h-screen transition-colors duration-500">
+      <CustomCursor />
+      <BackgroundPattern />
+      <TabMascots activeTab={activeTab} />
+      <div className="relative z-10">{renderActiveTab()}</div>
       
-      body {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 400;
-        font-size: 100%; /* Reset to standard size */
-        color: var(--text-main);
-        background-color: var(--bg-gradient-end);
-        /* Vertical Gradient: Green Top, Pink Bottom */
-        background-image: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end));
-        background-attachment: fixed;
-        /* Prevent pull-to-refresh on mobile to feel more like an app */
-        overscroll-behavior-y: none; 
-        transition: background-image 0.5s ease, color 0.3s ease;
-      }
+      <footer className="relative z-10 text-center my-8 space-y-4 w-full max-w-7xl mx-auto px-4">
+        <div className="flex flex-col items-center gap-6">
+            
+            <div className="flex flex-wrap justify-center gap-4">
+                {/* Chill Mode Toggle */}
+                <button 
+                    onClick={() => setIsChillMode(!isChillMode)}
+                    className={`
+                        px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2
+                        ${isChillMode 
+                            ? 'bg-indigo-500/30 text-indigo-100 border border-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]' 
+                            : 'bg-white/30 text-[#666666] border border-white/40 hover:bg-white/50'}
+                    `}
+                >
+                    {isChillMode ? t.common.chill_mode_on : t.common.chill_mode_off}
+                </button>
 
-      /* Apply scaling to mascots in chill mode */
-      .chill-mode .pet-character {
-        transform: scale(var(--mascot-scale)) !important;
-      }
-      /* Keep specific animations but respect scale */
-      .chill-mode .animate-bounce-wiggle {
-        animation: none; /* Chill mode is calmer */
-      }
+                {/* Language Toggle */}
+                <button 
+                    onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
+                    className="px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 bg-white/30 text-[#666666] border border-white/40 hover:bg-white/50"
+                >
+                    {language === 'en' ? '🇺🇸 English' : '🇪🇸 Español'}
+                </button>
+            </div>
 
-      @keyframes heart-beat {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.4); }
-        100% { transform: scale(1); }
-      }
-      .animate-heart-beat { animation: heart-beat 0.5s ease-in-out; }
-      
-      @keyframes fade-slide-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in { animation: fade-slide-in 0.5s ease-out forwards; }
+            <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-80 items-center text-dynamic">
+                <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:underline">namemypet.org</a>
+                <span className="hidden sm:inline">|</span>
+                <button onClick={() => setView('privacy')} className="hover:underline">{t.common.privacy}</button>
+                <span className="hidden sm:inline">|</span>
+                <button onClick={() => setView('terms')} className="hover:underline">{t.common.terms}</button>
+            </div>
+        </div>
+      </footer>
+      <TabNavigator activeTab={activeTab} setActiveTab={handleSetTab} />
+    </div>
+  );
+};
 
-      @keyframes float-up-down {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-      }
-      .animate-float { animation: float-up-down 4s ease-in-out infinite; }
+const App: React.FC = () => {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+};
 
-      @keyframes bounce-wiggle {
-        0% { transform: scale(1) rotate(0deg); }
-        25% { transform: scale(1.1) rotate(-3deg); }
-        50% { transform: scale(1.1) rotate(3deg); }
-        75% { transform: scale(1.1) rotate(-3deg); }
-        100% { transform: scale(1) rotate(0deg); }
-      }
-      .animate-bounce-wiggle { animation: bounce-wiggle 0.5s ease-in-out; }
-      
-      @keyframes confetti-burst {
-        0% { transform: scale(0); opacity: 0; }
-        50% { transform: scale(1.2); opacity: 1; }
-        100% { transform: scale(0.8) translateY(40px); opacity: 0; }
-      }
-      .animate-confetti { animation: confetti-burst 0.8s ease-out forwards; }
-
-      @keyframes marquee {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-      }
-      .animate-marquee { animation: marquee 60s linear infinite; }
-
-      .btn {
-        font-weight: 700;
-        padding: 0.75rem 1.5rem;
-        border-radius: 9999px;
-        transition: all 300ms ease-in-out;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        text-align: center;
-        border: 2px solid transparent;
-        cursor: pointer;
-      }
-      .btn:not(:disabled):hover { transform: scale(1.05); }
-
-      .btn-primary {
-        background-color: var(--primary-color);
-        color: var(--btn-text);
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      }
-      .btn-primary:not(:disabled):hover { filter: brightness(110%); }
-
-      .btn-secondary {
-        background-color: transparent;
-        color: var(--primary-color);
-        border-color: currentColor;
-      }
-      .btn-secondary:not(:disabled):hover { background-color: rgba(255,255,255, 0.1); }
-
-      .btn-surprise {
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #FFE66D);
-        background-size: 200% 200%;
-        color: #fff;
-        border: none;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        animation: gradient-shift 3s ease infinite;
-      }
-      
-      /* Chill Mode Surprise Button Override */
-      .chill-mode .btn-surprise {
-         background: linear-gradient(45deg, #6366f1, #a855f7, #ec4899);
-      }
-
-      @keyframes gradient-shift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-      }
-      
-      /* Utility class for text color dynamic mapping */
-      .text-dynamic { color: var(--text-main); }
-      .text-primary-dynamic { color: var(--primary-color); }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
-    "html-to-image": "https://esm.sh/html-to-image@^1.11.13",
-    "vite": "https://esm.sh/vite@^7.2.7",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-  }
-}
-</script>
-</head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
-</html>
+export default App;

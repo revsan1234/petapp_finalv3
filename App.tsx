@@ -24,9 +24,9 @@ const AppContent: React.FC = () => {
   const [isChillMode, setIsChillMode] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   
-  // Debug log to confirm app mount - VERSION 5
+  // Debug log to confirm app mount - VERSION 7
   useEffect(() => {
-    console.log("Name My Pet App V5 - Final Fix");
+    console.log("Name My Pet App V7 - IMPORTMAP REMOVED CONFIRMED");
   }, []);
   
   // Apply chill mode class to body
