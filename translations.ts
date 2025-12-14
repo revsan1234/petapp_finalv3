@@ -448,7 +448,7 @@ export const translations = {
       privacy: "Política de Privacidad",
       terms: "Términos y Condiciones",
       follow_us: "¡Síguenos!",
-      app_title: "Name My Pet"
+      app_title: "Nombra mi Mascota"
     },
     image_editor: {
       title: "Generador de Escenas IA",
