@@ -1,4 +1,6 @@
 
+import { GoogleGenAI, Type } from "@google/genai";
+import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language } from '../types';
 
 // Initialize the Google GenAI client
 // We use a fallback empty string to prevent the constructor from crashing if the env var is undefined during build/init.
@@ -23,9 +25,7 @@ const nameGenerationSchema = {
                 description: 'The style category of the name (e.g., Trending, Funny).',
             }
         },
-  import { GoogleGenAI, Type } from "@google/genai";
-import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language } from '../types';
-      required: ["name", "meaning", "style"],
+        required: ["name", "meaning", "style"],
     }
 };
 
