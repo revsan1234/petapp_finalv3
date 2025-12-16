@@ -105,14 +105,14 @@ const AppContent: React.FC = () => {
       <TabMascots activeTab={activeTab} />
       
       {!hasValidApiKey() && (
-         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg animate-fade-in flex flex-col sm:flex-row items-center justify-center gap-2">
-            <span>⚠️ API Setup Error:</span>
-            <span className="font-normal opacity-90 text-sm">Key is missing. Check Vercel Settings: Key="API_KEY", Value="AIza..."</span>
+         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg animate-fade-in flex flex-col items-center justify-center gap-1">
+            <span className="text-lg">⚠️ API Setup Incomplete</span>
+            <span className="font-normal opacity-90 text-sm">Key found in Settings but not in Build. <strong>Please click "Redeploy" in Vercel to fix this.</strong></span>
          </div>
       )}
 
       {/* Top Right Controls - Positioned to respect iPhone Safe Area */}
-      <div className={`fixed top-0 right-0 z-50 flex gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))] ${!hasValidApiKey() ? 'mt-12' : ''}`}>
+      <div className={`fixed top-0 right-0 z-50 flex gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))] ${!hasValidApiKey() ? 'mt-16' : ''}`}>
         
         {/* Chill Mode Toggle */}
         <div className="relative group">
@@ -146,7 +146,7 @@ const AppContent: React.FC = () => {
 
       </div>
 
-      <div className={`relative z-10 ${!hasValidApiKey() ? 'pt-12' : ''}`}>{renderActiveTab()}</div>
+      <div className={`relative z-10 ${!hasValidApiKey() ? 'pt-16' : ''}`}>{renderActiveTab()}</div>
       
       <footer className="relative z-10 text-center my-8 space-y-4 w-full max-w-7xl mx-auto px-4">
         <div className="flex flex-col items-center gap-6">

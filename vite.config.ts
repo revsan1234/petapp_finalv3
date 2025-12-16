@@ -1,16 +1,17 @@
+
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   // Cast process to any to avoid TS error: Property 'cwd' does not exist on type 'Process'
   const env = loadEnv(mode, (process as any).cwd(), '')
   
-  // Priority: Vercel System Env -> .env file -> Empty
-  // We check both process.env (Vercel) and env (Vite's loader)
-  const apiKey = process.env.API_KEY || env.API_KEY || '';
+  // Try to find the key in various likely places
+  // 1. System Environment (Vercel UI)
+  // 2. .env files
+  const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || env.API_KEY || env.VITE_API_KEY || '';
 
   // Log to build output to help debugging (masked)
   if (apiKey) {
@@ -23,6 +24,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       // Stringify ensures it's wrapped in quotes for the browser
+      // We expose it as process.env.API_KEY for compatibility with our service code
       'process.env.API_KEY': JSON.stringify(apiKey),
     },
   }

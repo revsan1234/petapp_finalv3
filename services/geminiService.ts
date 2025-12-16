@@ -3,15 +3,15 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language } from '../types';
 
 // Initialize the Google GenAI client
-// We use a fallback empty string to prevent the constructor from crashing if the env var is undefined during build/init.
-const apiKey = process.env.API_KEY || "";
+// Robustly check for the key in both process.env (injected by vite.config.ts) and import.meta.env (standard Vite)
+const apiKey = process.env.API_KEY || import.meta.env.VITE_API_KEY || "";
 const ai = new GoogleGenAI({ apiKey });
 
 // Helper to check for API Key before making requests
 const checkApiKey = () => {
     if (!apiKey || apiKey.trim() === "") {
         console.error("API Key is missing in the browser environment.");
-        throw new Error("System Error: API Key is missing. Please ensure 'API_KEY' is added to Vercel Environment Variables and the project is Redeployed.");
+        throw new Error("System Error: API Key is missing. If you just added it to Vercel, you must REDEPLOY the app for changes to take effect.");
     }
 };
 
@@ -472,3 +472,4 @@ export const findAdoptionCenters = async (location: string, language: Language =
         throw new Error(error.message || "Could not find adoption centers.");
     }
 };
+
