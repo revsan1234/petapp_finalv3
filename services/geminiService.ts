@@ -15,6 +15,11 @@ const checkApiKey = () => {
     }
 };
 
+// Export a helper to check validity without throwing, for UI states
+export const hasValidApiKey = (): boolean => {
+    return !!(apiKey && apiKey.trim().length > 0);
+};
+
 const nameGenerationSchema = {
     type: Type.ARRAY,
     items: {
