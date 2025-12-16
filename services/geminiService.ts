@@ -7,6 +7,14 @@ import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPerso
 const apiKey = process.env.API_KEY || "";
 const ai = new GoogleGenAI({ apiKey });
 
+// Helper to check for API Key before making requests
+const checkApiKey = () => {
+    if (!apiKey || apiKey.trim() === "") {
+        console.error("API Key is missing in the browser environment.");
+        throw new Error("System Error: API Key is missing. Please ensure 'API_KEY' is added to Vercel Environment Variables and the project is Redeployed.");
+    }
+};
+
 const nameGenerationSchema = {
     type: Type.ARRAY,
     items: {
@@ -134,6 +142,7 @@ const adoptionCenterSchema = {
 
 
 export const generatePetNames = async (petInfo: PetInfo, language: Language = 'en'): Promise<GeneratedName[]> => {
+  checkApiKey();
   const { type, gender, personality, style } = petInfo;
 
   // Persona Filter: Explicitly asking for "Latino Neutral" or "Native" conversational Spanish
@@ -176,13 +185,14 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
     const names = JSON.parse(jsonText);
     return names.map((name: any, index: number) => ({ ...name, id: `${Date.now()}-${Math.random()}-${index}` }));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating pet names:", error);
-    throw new Error("Failed to generate names. The model might be busy. Please try again!");
+    throw new Error(error.message || "Failed to generate names.");
   }
 };
 
 export const generateNameOfTheDay = async (language: Language = 'en'): Promise<{ name: string; meaning: string }> => {
+    checkApiKey();
     const langInstruction = language === 'es' 
         ? "Output in NATIVE SPANISH. The meaning should be written in a warm, storytelling tone, as if a friend is explaining why the name is cool." 
         : "Output in English.";
@@ -208,6 +218,7 @@ export const generateNameOfTheDay = async (language: Language = 'en'): Promise<{
 };
 
 export const getPetNameMeaning = async (name: string, language: Language = 'en'): Promise<string> => {
+    checkApiKey();
     const langInstruction = language === 'es' 
         ? "Output in NATIVE SPANISH. Use a conversational, friendly tone. Avoid stiff dictionary language. Use phrases like 'Este nombre es ideal para...' or 'Significa...'." 
         : "Output in English.";
@@ -230,13 +241,14 @@ export const getPetNameMeaning = async (name: string, language: Language = 'en')
       const result = JSON.parse(jsonText);
       return result.meaning;
   
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Error getting meaning for "${name}":`, error);
-      throw new Error(`Could not find a meaning for "${name}". Please try another name!`);
+      throw new Error(error.message || `Could not find a meaning for "${name}".`);
     }
   };
 
 export const generatePetPersonality = async (quizAnswers: string[], language: Language = 'en'): Promise<PetPersonalityResult> => {
+    checkApiKey();
     const langInstruction = language === 'es' 
         ? "The title and description must be in NATIVE, SLANG-FILLED SPANISH. Use idioms like 'Travieso', 'Dormilón', 'Todo un personaje', 'Es un amor'. Make it sound like a fun personality test result from a magazine." 
         : "Output in English.";
@@ -285,13 +297,14 @@ export const generatePetPersonality = async (quizAnswers: string[], language: La
 
         return result;
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error generating pet personality:", error);
-        throw new Error("Failed to analyze personality. The model might be busy. Please try again!");
+        throw new Error(error.message || "Failed to analyze personality.");
     }
 };
 
 export const generateQuickFireList = async (style: NameStyle, petType: PetType, petGender: PetGender, language: Language = 'en'): Promise<string[]> => {
+    checkApiKey();
     const langInstruction = language === 'es' 
         ? "Output in NATIVE SPANISH. Avoid awkward literal translations. If the style is 'Funny', use culturally relevant funny names in Spanish (e.g., 'Gordo', 'Chilaquil', 'Firulais')." 
         : "Output in English.";
@@ -311,13 +324,14 @@ export const generateQuickFireList = async (style: NameStyle, petType: PetType, 
         const jsonText = response.text?.trim();
         if (!jsonText) throw new Error("No response generated");
         return JSON.parse(jsonText);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error generating quick fire list:", error);
-        throw new Error(`Failed to generate names for the game. Please try again!`);
+        throw new Error(error.message || "Failed to generate names.");
     }
 };
 
 export const generatePetBio = async (name: string, petType: PetType, personality: PetPersonality, language: Language = 'en'): Promise<string[]> => {
+    checkApiKey();
     // FILTER: Explicitly asking for social media slang in Spanish
     const langInstruction = language === 'es' 
         ? "OUTPUT MUST BE IN NATIVE, WITTY SPANISH (Latino/Gen Z style). Use terms like 'michi' (cat), 'lomito' (dog), 'karen' (owner). Be sarcastic, cute, or dramatic depending on the personality. Do not sound like a textbook." 
@@ -338,9 +352,9 @@ export const generatePetBio = async (name: string, petType: PetType, personality
         const jsonText = response.text?.trim();
         if (!jsonText) throw new Error("No response generated");
         return JSON.parse(jsonText);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error generating bio:", error);
-        throw new Error("Failed to generate bios. Please try again.");
+        throw new Error(error.message || "Failed to generate bios.");
     }
 };
 
@@ -362,6 +376,7 @@ export const fileToBase64 = (file: File): Promise<string> => {
 };
 
 export const editPetImage = async (base64Image: string, mimeType: string, prompt: string, style: ImageStyle): Promise<string> => {
+    checkApiKey();
     const fullPrompt = `Transform this pet image. ${prompt}. Style: ${style}. Keep the main pet recognizable but change the environment or accessories as requested.`;
     
     try {
@@ -391,13 +406,14 @@ export const editPetImage = async (base64Image: string, mimeType: string, prompt
             }
         }
         throw new Error("No image generated.");
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error editing image:", error);
-        throw new Error("Failed to generate image. Please try again.");
+        throw new Error(error.message || "Failed to generate image.");
     }
 };
 
 export const generatePetHoroscope = async (sign: string, petType: string, name: string, language: Language = 'en'): Promise<{ prediction: string; luckyItem: string }> => {
+    checkApiKey();
     // FILTER: Explicitly asking for "Walter Mercado" style energy
     const langInstruction = language === 'es' 
         ? "Output in NATIVE SPANISH. Channel the energy of a dramatic, loving Latino astrologer (Walter Mercado style). Use words like 'amor', 'energía', 'cosas bellas'. Be funny but mystical." 
@@ -418,13 +434,14 @@ export const generatePetHoroscope = async (sign: string, petType: string, name: 
         const jsonText = response.text?.trim();
         if (!jsonText) throw new Error("No response generated");
         return JSON.parse(jsonText);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error generating horoscope:", error);
-        throw new Error("Failed to read the stars.");
+        throw new Error(error.message || "Failed to read the stars.");
     }
 };
 
 export const findAdoptionCenters = async (location: string, language: Language = 'en'): Promise<AdoptionCenter[]> => {
+    checkApiKey();
     // FILTER: Practicality check. Addresses must remain in English for GPS, but Mission statement should be translated warmly.
     const langInstruction = language === 'es' 
         ? "The user is likely a Spanish speaker in the US. IMPORTANT: Keep the 'Name' and 'Address' in ENGLISH (so they can find it on a map/GPS). Only translate the 'Mission' and description into warm, inviting Spanish." 
@@ -445,8 +462,8 @@ export const findAdoptionCenters = async (location: string, language: Language =
         const jsonText = response.text?.trim();
         if (!jsonText) throw new Error("No response generated");
         return JSON.parse(jsonText);
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error finding adoption centers:", error);
-        throw new Error("Could not find adoption centers.");
+        throw new Error(error.message || "Could not find adoption centers.");
     }
 };
