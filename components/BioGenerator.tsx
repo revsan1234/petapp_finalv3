@@ -226,8 +226,8 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
                         files: [file],
-                        title: `${petName}'s Bio Card`,
-                        text: `Check out ${petName}'s new bio! Created with Name My Pet.`,
+                        title: t.share_texts.bio_title,
+                        text: t.share_texts.bio_body,
                     });
                 } else {
                     setActionError("This browser doesn't support sharing images. Try 'Download Card'!");

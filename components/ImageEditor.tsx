@@ -182,8 +182,8 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
                     files: [file],
-                    title: 'My Pet AI Scene',
-                    text: 'Check out this picture of my pet I made with Name My Pet!',
+                    title: t.share_texts.scene_title,
+                    text: t.share_texts.scene_body,
                 });
             } else {
                 setActionError("This browser doesn't support sharing images.");

@@ -19,18 +19,23 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onClick }) => (
     <button 
         onClick={onClick}
-        className="flex flex-col items-center text-center rounded-3xl p-6 shadow-lg transform transition-all duration-300 hover:scale-105 active:scale-95 border h-full w-full justify-start group gap-4 backdrop-blur-sm"
-        style={{ 
-            backgroundImage: 'linear-gradient(to bottom, var(--feature-bg-start), var(--feature-bg-end))',
-            borderColor: 'var(--feature-border)'
-        }}
+        className="flex flex-col items-center text-center rounded-3xl p-5 sm:p-6 shadow-md border border-[#EBE5D5] h-full w-full justify-start group gap-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl active:scale-95 bg-[#FFF8E7] text-[#5D4037] select-none min-h-[220px]"
     >
-        <div className="drop-shadow-md flex items-center justify-center min-h-[6rem] group-hover:scale-110 transition-transform duration-300">
-            {icon}
+        {/* Floating Effect Wrapper */}
+        <div className="transform transition-transform duration-500 group-hover:-translate-y-2">
+            <div className="flex items-center justify-center h-24 sm:h-28 w-24 sm:w-28 mb-1">
+                {icon}
+            </div>
         </div>
-        <div className="flex flex-col gap-2 w-full">
-            <h3 className="text-3xl font-black leading-none tracking-wide drop-shadow-sm min-h-[2.5rem] flex items-center justify-center" style={{ color: 'var(--feature-title)' }}>{title}</h3>
-            <p className="text-lg font-bold leading-tight opacity-90" style={{ color: 'var(--feature-desc)' }}>{description}</p>
+        
+        <div className="flex flex-col gap-2 w-full flex-grow">
+            <h3 className="text-xl sm:text-2xl font-black leading-tight tracking-tight text-[#4A3B32]">
+                {title}
+            </h3>
+            {/* Increased font size to text-lg (approx 18px) for better readability */}
+            <p className="text-lg font-medium leading-relaxed opacity-80 text-[#7D6E65]">
+                {description}
+            </p>
         </div>
     </button>
 );
@@ -42,48 +47,48 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setTab }) => {
         {
             title: t.landing.feature1_title,
             description: t.landing.feature1_desc,
-            icon: <PetCharacter pet="bird" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '0ms' }} />, 
+            icon: <PetCharacter pet="bird" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />, 
             target: 'generate' as Tab
         },
         {
             title: t.landing.feature2_title,
             description: t.landing.feature2_desc,
-            icon: <PetCharacter pet="rabbit" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '150ms' }} />, 
+            icon: <PetCharacter pet="rabbit" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />, 
             target: 'bio' as Tab
         },
         {
             title: t.landing.feature3_title,
             description: t.landing.feature3_desc,
-            icon: <PetCharacter pet="hamster" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '300ms' }} />, 
+            icon: <PetCharacter pet="hamster" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />, 
             target: 'play' as Tab
         },
         {
             title: t.landing.feature4_title,
             description: t.landing.feature4_desc,
-            icon: <PetCharacter pet="lizard" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '450ms' }} />,
+            icon: <PetCharacter pet="lizard" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />,
             target: 'photo' as Tab
         },
         {
             title: t.landing.feature5_title,
             description: t.landing.feature5_desc,
-            icon: <PetCharacter pet="fish" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '600ms' }} />,
+            icon: <PetCharacter pet="fish" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />,
             target: 'adopt' as Tab
         },
         {
             title: t.landing.feature6_title,
             description: t.landing.feature6_desc,
-            icon: <PetCharacter pet="ferret" className="w-24 h-24 filter drop-shadow-lg animate-bounce-wiggle" style={{ animationDelay: '750ms' }} />,
+            icon: <PetCharacter pet="ferret" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />,
             target: 'partnerships' as Tab
         }
     ];
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-[100dvh] overflow-hidden">
             {/* Header with click action to home - updated mascots to Dog and Cat */}
             <Header leftPet="dog" rightPet="cat" />
             
-            <main className="py-4 px-4 pb-12">
-                <div className="w-full mx-auto max-w-4xl animate-fade-in space-y-8">
+            <main className="py-2 px-4 pb-24">
+                <div className="w-full mx-auto max-w-4xl animate-fade-in">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 auto-rows-fr">
                         {features.map((feature, index) => (
                             <FeatureCard 

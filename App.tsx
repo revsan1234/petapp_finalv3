@@ -98,38 +98,50 @@ const AppContent: React.FC = () => {
   if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
 
   return (
-    <div className="pb-24 relative overflow-hidden min-h-screen transition-colors duration-500">
+    <div className="pb-24 relative overflow-hidden min-h-[100dvh] transition-colors duration-500">
       <CustomCursor />
       <BackgroundPattern />
       <TabMascots activeTab={activeTab} />
+      
+      {/* Top Right Controls - Positioned to respect iPhone Safe Area */}
+      <div className="fixed top-0 right-0 z-50 flex gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))]">
+        
+        {/* Chill Mode Toggle */}
+        <div className="relative group">
+            <button 
+                onClick={() => setIsChillMode(!isChillMode)}
+                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
+                aria-label="Toggle Chill Mode"
+            >
+                <span className="text-xl filter drop-shadow-sm">{isChillMode ? '☀️' : '🌙'}</span>
+            </button>
+            {/* Custom Tooltip */}
+            <span className="absolute top-full right-0 mt-2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
+                {isChillMode ? "Light Mode" : "Dark Mode"}
+            </span>
+        </div>
+
+        {/* Language Toggle */}
+        <div className="relative group">
+            <button 
+                onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
+                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
+                aria-label="Toggle Language"
+            >
+                <span className="text-xl filter drop-shadow-sm">🌐</span>
+            </button>
+            {/* Custom Tooltip */}
+            <span className="absolute top-full right-0 mt-2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
+                {language === 'en' ? "Español" : "English"}
+            </span>
+        </div>
+
+      </div>
+
       <div className="relative z-10">{renderActiveTab()}</div>
       
       <footer className="relative z-10 text-center my-8 space-y-4 w-full max-w-7xl mx-auto px-4">
         <div className="flex flex-col items-center gap-6">
-            
-            <div className="flex flex-wrap justify-center gap-4">
-                {/* Chill Mode Toggle */}
-                <button 
-                    onClick={() => setIsChillMode(!isChillMode)}
-                    className={`
-                        px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2
-                        ${isChillMode 
-                            ? 'bg-indigo-500/30 text-indigo-100 border border-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]' 
-                            : 'bg-white/30 text-[#666666] border border-white/40 hover:bg-white/50'}
-                    `}
-                >
-                    {isChillMode ? t.common.chill_mode_on : t.common.chill_mode_off}
-                </button>
-
-                {/* Language Toggle */}
-                <button 
-                    onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-                    className="px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 bg-white/30 text-[#666666] border border-white/40 hover:bg-white/50"
-                >
-                    {language === 'en' ? '🇺🇸 English' : '🇪🇸 Español'}
-                </button>
-            </div>
-
             <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-80 items-center text-dynamic">
                 <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:underline">namemypet.org</a>
                 <span className="hidden sm:inline">|</span>
