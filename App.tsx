@@ -106,8 +106,8 @@ const AppContent: React.FC = () => {
       
       {!hasValidApiKey() && (
          <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg animate-fade-in flex flex-col items-center justify-center gap-1">
-            <span className="text-lg">⚠️ API Setup Incomplete</span>
-            <span className="font-normal opacity-90 text-sm">Key found in Settings but not in Build. <strong>Please click "Redeploy" in Vercel to fix this.</strong></span>
+            <span className="text-lg">⚠️ API Setup In Progress...</span>
+            <span className="font-normal opacity-90 text-sm">Vercel is building your app. If this persists, ensure "API_KEY" is in Vercel Settings.</span>
          </div>
       )}
 
