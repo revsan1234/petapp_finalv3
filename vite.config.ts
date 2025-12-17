@@ -9,9 +9,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, (process as any).cwd(), '')
   
   // Try to find the key in various likely places
-  // 1. System Environment (Vercel UI)
-  // 2. .env files
-  const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || env.API_KEY || env.VITE_API_KEY || '';
+  // Added 'apikeyfinal' based on user screenshot
+  const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || process.env.apikeyfinal || env.API_KEY || env.VITE_API_KEY || env.apikeyfinal || '';
 
   // Log to build output to help debugging (masked)
   if (apiKey) {

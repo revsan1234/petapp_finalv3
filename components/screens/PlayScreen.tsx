@@ -87,8 +87,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
                         <div className="mb-1 transform group-hover:-translate-y-1 transition-transform duration-300">
                             <PetCharacter pet="cat" className="w-24 h-24 drop-shadow-md" />
                         </div>
-                        <h3 className="text-2xl font-black text-[#4A3B32]">{t.quiz.title}</h3>
-                        <p className="text-[#7D6E65] font-medium leading-tight opacity-80 px-4">
+                        {/* UPDATED FONT STYLE */}
+                        <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)]">{t.quiz.title}</h3>
+                        <p className="text-[#666666] font-medium leading-tight opacity-80 px-4 text-lg">
                             {t.landing.feature3_desc}
                         </p>
                     </button>
@@ -101,8 +102,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
                         <div className="mb-1 transform group-hover:-translate-y-1 transition-transform duration-300">
                              <PetCharacter pet="dog" className="w-24 h-24 drop-shadow-md" />
                         </div>
-                        <h3 className="text-2xl font-black text-[#4A3B32]">{t.quick_fire.title}</h3>
-                        <p className="text-[#7D6E65] font-medium leading-tight opacity-80 px-4">
+                        {/* UPDATED FONT STYLE */}
+                        <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)]">{t.quick_fire.title}</h3>
+                        <p className="text-[#666666] font-medium leading-tight opacity-80 px-4 text-lg">
                              {t.landing.feature1_desc}
                         </p>
                     </button>

@@ -29,11 +29,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onC
         </div>
         
         <div className="flex flex-col gap-2 w-full flex-grow">
-            <h3 className="text-xl sm:text-2xl font-black leading-tight tracking-tight text-[#4A3B32]">
+            {/* UPDATED FONT STYLE: Matches Names Page (text-3xl equivalent, bold, text-main/grey) */}
+            <h3 className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight text-[var(--text-main)]">
                 {title}
             </h3>
-            {/* Increased font size to text-lg (approx 18px) for better readability */}
-            <p className="text-lg font-medium leading-relaxed opacity-80 text-[#7D6E65]">
+            {/* Description style kept slightly lighter */}
+            <p className="text-lg font-medium leading-relaxed opacity-80 text-[#666666]">
                 {description}
             </p>
         </div>

@@ -106,16 +106,20 @@ const AppContent: React.FC = () => {
       
       {!hasValidApiKey() && (
          <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg animate-fade-in flex flex-col items-center justify-center gap-1">
-            <span className="text-lg">⚠️ Connecting to AI (v1.0.7)...</span>
-            <span className="font-normal opacity-90 text-sm">Please wait for the build to finish. If this persists, check Vercel Settings.</span>
+            <span className="text-lg">⚠️ Connecting to AI (v1.0.8)...</span>
+            <span className="font-normal opacity-90 text-sm">Please wait for build. Using key: "apikeyfinal".</span>
          </div>
       )}
 
-      {/* Top Right Controls - Positioned to respect iPhone Safe Area */}
-      <div className={`fixed top-0 right-0 z-50 flex gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))] ${!hasValidApiKey() ? 'mt-16' : ''}`}>
+      {/* 
+          Controls (Chill Mode / Language)
+          Moved to Bottom Center to avoid blocking the title on iPhone 
+          bottom-28 puts it just above the TabNavigator (which is h-24)
+      */}
+      <div className="fixed bottom-28 left-0 right-0 z-40 flex justify-center gap-4 pointer-events-none">
         
         {/* Chill Mode Toggle */}
-        <div className="relative group">
+        <div className="relative group pointer-events-auto">
             <button 
                 onClick={() => setIsChillMode(!isChillMode)}
                 className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
@@ -124,13 +128,13 @@ const AppContent: React.FC = () => {
                 <span className="text-xl filter drop-shadow-sm">{isChillMode ? '☀️' : '🌙'}</span>
             </button>
             {/* Custom Tooltip */}
-            <span className="absolute top-full right-0 mt-2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
+            <span className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
                 {isChillMode ? "Light Mode" : "Dark Mode"}
             </span>
         </div>
 
         {/* Language Toggle */}
-        <div className="relative group">
+        <div className="relative group pointer-events-auto">
             <button 
                 onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
                 className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
@@ -139,7 +143,7 @@ const AppContent: React.FC = () => {
                 <span className="text-xl filter drop-shadow-sm">🌐</span>
             </button>
             {/* Custom Tooltip */}
-            <span className="absolute top-full right-0 mt-2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
+            <span className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-black/80 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap backdrop-blur-sm shadow-xl">
                 {language === 'en' ? "Español" : "English"}
             </span>
         </div>
@@ -148,7 +152,7 @@ const AppContent: React.FC = () => {
 
       <div className={`relative z-10 ${!hasValidApiKey() ? 'pt-16' : ''}`}>{renderActiveTab()}</div>
       
-      <footer className="relative z-10 text-center my-8 space-y-4 w-full max-w-7xl mx-auto px-4">
+      <footer className="relative z-10 text-center my-8 space-y-4 w-full max-w-7xl mx-auto px-4 pb-24">
         <div className="flex flex-col items-center gap-6">
             <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-80 items-center text-dynamic">
                 <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:underline">namemypet.org</a>
