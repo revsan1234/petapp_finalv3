@@ -292,14 +292,14 @@ export const translations = {
       general: "Oops! Something went wrong."
     },
     share_texts: {
-      names_title: "Pet Names",
-      names_body: "Check out these names I found on Name My Pet! 🐾",
-      card_title: "My Top Name Picks",
-      card_body: "Help me pick a name! 🐾",
-      bio_title: "Bio Card",
-      bio_body: "Check out this bio! Created with Name My Pet.",
-      scene_title: "Pet AI Scene",
-      scene_body: "Check out this AI pic of my pet!"
+      names_title: "Name My Pet",
+      names_body: "Look at these cute names I found on Name My Pet! 🐾",
+      card_title: "Name My Pet",
+      card_body: "Help me pick a name! I used Name My Pet to find these. 🐾",
+      bio_title: "Name My Pet",
+      bio_body: "Look at this bio I created with Name My Pet! 🐾",
+      scene_title: "Name My Pet",
+      scene_body: "Check out this magic photo from Name My Pet! 🐾"
     }
   },
   es: {
@@ -450,7 +450,7 @@ export const translations = {
       privacy: "Política de Privacidad",
       terms: "Términos y Condiciones",
       follow_us: "¡Síguenos!",
-      app_title: "Nombra mi Mascota"
+      app_title: "Name My Pet"
     },
     image_editor: {
       title: "Generador de Escenas IA",
@@ -552,7 +552,7 @@ export const translations = {
       label_zodiac: "Signo (o Mes de Adopción)",
       btn_read: "Leer Aura",
       btn_reading: "Leyendo las Estrellas...",
-      result_title: "Vibra de la Semana",
+      result_title: "Vibe Check",
       lucky_item: "Objeto de la Suerte",
       signs: [
         "Aries (Mar 21 - Abr 19)", "Tauro (Abr 20 - May 20)", "Géminis (May 21 - Jun 20)",
@@ -594,14 +594,14 @@ export const translations = {
       general: "¡Ups! Algo salió mal."
     },
     share_texts: {
-      names_title: "Nombres de Mascotas",
+      names_title: "Name My Pet",
       names_body: "¡Mira estos nombres que encontré en Name My Pet! 🐾",
-      card_title: "Mis Nombres Favoritos",
-      card_body: "¡Ayúdame a elegir un nombre! 🐾",
-      bio_title: "Tarjeta Bio",
-      bio_body: "¡Mira esta bio! Creada con Name My Pet.",
-      scene_title: "Escena IA de Mascota",
-      scene_body: "¡Mira esta foto de mi mascota creada con IA!"
+      card_title: "Name My Pet",
+      card_body: "¡Ayúdame a elegir un nombre con Name My Pet! 🐾",
+      bio_title: "Name My Pet",
+      bio_body: "¡Mira esta bio hecha con Name My Pet! 🐾",
+      scene_title: "Name My Pet",
+      scene_body: "¡Mira esta foto mágica de Name My Pet! 🐾"
     }
   }
 };

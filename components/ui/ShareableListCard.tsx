@@ -1,3 +1,4 @@
+
 import React, { forwardRef, MouseEvent } from 'react';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import type { PetGender } from '../../types';
@@ -24,13 +25,9 @@ export const ShareableListCard = forwardRef<HTMLDivElement, ShareableListCardPro
 }, ref) => {
   const { t } = useLanguage();
   
-  let bgClass = "bg-gradient-to-br from-[#e889b5] to-[#ffc4d6]"; // Female Default
-  if (gender === 'Male') {
-      bgClass = "bg-gradient-to-br from-[#aab2a1] to-[#8da38d]";
-  } else if (gender === 'Any') {
-      // Light purple/grey hue for Any
-      bgClass = "bg-gradient-to-br from-[#d4c4e0] to-[#bca6c9]";
-  }
+  let bgClass = "bg-gradient-to-br from-[#e889b5] to-[#ffc4d6]";
+  if (gender === 'Male') bgClass = "bg-gradient-to-br from-[#aab2a1] to-[#8da38d]";
+  else if (gender === 'Any') bgClass = "bg-gradient-to-br from-[#d4c4e0] to-[#bca6c9]";
 
   const imageStyle: React.CSSProperties = {
     transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
@@ -44,72 +41,39 @@ export const ShareableListCard = forwardRef<HTMLDivElement, ShareableListCardPro
   return (
     <div 
         ref={ref} 
-        className={`${bgClass} p-8 text-[#666666] flex flex-col items-center w-[400px] h-auto min-h-[650px] shadow-2xl overflow-visible relative select-none rounded-3xl`}
-        style={{ fontFamily: "'Poppins', sans-serif" }}
+        className={`${bgClass} p-8 pt-12 text-[#666666] flex flex-col items-center w-[480px] min-h-[750px] shadow-2xl overflow-visible relative select-none rounded-[3.5rem] border-4 border-white/30`}
+        style={{ fontFamily: "'Fredoka', sans-serif" }}
     >
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-8 text-white tracking-tight drop-shadow-md uppercase relative z-20">
+        <h2 className="text-4xl font-black text-center mb-6 text-white tracking-tight drop-shadow-lg uppercase relative z-20" style={{ textShadow: '0 4px 10px rgba(0,0,0,0.3)' }}>
             {t.saved_names.shareable_title}
         </h2>
-
-        {/* Photo Section - FLUID HAND DRAWN FRAME */}
         <div className="w-full flex justify-center mb-8 relative z-20">
-             {/* Resized to be smaller: 150px to ensure title is not cut off on download */}
-             <div className="relative w-[150px] h-[150px]">
-                 {/* Hand Drawn Border SVG - Fluid Look */}
-                 <svg 
-                    className="absolute -top-2 -left-2 w-[calc(100%+16px)] h-[calc(100%+16px)] pointer-events-none z-30 drop-shadow-md" 
-                    viewBox="0 0 100 100" 
-                    preserveAspectRatio="none"
-                 >
-                    <path 
-                        d="M 6,6 C 28,3 72,3 94,6 C 98,28 97,72 94,94 C 72,97 28,97 6,94 C 3,72 2,28 6,6 Z" 
-                        fill="none" 
-                        stroke="white" 
-                        strokeWidth="3" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                    />
+             <div className="relative w-[280px] h-[280px]">
+                 <svg className="absolute -top-4 -left-4 w-[calc(100%+32px)] h-[calc(100%+32px)] pointer-events-none z-30 drop-shadow-md" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M 6,6 C 28,3 72,3 94,6 C 98,28 97,72 94,94 C 72,97 28,97 6,94 C 3,72 2,28 6,6 Z" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                  </svg>
-                 
-                 <div 
-                    className="w-full h-full overflow-hidden flex items-center justify-center bg-white/30 relative rounded-2xl"
-                    onMouseDown={onImageMouseDown}
-                 >
-                     {imagePreview ? (
-                        <img 
-                          src={imagePreview} 
-                          alt="My Pet" 
-                          style={imageStyle}
-                          draggable="false"
-                        />
-                     ) : (
-                        <PetCharacter pet="cat" className="w-[100px] h-[100px] opacity-80" />
-                     )}
+                 <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white/40 relative rounded-[2.5rem]" onMouseDown={onImageMouseDown}>
+                     {imagePreview ? <img src={imagePreview} alt="My Pet" style={imageStyle} draggable="false" /> : <PetCharacter pet="cat" className="w-[180px] h-[180px] opacity-80" />}
                 </div>
             </div>
         </div>
-
-        {/* The List - Removed backdrop-blur for iOS compatibility */}
-        <div className="flex-grow w-full z-10">
-             <div className="bg-white/80 rounded-xl p-6 border border-white/60 shadow-sm">
-                <h3 className="text-lg font-bold text-center text-[#AA336A] uppercase tracking-widest mb-4">{t.saved_names.shareable_picks}</h3>
-                <ul className="space-y-3 text-center">
+        <div className="flex-grow w-full z-10 px-2">
+             <div className="bg-white/90 rounded-[2.5rem] p-8 border-2 border-white/60 shadow-xl">
+                <h3 className="text-xl font-black text-center text-[#AA336A] uppercase tracking-[0.2em] mb-6 border-b-2 border-[#AA336A]/10 pb-2">{t.saved_names.shareable_picks}</h3>
+                <ul className="space-y-4 text-center">
                     {names.map((name, i) => (
-                        <li key={i} className="text-2xl font-bold text-[#666666]">
-                             {i % 2 === 0 ? '✨' : '🐾'} {name}
+                        <li key={i} className="text-2xl font-black text-[#666666] tracking-tight">
+                             <span className="opacity-40 text-xl mr-3">{i % 2 === 0 ? '✨' : '🐾'}</span>
+                             {name}
                         </li>
                     ))}
                 </ul>
              </div>
         </div>
-
-        {/* Footer */}
-        <div className="mt-8 mb-2 flex items-center gap-2 text-xs font-bold text-white/80 tracking-wider z-20">
+        <div className="mt-8 mb-4 flex items-center gap-2 text-xs font-black text-white/90 tracking-[0.4em] uppercase z-20" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
             <span>{t.saved_names.shareable_footer}</span>
         </div>
     </div>
   );
 });
-
 ShareableListCard.displayName = "ShareableListCard";
