@@ -41,28 +41,29 @@ export const ShareableListCard = forwardRef<HTMLDivElement, ShareableListCardPro
   return (
     <div 
         ref={ref} 
-        className={`${bgClass} p-8 pt-12 text-[#666666] flex flex-col items-center w-[480px] min-h-[750px] shadow-2xl overflow-visible relative select-none rounded-[3.5rem] border-4 border-white/30`}
+        className={`${bgClass} p-8 pt-12 text-[#666666] flex flex-col items-center justify-start w-[500px] min-h-[750px] shadow-2xl overflow-visible relative select-none rounded-[4rem] border-4 border-white/40`}
         style={{ fontFamily: "'Fredoka', sans-serif" }}
     >
-        <h2 className="text-4xl font-black text-center mb-6 text-white tracking-tight drop-shadow-lg uppercase relative z-20" style={{ textShadow: '0 4px 10px rgba(0,0,0,0.3)' }}>
+        {/* Title - Raised higher with increased tracking */}
+        <h2 className="text-5xl font-bold text-center mb-8 text-white tracking-[0.18em] drop-shadow-2xl uppercase relative z-20" style={{ textShadow: '0 4px 15px rgba(0,0,0,0.3)' }}>
             {t.saved_names.shareable_title}
         </h2>
-        <div className="w-full flex justify-center mb-8 relative z-20">
-             <div className="relative w-[280px] h-[280px]">
-                 <svg className="absolute -top-4 -left-4 w-[calc(100%+32px)] h-[calc(100%+32px)] pointer-events-none z-30 drop-shadow-md" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M 6,6 C 28,3 72,3 94,6 C 98,28 97,72 94,94 C 72,97 28,97 6,94 C 3,72 2,28 6,6 Z" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                 </svg>
-                 <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white/40 relative rounded-[2.5rem]" onMouseDown={onImageMouseDown}>
-                     {imagePreview ? <img src={imagePreview} alt="My Pet" style={imageStyle} draggable="false" /> : <PetCharacter pet="cat" className="w-[180px] h-[180px] opacity-80" />}
+        
+        <div className="w-full flex justify-center mb-10 relative z-20">
+             {/* PHOTO CONTAINER - Removed SVG frame */}
+             <div className="relative w-[380px] h-[380px]">
+                 <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white/40 relative rounded-[3rem] shadow-inner border-2 border-white/20" onMouseDown={onImageMouseDown}>
+                     {imagePreview ? <img src={imagePreview} alt="My Pet" style={imageStyle} draggable="false" /> : <PetCharacter pet="cat" className="w-[240px] h-[240px] opacity-80" />}
                 </div>
             </div>
         </div>
-        <div className="flex-grow w-full z-10 px-2">
-             <div className="bg-white/90 rounded-[2.5rem] p-8 border-2 border-white/60 shadow-xl">
-                <h3 className="text-xl font-black text-center text-[#AA336A] uppercase tracking-[0.2em] mb-6 border-b-2 border-[#AA336A]/10 pb-2">{t.saved_names.shareable_picks}</h3>
+        
+        <div className="flex-grow w-full z-10 px-4 mb-4">
+             <div className="bg-white/90 rounded-[3rem] p-8 border-2 border-white/60 shadow-2xl">
+                <h3 className="text-xl font-bold text-center text-[#AA336A] uppercase tracking-[0.2em] mb-6 border-b-2 border-[#AA336A]/10 pb-2">{t.saved_names.shareable_picks}</h3>
                 <ul className="space-y-4 text-center">
                     {names.map((name, i) => (
-                        <li key={i} className="text-2xl font-black text-[#666666] tracking-tight">
+                        <li key={i} className="text-2xl font-normal text-[#666666] tracking-normal">
                              <span className="opacity-40 text-xl mr-3">{i % 2 === 0 ? '✨' : '🐾'}</span>
                              {name}
                         </li>
@@ -70,7 +71,8 @@ export const ShareableListCard = forwardRef<HTMLDivElement, ShareableListCardPro
                 </ul>
              </div>
         </div>
-        <div className="mt-8 mb-4 flex items-center gap-2 text-xs font-black text-white/90 tracking-[0.4em] uppercase z-20" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+        
+        <div className="mt-auto mb-4 flex items-center gap-2 text-[10px] font-medium text-white/90 tracking-[0.5em] uppercase z-20" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
             <span>{t.saved_names.shareable_footer}</span>
         </div>
     </div>

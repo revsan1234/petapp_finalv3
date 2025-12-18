@@ -115,9 +115,7 @@ export const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedN
         else if (petGender === 'Any') bgColor = '#d4c4e0';
         return {
             quality: 1.0,
-            width: 1200,
-            height: 1600, 
-            pixelRatio: 3, 
+            pixelRatio: 4, 
             fontEmbedCSS: fontEmbedCss,
             backgroundColor: bgColor,
         };

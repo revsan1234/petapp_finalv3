@@ -113,7 +113,12 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         let bgColor = '#e889b5';
         if (gender === 'Male') bgColor = '#aab2a1';
         else if (gender === 'Any') bgColor = '#d4c4e0';
-        return { quality: 1.0, width: 1200, height: 1600, pixelRatio: 3, fontEmbedCSS: fontEmbedCss, backgroundColor: bgColor };
+        return { 
+          quality: 1.0, 
+          pixelRatio: 4, // High resolution
+          fontEmbedCSS: fontEmbedCss, 
+          backgroundColor: bgColor 
+        };
     };
 
     const handleDownload = async () => {
