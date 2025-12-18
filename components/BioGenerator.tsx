@@ -1,4 +1,6 @@
-import { toBlob } from 'html-to-image';
+
+import React, { useState, useRef, MouseEvent, useEffect } from 'react';
+import { toPng } from 'html-to-image';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
@@ -113,31 +115,37 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         else if (gender === 'Any') bgColor = '#d4c4e0';
         return { 
           quality: 1.0, 
-          pixelRatio: 2, // Reduced for mobile compatibility
+          pixelRatio: 2, 
           fontEmbedCSS: fontEmbedCss, 
           backgroundColor: bgColor,
-          width: 480, // Explicit size to handle transform/scaling issues
+          width: 480,
           height: 720,
-          cacheBust: true
+          cacheBust: true,
+          includeQueryParams: true,
         };
+    };
+
+    const captureImage = async (): Promise<string | null> => {
+        if (!bioCardRef.current) return null;
+        const options = getSnapshotOptions();
+        // Safari fix: Trigger rendering twice
+        await toPng(bioCardRef.current, options);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        return await toPng(bioCardRef.current, options);
     };
 
     const handleDownload = async () => {
         if (!bioCardRef.current) return;
         setIsDownloading(true); setActionError(null);
         try {
-            // Short delay to ensure browser finishes any pending layout
-            await new Promise(resolve => setTimeout(resolve, 300));
-            const blob = await toBlob(bioCardRef.current, getSnapshotOptions());
-            if (!blob) throw new Error("Failed to generate image.");
-            const dataUrl = URL.createObjectURL(blob);
+            const dataUrl = await captureImage();
+            if (!dataUrl) throw new Error("Failed to generate image.");
             const link = document.createElement('a'); 
             link.href = dataUrl; 
             link.download = `${petName || 'MyPet'}_BioCard.png`;
             document.body.appendChild(link); 
             link.click(); 
             document.body.removeChild(link);
-            URL.revokeObjectURL(dataUrl);
         } catch (error: any) { 
             console.error("Capture failed:", error);
             setActionError('Failed to generate image. Please try again.'); 
@@ -149,9 +157,10 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         setIsSharing(true); setActionError(null);
         if (!navigator.share) { setActionError("Sharing not supported on this browser."); setIsSharing(false); return; }
         try {
-            await new Promise(resolve => setTimeout(resolve, 300));
-            const blob = await toBlob(bioCardRef.current, getSnapshotOptions());
-            if (blob) {
+            const dataUrl = await captureImage();
+            if (dataUrl) {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
                 const file = new File([blob], `${petName || 'MyPet'}_BioCard.png`, { type: 'image/png' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({ 
@@ -241,4 +250,3 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         </Card>
     );
 };
-import React, { useState, useRef, MouseEvent, useEffect } from 'react';
