@@ -118,19 +118,28 @@ export const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedN
             pixelRatio: 2, 
             fontEmbedCSS: fontEmbedCss,
             backgroundColor: bgColor,
-            width: 400,
-            height: 700,
             cacheBust: true,
+            style: {
+                transform: 'scale(1)',
+                margin: '0',
+                padding: '32px', // Matches p-8 on ShareableListCard
+                left: '0',
+                top: '0'
+            }
         };
     };
 
     const captureImage = async (): Promise<string | null> => {
         if (!cardRef.current) return null;
         const options = getSnapshotOptions();
-        // Warm up and capture
-        await toPng(cardRef.current, options);
-        await new Promise(resolve => setTimeout(resolve, 150));
-        return await toPng(cardRef.current, options);
+        try {
+            await toPng(cardRef.current, options);
+            await new Promise(resolve => setTimeout(resolve, 150));
+            return await toPng(cardRef.current, options);
+        } catch (err) {
+            console.error("Capture Error:", err);
+            return null;
+        }
     };
 
     const handleDownloadImage = async () => {

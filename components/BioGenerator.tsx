@@ -118,20 +118,31 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
           pixelRatio: 2, 
           fontEmbedCSS: fontEmbedCss, 
           backgroundColor: bgColor,
-          width: 480,
-          height: 720,
           cacheBust: true,
           includeQueryParams: true,
+          style: {
+              transform: 'scale(1)',
+              margin: '0',
+              padding: '24px', // Matches p-6 padding on the card
+              left: '0',
+              top: '0'
+          }
         };
     };
 
     const captureImage = async (): Promise<string | null> => {
         if (!bioCardRef.current) return null;
         const options = getSnapshotOptions();
-        // Safari fix: Trigger rendering twice
-        await toPng(bioCardRef.current, options);
-        await new Promise(resolve => setTimeout(resolve, 150));
-        return await toPng(bioCardRef.current, options);
+        try {
+            // First call to "warm up" Safari's canvas context
+            await toPng(bioCardRef.current, options);
+            await new Promise(resolve => setTimeout(resolve, 150));
+            // Actual capture
+            return await toPng(bioCardRef.current, options);
+        } catch (err) {
+            console.error("Capture Error:", err);
+            return null;
+        }
     };
 
     const handleDownload = async () => {
