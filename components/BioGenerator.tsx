@@ -1,5 +1,3 @@
-
-import React, { useState, useRef, MouseEvent, useEffect } from 'react';
 import { toBlob } from 'html-to-image';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
@@ -44,7 +42,7 @@ const DownloadIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.186 2.25 2.25 0 0 0-3.933 2.186Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186a2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.186a2.25 2.25 0 0 0-3.933 2.186Z" />
     </svg>
 );
 
@@ -115,9 +113,12 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         else if (gender === 'Any') bgColor = '#d4c4e0';
         return { 
           quality: 1.0, 
-          pixelRatio: 4, // High resolution
+          pixelRatio: 2, // Reduced for mobile compatibility
           fontEmbedCSS: fontEmbedCss, 
-          backgroundColor: bgColor 
+          backgroundColor: bgColor,
+          width: 480, // Explicit size to handle transform/scaling issues
+          height: 720,
+          cacheBust: true
         };
     };
 
@@ -125,30 +126,47 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         if (!bioCardRef.current) return;
         setIsDownloading(true); setActionError(null);
         try {
-            await new Promise(resolve => setTimeout(resolve, 150));
+            // Short delay to ensure browser finishes any pending layout
+            await new Promise(resolve => setTimeout(resolve, 300));
             const blob = await toBlob(bioCardRef.current, getSnapshotOptions());
-            if (!blob) throw new Error("Failed");
+            if (!blob) throw new Error("Failed to generate image.");
             const dataUrl = URL.createObjectURL(blob);
-            const link = document.createElement('a'); link.href = dataUrl; link.download = `PetBio.png`;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            const link = document.createElement('a'); 
+            link.href = dataUrl; 
+            link.download = `${petName || 'MyPet'}_BioCard.png`;
+            document.body.appendChild(link); 
+            link.click(); 
+            document.body.removeChild(link);
             URL.revokeObjectURL(dataUrl);
-        } catch (error) { setActionError('Failed to generate image.'); } finally { setIsDownloading(false); }
+        } catch (error: any) { 
+            console.error("Capture failed:", error);
+            setActionError('Failed to generate image. Please try again.'); 
+        } finally { setIsDownloading(false); }
     };
 
     const handleShare = async () => {
         if (!bioCardRef.current) return;
         setIsSharing(true); setActionError(null);
-        if (!navigator.share) { setActionError("Sharing not supported."); setIsSharing(false); return; }
+        if (!navigator.share) { setActionError("Sharing not supported on this browser."); setIsSharing(false); return; }
         try {
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
             const blob = await toBlob(bioCardRef.current, getSnapshotOptions());
             if (blob) {
-                const file = new File([blob], `MyPetBio.png`, { type: 'image/png' });
+                const file = new File([blob], `${petName || 'MyPet'}_BioCard.png`, { type: 'image/png' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ files: [file], title: t.share_texts.bio_title, text: t.share_texts.bio_body });
+                    await navigator.share({ 
+                        files: [file], 
+                        title: t.share_texts.bio_title, 
+                        text: t.share_texts.bio_body 
+                    });
+                } else {
+                    throw new Error("Cannot share files on this browser.");
                 }
             }
-        } catch (err: any) { if (err.name !== 'AbortError') setActionError('Could not share directly.'); } finally { setIsSharing(false); }
+        } catch (err: any) { 
+            console.error("Share failed:", err);
+            if (err.name !== 'AbortError') setActionError('Could not share. Please try downloading.'); 
+        } finally { setIsSharing(false); }
     };
 
     const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
@@ -217,8 +235,10 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
                             <Button onClick={handleShare} disabled={isLoading || isDownloading || isSharing || !imagePreview || !petName || !selectedBio} variant="primary" className="btn-surprise"> <ShareIcon className="w-5 h-5 mr-2"/> {isSharing ? '...' : t.bio.btn_share} </Button>
                         </div>
                     </div>
+                    {actionError && <p className="text-red-500 text-center font-medium mt-2">{actionError}</p>}
                 </div>
             </div>
         </Card>
     );
 };
+import React, { useState, useRef, MouseEvent, useEffect } from 'react';

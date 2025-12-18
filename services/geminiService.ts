@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language } from '../types';
+import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language, ChatMessage } from '../types';
 
 // Hard requirement: obtains API key exclusively from process.env.API_KEY
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -269,5 +269,32 @@ export const findAdoptionCenters = async (location: string, language: Language =
         return JSON.parse(response.text || '[]');
     } catch (error: any) {
         throw new Error("Could not find centers.");
+    }
+};
+
+/**
+ * RESTORED: Generates a response from the Pet Consultant AI.
+ */
+export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en', systemInstruction: string): Promise<string> => {
+    try {
+        const contents = history.map(msg => ({
+            role: msg.role,
+            parts: [{ text: msg.text }]
+        }));
+        
+        contents.push({ role: 'user', parts: [{ text: message }] });
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: contents,
+            config: {
+                systemInstruction: systemInstruction,
+            }
+        });
+        
+        return response.text || "";
+    } catch (error: any) {
+        console.error("Consultant Error:", error);
+        throw new Error("Expert is currently busy. Please try again later.");
     }
 };

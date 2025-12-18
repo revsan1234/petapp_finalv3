@@ -1,8 +1,8 @@
 
 {
-  "name": "petapp_finalv2",
+  "name": "petapp_live",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0",
+    "@google/genai": "^1.34.0",
     "html-to-image": "^1.11.11",
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
