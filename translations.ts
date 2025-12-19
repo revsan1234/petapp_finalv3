@@ -1,11 +1,10 @@
-
 export const translations = {
   en: {
     navigation: {
       generate: { label: "Names", desc: "Super fun ways to find names and share with your friends!" },
       bio: { label: "Bio", desc: "Find or make up your pet's special personality and share this with your friends." },
       play: { label: "Play", desc: "Answer fun questions about your new pet to find their personality to get the perfect name." },
-      photo: { label: "Photo", desc: "Generate cute AI powered portraits to share with your friends! There's even a link to create a video with your pet as the star!" },
+      photo: { label: "Photo", desc: "Generate cute AI powered portraits to share with your friends!" },
       adopt: { label: "Adopt", desc: "Find local shelters in your area to find your new best friend." },
       partnerships: { label: "Shop", desc: "Get personalized things for your new pet using their new name!" }
     },
@@ -17,11 +16,11 @@ export const translations = {
       feature3_title: "Games to Play to Find the Perfect Name!",
       feature3_desc: "Answer fun questions about your new pet to find their personality to get the perfect name.",
       feature4_title: "Create Funny Pics and Videos",
-      feature4_desc: "Generate cute AI powered portraits to share with your friends! There's even a link to create a video with your pet as the star!",
+      feature4_desc: "Generate cute AI powered portraits to share with your friends!",
       feature5_title: "Adopt a Pet",
       feature5_desc: "Find local shelters in your area to find your new best friend.",
       feature6_title: "Cool Stuff to Buy",
-      feature6_desc: "Get personalized things for your new pet using their new name!",
+      feature6_desc: "Get personalized things for your new pet using their new name!"
     },
     generator: {
       title: "Find the Perfect Name",
@@ -146,7 +145,8 @@ export const translations = {
       chill_mode_on: "🌙 Chill Mode: ON",
       chill_mode_off: "☀️ Chill Mode: OFF",
       privacy: "Privacy Policy",
-      terms: "Terms & Conditions",
+      terms: "Términos y Condiciones",
+      contact: "Contact Us",
       follow_us: "Follow Us!",
       app_title: "Name My Pet"
     },
@@ -277,11 +277,21 @@ export const translations = {
       generated_meaning_prefix: "A winner of the",
       generated_meaning_suffix: "Quick Fire Battle"
     },
+    expert: {
+      title: "Pet Consultant",
+      subtitle: "Ask our AI expert anything about your pet's behavior or care!",
+      system_instruction: "You are a world-class pet behaviorist and care consultant. Provide friendly, accurate, and helpful advice about pets. If the user asks something dangerous, advise them to see a vet immediately.",
+      welcome: "Hi! I'm your AI Pet Consultant. How can I help you and your friend today?",
+      typing: "Expert is thinking...",
+      placeholder: "Ask about behavior, food, or care...",
+      btn_send: "Ask Expert",
+      btn_clear: "Clear Chat"
+    },
     placeholders: {
       pet_name: "e.g. Captain Fluff",
       age: "e.g. 2",
       location: "e.g. 90210 or Miami, FL",
-      scene_prompt: "e.g. my dog surfing in space",
+      scene_prompt: "e.g. my dog surfing a big wave",
       video_prompt: "e.g. The dog barks and jumps",
       video_default: "My dog driving a tiny car"
     },
@@ -300,6 +310,11 @@ export const translations = {
       bio_body: "Look at this bio I created with Name My Pet! 🐾",
       scene_title: "Name My Pet",
       scene_body: "Check out this magic photo from Name My Pet! 🐾"
+    },
+    contact_us: {
+      title: "Contact Us",
+      p1: "For inquiries, questions or concerns please email us at:",
+      email: "revsan12902@gmail.com"
     }
   },
   es: {
@@ -307,7 +322,7 @@ export const translations = {
       generate: { label: "Nombres", desc: "¡Maneras súper divertidas de encontrar nombres y compartirlos con tus amigos!" },
       bio: { label: "Bio", desc: "Encuentra o crea la personalidad especial de tu mascota y compártela." },
       play: { label: "Jugar", desc: "Responde preguntas divertidas sobre tu nueva mascota para encontrar su nombre perfecto." },
-      photo: { label: "Foto", desc: "¡Genera lindos retratos con IA para compartir! ¡Incluso hay un enlace para crear un video!" },
+      photo: { label: "Foto", desc: "¡Genera lindos retratos con IA para compartir!" },
       adopt: { label: "Adoptar", desc: "Encuentra refugios locales en tu área para encontrar a tu nuevo mejor amigo." },
       partnerships: { label: "Tienda", desc: "¡Consigue cosas personalizadas para tu nueva mascota usando su nuevo nombre!" }
     },
@@ -319,11 +334,11 @@ export const translations = {
       feature3_title: "¡Juegos para Encontrar Nombres!",
       feature3_desc: "Responde preguntas divertidas sobre tu nueva mascota para encontrar su nombre perfecto.",
       feature4_title: "Crea Fotos y Videos Divertidos",
-      feature4_desc: "¡Genera lindos retratos con IA para compartir! ¡Incluso hay un enlace para crear un video!",
+      feature4_desc: "¡Genera lindos retratos con IA para compartir!",
       feature5_title: "Adopta una Mascota",
       feature5_desc: "Encuentra refugios locales en tu área para encontrar a tu nuevo mejor amigo.",
       feature6_title: "Cosas Geniales para Comprar",
-      feature6_desc: "¡Consigue cosas personalizadas para tu nueva mascota usando su nuevo nombre!",
+      feature6_desc: "¡Consigue cosas personalizadas para tu nueva mascota usando su nuevo nombre!"
     },
     generator: {
       title: "Encuentra el Nombre Perfecto",
@@ -449,6 +464,7 @@ export const translations = {
       chill_mode_off: "☀️ Modo Chill: OFF",
       privacy: "Política de Privacidad",
       terms: "Términos y Condiciones",
+      contact: "Contáctanos",
       follow_us: "¡Síguenos!",
       app_title: "Name My Pet"
     },
@@ -462,7 +478,7 @@ export const translations = {
       share: "Compartir con Amigos",
       create_another: "Crear Otra",
       prompt_label: "¿Cuál es la escena?",
-      prompt_placeholder: "ej. mi perro surfeando",
+      prompt_placeholder: "ej. mi perro astronauta",
       style_label: "Elige un estilo",
       btn_generate: "Generar Escena",
       btn_change: "Cambiar Foto",
@@ -517,9 +533,9 @@ export const translations = {
       cancel: "Cancelar",
       shareable_title: "¡Ayúdame a Elegir!",
       shareable_picks: "Mis Favoritos",
-      shareable_footer: "GENERADO POR NAMEMYPET.ORG",
+      shareable_footer: "GENERATED BY NAMEMYPET.ORG",
       text_list_header: "MIS NOMBRES DE MASCOTAS:",
-      text_list_footer: "Generado por NameMyPet.org"
+      text_list_footer: "Generado por Name My Pet"
     },
     name_day: {
       title: "Nombre del Día",
@@ -555,7 +571,7 @@ export const translations = {
       result_title: "Vibe Check",
       lucky_item: "Objeto de la Suerte",
       signs: [
-        "Aries (Mar 21 - Abr 19)", "Tauro (Abr 20 - May 20)", "Géminis (May 21 - Jun 20)",
+        "Aries (Mar 21 - Abr 19)", "Tauro (Ago 20 - May 20)", "Géminis (May 21 - Jun 20)",
         "Cáncer (Jun 21 - Jul 22)", "Leo (Jul 23 - Ago 22)", "Virgo (Ago 23 - Sep 22)",
         "Libra (Sep 23 - Oct 22)", "Escorpio (Oct 23 - Nov 21)", "Sagitario (Nov 22 - Dic 21)",
         "Capricornio (Dic 22 - Ene 19)", "Acuario (Ene 20 - Feb 18)", "Piscis (Feb 19 - Mar 20)"
@@ -578,6 +594,16 @@ export const translations = {
       loading: "Buscando nombres...",
       generated_meaning_prefix: "Un ganador del juego",
       generated_meaning_suffix: "Batalla Rápida"
+    },
+    expert: {
+      title: "Consultor de Mascotas",
+      subtitle: "¡Pregunta a nuestro experto en IA sobre el comportamiento o cuidado de tu mascota!",
+      system_instruction: "Eres un consultor de comportamiento y cuidado de mascotas de clase mundial. Brinda consejos amigables, precisos y útiles. Si el usuario pregunta algo peligroso, aconséjale que consulte a un veterinario de inmediato.",
+      welcome: "¡Hola! Soy tu Consultor de Mascotas IA. ¿Cómo puedo ayudarte a ti y a tu amigo hoy?",
+      typing: "El experto está pensando...",
+      placeholder: "Pregunta sobre comportamiento, comida o cuidado...",
+      btn_send: "Preguntar",
+      btn_clear: "Limpiar Chat"
     },
     placeholders: {
       pet_name: "ej. Capitán Pelusa",
@@ -602,6 +628,11 @@ export const translations = {
       bio_body: "¡Mira esta bio hecha con Name My Pet! 🐾",
       scene_title: "Name My Pet",
       scene_body: "¡Mira esta foto mágica de Name My Pet! 🐾"
+    },
+    contact_us: {
+      title: "Contáctanos",
+      p1: "Para consultas, preguntas o inquietudes, envíenos un correo electrónico a:",
+      email: "revsan12902@gmail.com"
     }
   }
 };
