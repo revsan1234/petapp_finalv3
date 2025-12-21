@@ -145,7 +145,7 @@ export const translations = {
       chill_mode_on: "🌙 Chill Mode: ON",
       chill_mode_off: "☀️ Chill Mode: OFF",
       privacy: "Privacy Policy",
-      terms: "Términos y Condiciones",
+      terms: "Terms & Conditions",
       contact: "Contact Us",
       follow_us: "Follow Us!",
       app_title: "Name My Pet"
@@ -572,7 +572,7 @@ export const translations = {
       lucky_item: "Objeto de la Suerte",
       signs: [
         "Aries (Mar 21 - Abr 19)", "Tauro (Ago 20 - May 20)", "Géminis (May 21 - Jun 20)",
-        "Cáncer (Jun 21 - Jul 22)", "Leo (Jul 23 - Ago 22)", "Virgo (Ago 23 - Sep 22)",
+        "Cáncer (Jun 21 - Jul 22)", "Leo (Jul 23 - Aug 22)", "Virgo (Ago 23 - Sep 22)",
         "Libra (Sep 23 - Oct 22)", "Escorpio (Oct 23 - Nov 21)", "Sagitario (Nov 22 - Dic 21)",
         "Capricornio (Dic 22 - Ene 19)", "Acuario (Ene 20 - Feb 18)", "Piscis (Feb 19 - Mar 20)"
       ]
