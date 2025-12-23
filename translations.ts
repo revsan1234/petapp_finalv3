@@ -105,6 +105,16 @@ export const translations = {
       fallback_bio: "Your pet's fun bio will show up here!",
       card_pet_name_placeholder: "Pet Name"
     },
+    translator: {
+      title: "What's My Name In...",
+      subtitle: "See how your pet's name looks and is spelled in other languages!",
+      label_name: "Enter Pet's Name",
+      label_lang: "Choose a Language",
+      btn_translate: "Translate Name",
+      btn_translating: "Translating...",
+      result_title: "Result",
+      pronunciation: "Pronunciation"
+    },
     shop: {
       back: "Back to Home",
       subtitle: "Cool custom stuff for your new friend!",
@@ -422,6 +432,16 @@ export const translations = {
       generated_by: "generado por namemypet.org",
       fallback_bio: "¡La bio divertida de tu mascota aparecerá aquí!",
       card_pet_name_placeholder: "Nombre"
+    },
+    translator: {
+      title: "Mi Nombre En...",
+      subtitle: "¡Mira cómo se ve y se escribe el nombre de tu mascota en otros idiomas!",
+      label_name: "Nombre de la Mascota",
+      label_lang: "Elige un Idioma",
+      btn_translate: "Traducir Nombre",
+      btn_translating: "Traduciendo...",
+      result_title: "Resultado",
+      pronunciation: "Pronunciación"
     },
     shop: {
       back: "Volver al Inicio",

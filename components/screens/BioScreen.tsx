@@ -26,11 +26,10 @@ export const BioScreen: React.FC<BioScreenProps> = ({ petInfo, imageForBio, setI
             <Header leftPet="bird" rightPet="fish" onLogoClick={goHome} />
             <main className="py-4 md:py-8 px-4">
                 <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
-                     {/* Back Button */}
                      <div className="-mt-4">
                         <button 
                             onClick={goHome} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
                         >
                             <BackIcon className="w-4 h-4" />
                             {t.common.back_home}

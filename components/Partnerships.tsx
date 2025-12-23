@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from './ui/Button';
 import { PetCharacter } from './assets/pets/PetCharacter';
@@ -22,7 +21,7 @@ interface PartnershipsProps {
 }
 
 const AmazonProductCard: React.FC<{ title: string, link: string, description: string, Illustration: React.FC, buttonText: string }> = ({ title, link, description, Illustration, buttonText }) => (
-    <div className="bg-gradient-to-b from-white/80 to-white/40 backdrop-blur-md rounded-2xl p-6 text-center flex flex-col h-full text-[#666666] border border-white/50 transition-all hover:scale-105 hover:shadow-xl shadow-md relative overflow-hidden group">
+    <div className="bg-gradient-to-b from-white/80 to-white/40 backdrop-blur-md rounded-2xl p-6 text-center flex flex-col h-full text-[#333333] border border-white/50 transition-all hover:scale-105 hover:shadow-xl shadow-md active:scale-95 relative overflow-hidden group">
         <div className="absolute top-0 left-0 w-full h-1 bg-[#AA336A]/30"></div>
         
         <div className="flex justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
@@ -70,7 +69,7 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
                 },
                 {
                     title: t.shop.product_titles.glitter_tags,
-                    link: "https://amzn.to/48SAS6X",
+                    link: "https://amzn.to/4pLYzoE",
                     description: t.shop.product_desc.tags, 
                     Illustration: DogMascot
                 }
@@ -93,7 +92,7 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
                 },
                 {
                     title: t.shop.product_titles.cat_collars,
-                    link: "https://amzn.to/4aJ8iY4",
+                    link: "https://www.amazon.com/s?k=reflective+cat+collar&tag=namemypet-20",
                     description: t.shop.product_desc.collar,
                     Illustration: CatMascot
                 }
@@ -110,13 +109,13 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
                 },
                 {
                     title: t.shop.product_titles.bone_tags,
-                    link: "https://amzn.to/3YrsrdM",
+                    link: "https://amzn.to/3Y2yuW3",
                     description: t.shop.product_desc.tags,
                     Illustration: BirdMascot
                 },
                 {
                     title: t.shop.product_titles.pet_leash,
-                    link: "https://amzn.to/3MEmmbh",
+                    link: "https://amzn.to/3KZpsWP",
                     description: t.shop.product_desc.leash,
                     Illustration: HamsterMascot
                 }
@@ -129,19 +128,18 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
             <div className="relative z-10">
                 <Header leftPet="bird" rightPet="hamster" onLogoClick={goHome} />
                 <main className="py-4 md:py-8 px-4 sm:px-6 md:px-8 pb-24">
-                    {/* Back Button */}
                     <div className="container mx-auto max-w-6xl mb-4 -mt-2">
                         <button 
                             onClick={goHome} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
                         >
                             <BackIcon className="w-4 h-4" />
-                            {t.shop.back}
+                            {t.common.back_home}
                         </button>
                     </div>
 
                     <div className="container mx-auto flex flex-col items-center justify-center mb-12">
-                        <p className="text-white/90 text-2xl mt-2 font-medium drop-shadow-sm">{t.shop.subtitle}</p>
+                        <p className="text-white text-2xl mt-2 font-bold drop-shadow-md">{t.shop.subtitle}</p>
                     </div>
 
                     <div className="container mx-auto space-y-16 max-w-6xl">

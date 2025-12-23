@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language, ChatMessage } from '../types';
 
@@ -240,6 +239,28 @@ export const editPetImage = async (base64Image: string, mimeType: string, prompt
     }
 };
 
+export const translatePetName = async (name: string, targetLanguage: string): Promise<{ translation: string; pronunciation: string }> => {
+    const prompt = `How would the pet name "${name}" be written/spelled and pronounced in ${targetLanguage}? Return JSON.`;
+    const schema = {
+        type: Type.OBJECT,
+        properties: {
+            translation: { type: Type.STRING, description: "The name in the target language's script/alphabet." },
+            pronunciation: { type: Type.STRING, description: "Phonetic pronunciation guide." }
+        },
+        required: ["translation", "pronunciation"]
+    };
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: prompt,
+            config: { responseMimeType: 'application/json', responseSchema: schema }
+        });
+        return JSON.parse(response.text || '{}');
+    } catch (error: any) {
+        throw new Error("Failed to translate.");
+    }
+};
+
 export const generatePetHoroscope = async (sign: string, petType: string, name: string, language: Language = 'en'): Promise<{ prediction: string; luckyItem: string }> => {
     const prompt = `Weekly horoscope for ${petType} ${name} who is ${sign}. Output in ${language === 'es' ? 'Spanish' : 'English'}.`;
     try {
@@ -272,9 +293,6 @@ export const findAdoptionCenters = async (location: string, language: Language =
     }
 };
 
-/**
- * RESTORED: Generates a response from the Pet Consultant AI.
- */
 export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en', systemInstruction: string): Promise<string> => {
     try {
         const contents = history.map(msg => ({

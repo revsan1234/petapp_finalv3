@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
@@ -86,11 +85,10 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                 <main className="py-4 md:py-8 px-4">
                     <div className="flex flex-col gap-8 w-full mx-auto max-w-4xl">
                         
-                        {/* Back Button */}
                         <div className="-mt-4">
                              <button 
                                 onClick={goHome} 
-                                className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                                className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
                             >
                                 <BackIcon className="w-4 h-4" />
                                 {t.common.back_home}
@@ -98,7 +96,6 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                         </div>
 
                         <Card>
-                            {/* MASSIVE SIZE CHARACTERS - Updated to w-80 for huge impact */}
                             <div className="flex justify-center items-end -space-x-16 sm:-space-x-20 md:-space-x-28 mb-6 h-56 sm:h-72 md:h-[340px]">
                                 <PetCharacter pet="dog" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '0ms' }} />
                                 <PetCharacter pet="cat" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '100ms' }} />
@@ -112,7 +109,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                                     <PawIcon className="w-8 h-8 text-[#AA336A]" />
                                 </div>
                                 <h2 className="text-3xl font-bold">{t.adopt.title}</h2>
-                                <p className="opacity-80 max-w-lg text-xl">
+                                <p className="opacity-95 max-w-lg text-xl text-[#333333]">
                                     {t.adopt.subtitle}
                                 </p>
                             </div>
@@ -131,7 +128,11 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                                     variant="primary"
                                 >
                                     {isLoading ? t.generator.btn_generating : t.adopt.btn_search}
-                                    <SearchIcon className="w-5 h-5" />
+                                    {isLoading ? (
+                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent ml-2" />
+                                    ) : (
+                                        <SearchIcon className="w-5 h-5 ml-1" />
+                                    )}
                                 </Button>
                             </form>
                         </Card>
@@ -149,7 +150,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                                     className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/50 flex flex-col h-full transform hover:-translate-y-1 transition-transform duration-300"
                                 >
                                     <h3 className="text-xl font-bold text-[#2d4a2d] mb-2">{center.name}</h3>
-                                    <p className="text-sm mb-4 flex-grow italic font-medium text-[#2d4a2d]">"{center.mission}"</p>
+                                    <p className="text-sm mb-4 flex-grow italic font-bold text-[#333333]">"{center.mission}"</p>
                                     <div className="space-y-3 text-sm text-[#2d4a2d] font-semibold">
                                         <div className="flex items-start gap-2">
                                             <LocationIcon className="w-5 h-5 shrink-0 opacity-70 text-[#2d4a2d]" />
@@ -176,7 +177,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             ))}
                         </div>
                         {hasSearched && !isLoading && centers.length === 0 && !error && (
-                            <div className="text-center opacity-60 mt-8"><p className="text-xl">{t.adopt.no_results}</p></div>
+                            <div className="text-center opacity-60 mt-8"><p className="text-xl text-[#333333] font-bold">{t.adopt.no_results}</p></div>
                         )}
                     </div>
                 </main>

@@ -8,7 +8,6 @@ import { NameMeaningFinder } from './NameMeaningFinder';
 import { TrendingTicker } from './TrendingTicker';
 import { useLanguage } from '../contexts/LanguageContext';
 
-// Back Icon SVG
 const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -32,12 +31,11 @@ export const MainView: React.FC<MainViewProps> = ({ savedNames, addSavedName, re
       <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
       <main className="py-4 md:py-8 px-4">
         <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
-          {/* Back Button */}
           {goHome && (
             <div className="-mt-4">
                 <button 
                     onClick={goHome} 
-                    className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                    className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
                 >
                     <BackIcon className="w-4 h-4" />
                     {t.common.back_home}

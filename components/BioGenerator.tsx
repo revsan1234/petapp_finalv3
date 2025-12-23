@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, MouseEvent, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { Card } from './ui/Card';
@@ -10,6 +9,7 @@ import { generatePetBio } from '../services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from '../constants';
 import type { PetPersonality, PetKind, PetInfo, PetGender, PetType } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PetCharacter } from './assets/pets/PetCharacter';
 
 const fontEmbedCss = `
 @font-face {
@@ -109,40 +109,14 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         } catch (err: any) { setError(err.message); } finally { setIsLoading(false); }
     };
 
-    const getSnapshotOptions = () => {
-        let bgColor = '#e889b5';
-        if (gender === 'Male') bgColor = '#aab2a1';
-        else if (gender === 'Any') bgColor = '#d4c4e0';
-        return { 
-          quality: 1.0, 
-          pixelRatio: 2, 
-          fontEmbedCSS: fontEmbedCss, 
-          backgroundColor: bgColor,
-          cacheBust: true,
-          includeQueryParams: true,
-          style: {
-              transform: 'scale(1)',
-              margin: '0',
-              padding: '24px', // Matches p-6 padding on the card
-              left: '0',
-              top: '0'
-          }
-        };
-    };
-
     const captureImage = async (): Promise<string | null> => {
         if (!bioCardRef.current) return null;
-        const options = getSnapshotOptions();
-        try {
-            // First call to "warm up" Safari's canvas context
-            await toPng(bioCardRef.current, options);
-            await new Promise(resolve => setTimeout(resolve, 150));
-            // Actual capture
-            return await toPng(bioCardRef.current, options);
-        } catch (err) {
-            console.error("Capture Error:", err);
-            return null;
-        }
+        let bgColor = gender === 'Male' ? '#aab2a1' : gender === 'Any' ? '#d4c4e0' : '#e889b5';
+        const options = { 
+          quality: 1.0, pixelRatio: 3, fontEmbedCSS: fontEmbedCss, backgroundColor: bgColor, cacheBust: true,
+          style: { transform: 'scale(1)', margin: '0', padding: '0', borderRadius: '0' }
+        };
+        try { return await toPng(bioCardRef.current, options); } catch (err) { return null; }
     };
 
     const handleDownload = async () => {
@@ -150,23 +124,17 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         setIsDownloading(true); setActionError(null);
         try {
             const dataUrl = await captureImage();
-            if (!dataUrl) throw new Error("Failed to generate image.");
+            if (!dataUrl) throw new Error("Failed");
             const link = document.createElement('a'); 
-            link.href = dataUrl; 
-            link.download = `${petName || 'MyPet'}_BioCard.png`;
-            document.body.appendChild(link); 
-            link.click(); 
-            document.body.removeChild(link);
-        } catch (error: any) { 
-            console.error("Capture failed:", error);
-            setActionError('Failed to generate image. Please try again.'); 
-        } finally { setIsDownloading(false); }
+            link.href = dataUrl; link.download = `${petName || 'MyPet'}_BioCard.png`;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        } catch (error: any) { setActionError('Failed to generate image.'); } finally { setIsDownloading(false); }
     };
 
     const handleShare = async () => {
         if (!bioCardRef.current) return;
         setIsSharing(true); setActionError(null);
-        if (!navigator.share) { setActionError("Sharing not supported on this browser."); setIsSharing(false); return; }
+        if (!navigator.share) { setActionError("Sharing not supported."); setIsSharing(false); return; }
         try {
             const dataUrl = await captureImage();
             if (dataUrl) {
@@ -174,32 +142,23 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
                 const blob = await response.blob();
                 const file = new File([blob], `${petName || 'MyPet'}_BioCard.png`, { type: 'image/png' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ 
-                        files: [file], 
-                        title: t.share_texts.bio_title, 
-                        text: t.share_texts.bio_body 
-                    });
-                } else {
-                    throw new Error("Cannot share files on this browser.");
+                    await navigator.share({ files: [file], title: t.share_texts.bio_title, text: t.share_texts.bio_body });
                 }
             }
-        } catch (err: any) { 
-            console.error("Share failed:", err);
-            if (err.name !== 'AbortError') setActionError('Could not share. Please try downloading.'); 
-        } finally { setIsSharing(false); }
+        } catch (err: any) { if (err.name !== 'AbortError') setActionError('Could not share.'); } finally { setIsSharing(false); }
     };
 
     const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
         e.preventDefault(); setIsDragging(true); setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y });
     };
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => { if (isDragging) { e.preventDefault(); setImagePosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y }); } };
+    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => { if (isDragging) setImagePosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y }); };
     const handleMouseUpOrLeave = () => setIsDragging(false);
     
     return (
         <Card>
             <div className="flex flex-col gap-2 mb-6 text-center">
-                <h2 className="text-3xl font-bold">{t.bio.title}</h2>
-                <p className="opacity-80 text-xl">{t.bio.subtitle}</p>
+                <h2 className="text-3xl font-black text-[#5D4037]">{t.bio.title}</h2>
+                <p className="text-[#333333] font-bold text-xl opacity-100">{t.bio.subtitle}</p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <div className="space-y-6">
@@ -220,42 +179,50 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
                     </fieldset>
                     <fieldset className="bg-white/5 p-6 rounded-2xl border border-white/10">
                         <legend className="font-bold text-xl mb-2 font-['Poppins'] px-2">{t.bio.step2}</legend>
-                        <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full">
+                        <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full shadow-md">
                             <UploadIcon className="w-5 h-5 mr-2"/> {imagePreview ? t.bio.btn_change : t.bio.btn_upload}
                         </Button>
                         <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
                     </fieldset>
                     <fieldset className="bg-white/5 p-6 rounded-2xl border border-white/10">
                          <legend className="font-bold text-xl mb-2 font-['Poppins'] px-2">{t.bio.step3}</legend>
-                        <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="w-full"> {isLoading ? t.generator.btn_generating : t.bio.btn_generate} </Button>
+                        <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="w-full shadow-lg"> 
+                            {isLoading ? t.generator.btn_generating : t.bio.btn_generate} 
+                        </Button>
                     </fieldset>
-                    {generatedBios.length > 0 && (
-                        <div className="space-y-4 animate-fade-in bg-white/5 p-6 rounded-2xl border border-white/10">
-                            <h4 className="font-bold text-center text-xl font-['Poppins'] mb-3">{t.bio.pick_bio}</h4>
+                    {isLoading && (
+                        <div className="p-8 flex flex-col items-center justify-center animate-fade-in bg-white/10 rounded-2xl border border-white/20">
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#AA336A] mb-3"></div>
+                            <p className="text-lg font-bold text-[#333333]">{t.generator.loading_text}</p>
+                        </div>
+                    )}
+                    {generatedBios.length > 0 && !isLoading && (
+                        <div className="space-y-4 animate-fade-in bg-white/5 p-6 rounded-2xl border border-white/10 shadow-inner">
+                            <h4 className="font-bold text-center text-xl font-['Poppins'] mb-3 text-[#333333]">{t.bio.pick_bio}</h4>
                             {generatedBios.map((bio, index) => (
-                                <button key={index} onClick={() => { setSelectedBio(bio); setBioMode('ai'); }} className={`w-full p-4 text-left rounded-lg transition-colors text-xl font-['Poppins'] leading-relaxed ${selectedBio === bio && bioMode === 'ai' ? 'bg-black/10 shadow-inner border border-white/20' : 'bg-black/5 hover:bg-black/10'}`}> {bio} </button>
+                                <button key={index} onClick={() => { setSelectedBio(bio); setBioMode('ai'); }} className={`w-full p-4 text-left rounded-lg transition-all text-xl font-['Poppins'] leading-relaxed ${selectedBio === bio && bioMode === 'ai' ? 'bg-[#AA336A]/20 shadow-md border-2 border-[#AA336A]/40' : 'bg-black/5 hover:bg-black/10'}`}> {bio} </button>
                             ))}
-                             <button onClick={() => { setBioMode('custom'); setSelectedBio(customBio); }} className={`w-full p-4 text-left rounded-lg transition-colors text-xl font-semibold font-['Poppins'] ${bioMode === 'custom' ? 'bg-black/10' : 'bg-black/5 hover:bg-black/10'}`}> {t.bio.write_own} </button>
+                             <button onClick={() => { setBioMode('custom'); setSelectedBio(customBio); }} className={`w-full p-4 text-left rounded-lg transition-all text-xl font-bold font-['Poppins'] ${bioMode === 'custom' ? 'bg-[#AA336A]/20 border-2 border-[#AA336A]/40' : 'bg-black/5 hover:bg-black/10'}`}> {t.bio.write_own} </button>
                             {bioMode === 'custom' && <textarea value={customBio} onChange={(e) => { setCustomBio(e.target.value); setSelectedBio(e.target.value); }} placeholder={t.bio.placeholder_own} className="w-full mt-2 p-3 rounded-lg bg-white/10 border border-white/30 font-['Poppins'] text-xl leading-relaxed text-[var(--text-main)]" rows={3} />}
                         </div>
                     )}
                 </div>
                 <div className="space-y-4 flex flex-col items-center">
-                    <h3 className="font-bold text-xl text-center font-['Poppins'] opacity-60 uppercase tracking-widest">{t.bio.preview_title}</h3>
-                    <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="cursor-grab active:cursor-grabbing select-none w-full flex justify-center origin-top transform scale-[0.7] sm:scale-[0.85] lg:scale-[0.9] xl:scale-100">
+                    <h3 className="font-black text-xl text-center font-['Poppins'] opacity-60 uppercase tracking-widest text-[#333333]">{t.bio.preview_title}</h3>
+                    <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="cursor-grab active:cursor-grabbing select-none w-full flex justify-center origin-top transform scale-[0.7] sm:scale-[0.85] lg:scale-[0.9] xl:scale-100 overflow-visible">
                         <BioCard ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} defaultPetKind={petType.toLowerCase() as PetKind} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
                     </div>
                     <div className="w-full max-w-[480px] px-4 mt-8 space-y-6">
                         <div>
-                            <label htmlFor="zoom-slider" className="block text-center text-lg font-medium mb-1 font-['Poppins'] opacity-90">{t.bio.zoom}</label>
+                            <label htmlFor="zoom-slider" className="block text-center text-lg font-bold mb-1 font-['Poppins'] opacity-90 text-[#333333]">{t.bio.zoom}</label>
                              <input id="zoom-slider" type="range" min="1" max="3" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[var(--primary-color)]" />
                         </div>
                         <div className="flex flex-col gap-3">
-                            <Button onClick={handleDownload} disabled={isLoading || isDownloading || isSharing || !imagePreview || !petName || !selectedBio} variant="secondary"> <DownloadIcon className="w-5 h-5 mr-2"/> {isDownloading ? '...' : t.bio.btn_download} </Button>
-                            <Button onClick={handleShare} disabled={isLoading || isDownloading || isSharing || !imagePreview || !petName || !selectedBio} variant="primary" className="btn-surprise"> <ShareIcon className="w-5 h-5 mr-2"/> {isSharing ? '...' : t.bio.btn_share} </Button>
+                            <Button onClick={handleDownload} disabled={isLoading || isDownloading || isSharing || !imagePreview || !petName || !selectedBio} variant="secondary" className="shadow-md"> <DownloadIcon className="w-5 h-5 mr-2"/> {isDownloading ? '...' : t.bio.btn_download} </Button>
+                            <Button onClick={handleShare} disabled={isLoading || isDownloading || isSharing || !imagePreview || !petName || !selectedBio} variant="primary" className="btn-surprise shadow-xl"> <ShareIcon className="w-5 h-5 mr-2"/> {isSharing ? '...' : t.bio.btn_share} </Button>
                         </div>
                     </div>
-                    {actionError && <p className="text-red-500 text-center font-medium mt-2">{actionError}</p>}
+                    {actionError && <p className="text-red-500 text-center font-bold mt-2 bg-red-50 p-2 rounded">{actionError}</p>}
                 </div>
             </div>
         </Card>
