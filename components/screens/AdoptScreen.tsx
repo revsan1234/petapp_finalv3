@@ -7,6 +7,7 @@ import { findAdoptionCenters } from '../../services/geminiService';
 import type { AdoptionCenter } from '../../types';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BackToHomeButton } from '../ui/BackToHomeButton';
 
 const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
@@ -86,13 +87,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                     <div className="flex flex-col gap-8 w-full mx-auto max-w-4xl">
                         
                         <div className="-mt-4">
-                             <button 
-                                onClick={goHome} 
-                                className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                            >
-                                <BackIcon className="w-4 h-4" />
-                                {t.common.back_home}
-                            </button>
+                             <BackToHomeButton onClick={goHome} />
                         </div>
 
                         <Card>

@@ -17,21 +17,7 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { hasValidApiKey } from './services/geminiService';
 import { Card } from './components/ui/Card';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
-
-export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-    const { t } = useLanguage();
-    return (
-        <button 
-            onClick={onClick} 
-            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-            </svg>
-            {t.common.back_home}
-        </button>
-    );
-};
+import { BackToHomeButton } from './components/ui/BackToHomeButton';
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();

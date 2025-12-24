@@ -10,7 +10,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { translatePetName } from '../../services/geminiService';
-import { BackToHomeButton } from '../../App';
+import { BackToHomeButton } from '../ui/BackToHomeButton';
 
 // --- Internal Component: Name Translator ---
 const NameTranslator: React.FC = () => {
