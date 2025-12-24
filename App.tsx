@@ -9,7 +9,7 @@ import { PlayScreen } from './components/screens/PlayScreen';
 import { BioScreen } from './components/screens/BioScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { LandingPage } from './components/LandingPage';
-import { PetPersonalityResult, GeneratedName, PetInfo } from './types';
+import { GeneratedName, PetInfo } from './types';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { TabMascots } from './components/ui/TabMascots';
 import { CustomCursor } from './components/ui/CustomCursor';
@@ -17,7 +17,24 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { hasValidApiKey } from './services/geminiService';
 import { Card } from './components/ui/Card';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
-import { BackToHomeButton } from './components/ui/BackToHomeButton';
+
+/**
+ * Embedded BackToHomeButton component to avoid external file requirements
+ */
+export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+    const { t } = useLanguage();
+    return (
+        <button 
+            onClick={onClick} 
+            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            {t.common.back_home}
+        </button>
+    );
+};
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();

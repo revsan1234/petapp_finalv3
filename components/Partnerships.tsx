@@ -3,6 +3,7 @@ import { Button } from './ui/Button';
 import { PetCharacter } from './assets/pets/PetCharacter';
 import { Header } from './Header';
 import { useLanguage } from '../contexts/LanguageContext';
+import { BackToHomeButton } from '../App';
 
 const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
@@ -129,13 +130,7 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
                 <Header leftPet="bird" rightPet="hamster" onLogoClick={goHome} />
                 <main className="py-4 md:py-8 px-4 sm:px-6 md:px-8 pb-24">
                     <div className="container mx-auto max-w-6xl mb-4 -mt-2">
-                        <button 
-                            onClick={goHome} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                        >
-                            <BackIcon className="w-4 h-4" />
-                            {t.common.back_home}
-                        </button>
+                        <BackToHomeButton onClick={goHome} />
                     </div>
 
                     <div className="container mx-auto flex flex-col items-center justify-center mb-12">

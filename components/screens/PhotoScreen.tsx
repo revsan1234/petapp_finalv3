@@ -7,7 +7,7 @@ import { Button } from '../ui/Button';
 import { Tab } from '../layout/TabNavigator';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BackToHomeButton } from '../ui/BackToHomeButton';
+import { BackToHomeButton } from '../../App';
 
 const BioIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>

@@ -12,30 +12,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
-        /* Standard Mode - Vibrant & Youthful */
+        /* Vapor Style Palette */
+        --bg-green: #8da38d; /* Muted Sage Green from stock wallpaper */
+        --bg-pink: #e889b5;  /* Soft Rose Pink */
+        
         --primary-color: #AA336A;
         --secondary-color: #333333;
-        --bg-gradient-start: #88a688; /* Sophisticated Youthful Sage */
-        --bg-gradient-end: #e889b5;
         
-        /* Light, Warm Transparent Beige (Creamy Tone) */
-        /* Increased opacity slightly to block out the greenish background bleed */
-        --card-bg: rgba(255, 253, 235, 0.85); 
+        /* Transparent Beige (Creamy Tone) */
+        --card-bg: rgba(253, 251, 238, 0.85); 
         --text-main: #333333;
         --btn-text: white;
 
-        --blob-1: rgba(136, 166, 136, 0.4);
+        --blob-1: rgba(141, 163, 141, 0.4);
         --blob-2: rgba(232, 137, 181, 0.2);
         --blob-3: rgba(170, 51, 106, 0.1);
       }
 
       body.chill-mode {
-        /* Dark / Chill Mode */
+        --bg-green: #0f172a;
+        --bg-pink: #581c87;
         --primary-color: #818cf8;
         --secondary-color: #e0e7ff;
-        --bg-gradient-start: #0f172a;
-        --bg-gradient-end: #581c87;
-        --card-bg: rgba(30, 41, 59, 0.6); 
+        --card-bg: rgba(30, 41, 59, 0.7); 
         --text-main: #e2e8f0;
         --btn-text: #ffffff;
       }
@@ -45,8 +44,9 @@
       body {
         font-family: 'Poppins', sans-serif;
         color: var(--text-main);
-        background-color: var(--bg-gradient-end);
-        background-image: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end));
+        background-color: var(--bg-pink);
+        /* 3-stop gradient: Green -> Pink (middle) -> Green */
+        background-image: linear-gradient(to bottom, var(--bg-green) 0%, var(--bg-pink) 50%, var(--bg-green) 100%);
         background-attachment: fixed;
         overscroll-behavior-y: none; 
         transition: background-image 0.5s ease, color 0.3s ease;

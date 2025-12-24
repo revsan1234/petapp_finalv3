@@ -7,13 +7,7 @@ import { findAdoptionCenters } from '../../services/geminiService';
 import type { AdoptionCenter } from '../../types';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BackToHomeButton } from '../ui/BackToHomeButton';
-
-const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-    </svg>
-);
+import { BackToHomeButton } from '../../App';
 
 const PawIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
