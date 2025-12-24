@@ -7,6 +7,7 @@ import { Button } from '../ui/Button';
 import { Tab } from '../layout/TabNavigator';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BackToHomeButton } from '../../App';
 
 const BioIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -44,21 +45,15 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
     return (
         <div className="relative min-h-screen">
             <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
-            <main className="px-4 pb-24 max-w-lg mx-auto w-full flex flex-col gap-6 animate-fade-in mt-4">
+            <main className="px-4 pb-24 max-w-lg mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2">
                  <div className="-mt-4">
-                    <button 
-                        onClick={goHome} 
-                        className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                    >
-                        <BackIcon className="w-4 h-4" />
-                        {t.common.back_home}
-                    </button>
+                    <BackToHomeButton onClick={goHome} />
                 </div>
 
                 <div className="flex flex-col gap-6">
                     <button 
                         onClick={() => setMode('scene')}
-                        className="bg-[#FFF8E7] rounded-[2rem] p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
                     >
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                             <PetCharacter pet="lizard" className="w-28 h-28 drop-shadow-md" />
@@ -71,7 +66,7 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
 
                     <button 
                         onClick={() => setMode('video')}
-                        className="bg-[#FFF8E7] rounded-[2rem] p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
                     >
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                              <PetCharacter pet="rabbit" className="w-28 h-28 drop-shadow-md" />
@@ -91,8 +86,9 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
     <div className="relative min-h-screen overflow-hidden">
         <div className="relative z-10">
             <Header leftPet="lizard" rightPet="rabbit" onLogoClick={handleBackToMenu} />
-            <main className="py-4 md:py-8 px-4">
-                <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
+            <main className="py-2 md:py-4 px-4">
+                <div className="flex flex-col gap-6 w-full mx-auto max-w-7xl">
+                    
                      <div className="-mt-4 flex gap-3">
                         <button 
                             onClick={handleBackToMenu} 
@@ -101,13 +97,7 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
                             <BackIcon className="w-4 h-4" />
                             {t.navigation.photo.label} Menu
                         </button>
-                        <button 
-                            onClick={goHome} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                        >
-                            <BackIcon className="w-4 h-4" />
-                            {t.common.back_home}
-                        </button>
+                        <BackToHomeButton onClick={goHome} />
                     </div>
 
                     {mode === 'scene' ? (

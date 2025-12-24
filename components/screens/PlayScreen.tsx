@@ -10,8 +10,9 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { translatePetName } from '../../services/geminiService';
+import { BackToHomeButton } from '../../App';
 
-// --- Internal Component: Name Translator (To avoid file creation issues) ---
+// --- Internal Component: Name Translator ---
 const NameTranslator: React.FC = () => {
     const { t } = useLanguage();
     const [petName, setPetName] = useState('');
@@ -25,9 +26,11 @@ const NameTranslator: React.FC = () => {
     const handleTranslate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!petName.trim()) return;
+
         setIsLoading(true);
         setError(null);
         setResult(null);
+
         try {
             const data = await translatePetName(petName, targetLang);
             setResult(data);
@@ -56,6 +59,7 @@ const NameTranslator: React.FC = () => {
                     onChange={e => setPetName(e.target.value)}
                     placeholder="e.g. Luna"
                 />
+                
                 <Select
                     id="target-lang"
                     label={t.translator.label_lang}
@@ -64,8 +68,13 @@ const NameTranslator: React.FC = () => {
                 >
                     {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
                 </Select>
+
                 <div className="flex justify-center pt-2">
-                    <Button type="submit" disabled={isLoading || !petName.trim()} className="w-full sm:w-auto shadow-lg">
+                    <Button 
+                        type="submit" 
+                        disabled={isLoading || !petName.trim()}
+                        className="w-full sm:w-auto shadow-lg"
+                    >
                         {isLoading ? t.translator.btn_translating : t.translator.btn_translate}
                         {isLoading && <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent ml-2" />}
                     </Button>
@@ -86,6 +95,7 @@ const NameTranslator: React.FC = () => {
                     <div className="absolute -right-6 -bottom-6 pointer-events-none opacity-40 transform rotate-12">
                         <PetCharacter pet="bird" className="w-32 h-32" />
                     </div>
+
                     <div className="text-center relative z-10">
                         <span className="text-xs uppercase tracking-[0.3em] font-black opacity-40 mb-2 block">{targetLang}</span>
                         <p className="text-6xl font-black text-[#5D4037] mb-4 tracking-tight drop-shadow-sm">{result.translation}</p>
@@ -125,21 +135,16 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
       return (
         <div className="relative min-h-screen">
             <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-            <main className="px-4 pb-24 max-w-lg mx-auto w-full flex flex-col gap-6 animate-fade-in mt-4">
+            
+            <main className="px-4 pb-24 max-w-lg mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2">
                  <div className="-mt-4">
-                    <button 
-                        onClick={goHome} 
-                        className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                    >
-                        <BackIcon className="w-4 h-4" />
-                        {t.common.back_home}
-                    </button>
+                    <BackToHomeButton onClick={goHome} />
                 </div>
 
                 <div className="flex flex-col gap-6">
                     <button 
                         onClick={() => setMode('quiz')}
-                        className="bg-[#FFF8E7] rounded-[2rem] p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
                     >
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                             <PetCharacter pet="cat" className="w-28 h-28 drop-shadow-md" />
@@ -152,7 +157,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
 
                     <button 
                         onClick={() => setMode('battle')}
-                        className="bg-[#FFF8E7] rounded-[2rem] p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
                     >
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                              <PetCharacter pet="dog" className="w-28 h-28 drop-shadow-md" />
@@ -165,10 +170,10 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
 
                     <button 
                         onClick={() => setMode('translator')}
-                        className="bg-[#FFF8E7] rounded-[2rem] p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
                     >
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
-                             <PetCharacter pet="hamster" className="w-28 h-28 drop-shadow-md" />
+                             <PetCharacter pet="bird" className="w-28 h-28 drop-shadow-md" />
                         </div>
                         <h3 className="text-3xl font-black text-[#5D4037]">{t.translator.title}</h3>
                         <p className="text-[#333333] font-bold leading-relaxed text-lg px-4 opacity-100">
@@ -184,6 +189,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
   return (
     <div className="relative min-h-screen">
         <Header leftPet="dog" rightPet="cat" onLogoClick={() => setMode('menu')} />
+        
         <main className="px-4 pb-24 max-w-xl mx-auto w-full animate-fade-in mt-4">
              <div className="-mt-4 flex gap-3 mb-6">
                 <button 
@@ -193,17 +199,29 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
                     <BackIcon className="w-4 h-4" />
                     Play Menu
                 </button>
-                <button 
-                    onClick={goHome} 
-                    className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                >
-                    <BackIcon className="w-4 h-4" />
-                    {t.common.back_home}
-                </button>
+                <BackToHomeButton onClick={goHome} />
             </div>
-             {mode === 'quiz' && <PersonalityQuiz onQuizComplete={onQuizComplete} petInfo={petInfo} setPetInfo={setPetInfo} addSavedName={addSavedName} savedNames={savedNames} />}
-             {mode === 'battle' && <QuickFireDiscovery addSavedName={addSavedName} savedNames={savedNames} petInfo={petInfo} setPetInfo={setPetInfo} />}
-             {mode === 'translator' && <NameTranslator />}
+
+             {mode === 'quiz' && (
+                <PersonalityQuiz 
+                    onQuizComplete={onQuizComplete}
+                    petInfo={petInfo}
+                    setPetInfo={setPetInfo}
+                    addSavedName={addSavedName}
+                    savedNames={savedNames}
+                />
+             )}
+             {mode === 'battle' && (
+                <QuickFireDiscovery 
+                    addSavedName={addSavedName} 
+                    savedNames={savedNames}
+                    petInfo={petInfo}
+                    setPetInfo={setPetInfo}
+                />
+             )}
+             {mode === 'translator' && (
+                <NameTranslator />
+             )}
         </main>
     </div>
   );

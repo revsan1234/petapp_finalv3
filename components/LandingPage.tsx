@@ -18,10 +18,10 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onClick }) => (
     <button 
         onClick={onClick}
-        className="flex flex-col items-center text-center rounded-[2.5rem] p-6 sm:p-8 shadow-md hover:shadow-2xl border border-[#EBE5D5] h-full w-full justify-start group gap-4 transition-all duration-300 hover:scale-[1.03] active:scale-95 bg-[#FFF8E7] text-[#5D4037] select-none min-h-[240px] focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+        className="flex flex-col items-center text-center rounded-[2.5rem] p-6 sm:p-8 shadow-md border-2 border-white/40 h-full w-full justify-start group gap-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:border-[#AA336A]/30 active:scale-95 bg-[var(--card-bg)] backdrop-blur-md text-[#5D4037] select-none min-h-[220px] focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
     >
-        <div className="transform transition-transform duration-500 group-hover:-translate-y-3">
-            <div className="flex items-center justify-center h-28 sm:h-32 w-28 sm:w-32 mb-1">
+        <div className="transform transition-transform duration-500 group-hover:-translate-y-2 group-hover:scale-110">
+            <div className="flex items-center justify-center h-24 sm:h-28 w-24 sm:w-28 mb-1">
                 {icon}
             </div>
         </div>
@@ -30,7 +30,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onC
             <h3 className="text-2xl sm:text-3xl font-black leading-tight tracking-tight text-[var(--text-main)] group-hover:text-[#AA336A] transition-colors">
                 {title}
             </h3>
-            <p className="text-lg font-bold leading-relaxed text-[#333333] opacity-100 px-2">
+            <p className="text-lg font-bold leading-relaxed text-[#333333] opacity-80 group-hover:opacity-100 transition-opacity px-2">
                 {description}
             </p>
         </div>
@@ -82,7 +82,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setTab }) => {
     return (
         <div className="relative min-h-[100dvh] overflow-hidden">
             <Header leftPet="dog" rightPet="cat" />
-            <main className="py-2 px-4 pb-24">
+            
+            <main className="py-6 px-4 pb-24">
                 <div className="w-full mx-auto max-w-4xl animate-fade-in">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 auto-rows-fr">
                         {features.map((feature, index) => (
