@@ -18,23 +18,30 @@ import { hasValidApiKey } from './services/geminiService';
 import { Card } from './components/ui/Card';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
 
+// --- Internal Helper: Shared Back Button ---
+export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+    const { t } = useLanguage();
+    return (
+        <button 
+            onClick={onClick} 
+            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            {t.common.back_home}
+        </button>
+    );
+};
+
 // --- Contact Us Component ---
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();
     return (
-        <div className="min-h-screen p-4 sm:p-6 md:p-8 animate-fade-in flex flex-col items-center pt-[max(5rem,env(safe-area-inset-top))]">
+        <div className="min-h-screen p-4 sm:p-6 md:p-8 animate-fade-in flex flex-col items-center pt-[max(0.5rem,env(safe-area-inset-top))]">
             <div className="w-full max-w-4xl">
                 <header className="flex items-center justify-start mb-8">
-                    <button 
-                        onClick={onBack} 
-                        className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
-                        aria-label="Go Back"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                        </svg>
-                        {t.common.back_home}
-                    </button>
+                    <BackToHomeButton onClick={onBack} />
                 </header>
                 <main>
                     <Card className="text-center py-20 border-4 border-[#AA336A]/10 shadow-2xl rounded-[3rem]">
@@ -171,19 +178,19 @@ const AppContent: React.FC = () => {
             <span className="font-normal opacity-90 text-sm">API Key not found.</span>
          </div>
       )}
-      <div className={`relative min-h-[100dvh] overflow-x-hidden pb-24 transition-colors duration-500 ${!hasValidApiKey() ? 'pt-[max(7rem,env(safe-area-inset-top))]' : 'pt-[max(5rem,env(safe-area-inset-top))]'}`}>
+      <div className={`relative min-h-[100dvh] overflow-x-hidden pb-24 transition-colors duration-500 pt-[max(0rem,env(safe-area-inset-top))]`}>
           {renderActiveTab()}
           <footer className="relative z-10 text-center my-8 space-y-6 w-full max-w-7xl mx-auto px-4 pb-12">
             <div className="flex flex-col items-center gap-6">
                 <ToggleControls />
-                <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-100 items-center text-white/90 font-bold tracking-tight drop-shadow-md">
-                    <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline underline-offset-4">namemypet.org</a>
-                    <span className="hidden sm:inline opacity-50">|</span>
-                    <button onClick={() => setView('privacy')} className="hover:text-white transition-colors underline underline-offset-4">{t.common.privacy}</button>
-                    <span className="hidden sm:inline opacity-50">|</span>
-                    <button onClick={() => setView('terms')} className="hover:text-white transition-colors underline underline-offset-4">{t.common.terms}</button>
-                    <span className="hidden sm:inline opacity-50">|</span>
-                    <button onClick={() => setView('contact')} className="hover:text-white transition-colors underline underline-offset-4">{t.common.contact}</button>
+                <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-100 items-center text-white font-bold tracking-tight drop-shadow-md">
+                    <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">namemypet.org</a>
+                    <span className="hidden sm:inline opacity-30">|</span>
+                    <button onClick={() => setView('privacy')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.privacy}</button>
+                    <span className="hidden sm:inline opacity-30">|</span>
+                    <button onClick={() => setView('terms')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.terms}</button>
+                    <span className="hidden sm:inline opacity-30">|</span>
+                    <button onClick={() => setView('contact')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.contact}</button>
                 </div>
             </div>
           </footer>

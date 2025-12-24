@@ -11,11 +11,11 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ leftPet, rightPet, onLogoClick }) => {
   return (
-    <header className="p-4 pt-[max(4rem,env(safe-area-inset-top))] pb-8 flex justify-center items-center gap-2 sm:gap-8 relative z-20">
+    <header className="p-0 pt-1 pb-1 flex justify-center items-center gap-2 sm:gap-8 relative z-20">
       {leftPet && (
           <PetCharacter 
             pet={leftPet} 
-            className="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 drop-shadow-xl transform -rotate-12 hover:scale-110 hover:rotate-0 transition-all duration-300" 
+            className="w-16 h-16 sm:w-28 sm:h-28 md:w-32 md:h-32 drop-shadow-xl transform -rotate-12 hover:scale-110 hover:rotate-0 transition-all duration-300" 
           />
       )}
       
@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({ leftPet, rightPet, onLogoClick }
       {rightPet && (
           <PetCharacter 
             pet={rightPet} 
-            className="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 drop-shadow-xl transform rotate-12 hover:scale-110 hover:rotate-0 transition-all duration-300" 
+            className="w-16 h-16 sm:w-28 sm:h-28 md:w-32 md:h-32 drop-shadow-xl transform rotate-12 hover:scale-110 hover:rotate-0 transition-all duration-300" 
           />
       )}
     </header>

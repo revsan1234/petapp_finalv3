@@ -15,7 +15,7 @@
         /* Standard Mode */
         --primary-color: #AA336A;
         --secondary-color: #333333;
-        --bg-gradient-start: #aab2a1;
+        --bg-gradient-start: #749581; /* Lighter sage green for a brighter, clean aesthetic */
         --bg-gradient-end: #e889b5;
         --card-bg: rgba(255, 252, 240, 0.85);
         --text-main: #333333;
@@ -29,9 +29,9 @@
         --feature-desc: #AA336A;
         --feature-border: rgba(255, 255, 255, 0.5);
 
-        --blob-1: rgba(205, 164, 133, 0.6);
-        --blob-2: rgba(255, 218, 185, 0.6);
-        --blob-3: rgba(222, 184, 135, 0.6);
+        --blob-1: rgba(116, 149, 129, 0.4);
+        --blob-2: rgba(232, 137, 181, 0.4);
+        --blob-3: rgba(170, 51, 106, 0.2);
       }
 
       body.chill-mode {
@@ -102,17 +102,6 @@
       }
       .animate-confetti { animation: confetti-burst 0.8s ease-out forwards; }
 
-      @keyframes scroll-left { 
-        0% { transform: translateX(0); } 
-        100% { transform: translateX(-50%); } 
-      }
-      .ticker-scroll { 
-        display: flex; 
-        width: max-content; 
-        animation: scroll-left 40s linear infinite; 
-      }
-      .ticker-scroll:hover { animation-play-state: paused; }
-
       .btn {
         font-weight: 700;
         padding: 0.75rem 1.5rem;
@@ -127,6 +116,7 @@
         cursor: pointer;
       }
       .btn:not(:disabled):hover { transform: scale(1.05); }
+      .btn:not(:disabled):active { transform: scale(0.95); }
 
       .btn-primary {
         background-color: var(--primary-color);
