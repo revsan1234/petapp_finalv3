@@ -18,7 +18,6 @@ import { hasValidApiKey } from './services/geminiService';
 import { Card } from './components/ui/Card';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
 
-// --- Internal Helper: Shared Back Button ---
 export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
     const { t } = useLanguage();
     return (
@@ -34,7 +33,6 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-// --- Contact Us Component ---
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();
     return (
@@ -65,11 +63,6 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                     {t.contact_us.email}
                                 </a>
                             </div>
-                            <div className="pt-12">
-                                <p className="text-sm font-bold opacity-30 tracking-[0.3em] uppercase text-[#5D4037] font-['Poppins']">
-                                    namemypet.org
-                                </p>
-                            </div>
                         </div>
                     </Card>
                 </main>
@@ -91,18 +84,11 @@ const AppContent: React.FC = () => {
     else document.body.classList.remove('chill-mode');
   }, [isChillMode]);
 
-  useEffect(() => {
-    document.title = t.common.app_title;
-  }, [t.common.app_title]);
-
   const [savedNames, setSavedNames] = useState<GeneratedName[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('mySavedNames');
-        return saved ? JSON.parse(saved) : [];
-      } catch (e) { return []; }
-    }
-    return [];
+    try {
+      const saved = localStorage.getItem('mySavedNames');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) { return []; }
   });
 
   const [petInfo, setPetInfo] = useState<PetInfo>({
@@ -121,16 +107,13 @@ const AppContent: React.FC = () => {
     setSavedNames((prev) => prev.find(n => n.id === name.id) ? prev : [...prev, name]);
   };
   const removeSavedName = (nameId: string) => { setSavedNames((prev) => prev.filter(n => n.id !== nameId)); };
-  const handleQuizComplete = (result: PetPersonalityResult) => {
-    setPetInfo(prev => ({ ...prev, personality: result.keywords.personality, style: result.keywords.style }));
-  };
 
   const renderActiveTab = () => {
     switch(activeTab) {
       case 'home': return <LandingPage setTab={handleSetTab} />;
       case 'generate': return <MainView savedNames={savedNames} addSavedName={addSavedName} removeSavedName={removeSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
       case 'bio': return <BioScreen petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
-      case 'play': return <PlayScreen onQuizComplete={handleQuizComplete} savedNames={savedNames} addSavedName={addSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
+      case 'play': return <PlayScreen onQuizComplete={(res) => setPetInfo(p => ({...p, ...res.keywords}))} savedNames={savedNames} addSavedName={addSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
       case 'photo': return <PhotoScreen setActiveTab={handleSetTab} setImageForBio={setImageForBio} goHome={goHome} />;
       case 'adopt': return <AdoptScreen goHome={goHome} />;
       case 'partnerships': return <Partnerships goHome={goHome} />;
@@ -142,55 +125,34 @@ const AppContent: React.FC = () => {
   if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
   if (view === 'contact') return <ContactUs onBack={() => setView('app')} />;
 
-  const ToggleControls = () => (
-      <div className="flex justify-center gap-6">
-        <div className="flex flex-col items-center gap-1">
-            <button 
-                onClick={() => setIsChillMode(!isChillMode)}
-                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
-                aria-label="Toggle Chill Mode"
-            >
-                <span className="text-xl">{isChillMode ? '☀️' : '🌙'}</span>
-            </button>
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-60 text-dynamic">dark</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-            <button 
-                onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
-                aria-label="Toggle Language"
-            >
-                <span className="text-xl">🌐</span>
-            </button>
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-60 text-dynamic">spanish</span>
-        </div>
-      </div>
-  );
-
   return (
     <>
       <CustomCursor />
       <BackgroundPattern />
       <TabMascots activeTab={activeTab} />
       {!hasValidApiKey() && (
-         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg flex flex-col items-center justify-center gap-1">
+         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white p-3 z-[100] text-center font-bold shadow-lg flex flex-col items-center justify-center gap-1 pointer-events-auto">
             <span className="text-lg">⚠️ Configuration Error</span>
-            <span className="font-normal opacity-90 text-sm">API Key not found.</span>
+            <span className="font-normal opacity-90 text-sm">API Key not found. Please refresh or check environment.</span>
          </div>
       )}
-      <div className={`relative min-h-[100dvh] overflow-x-hidden pb-24 transition-colors duration-500 pt-[max(0rem,env(safe-area-inset-top))]`}>
+      <div className="relative min-h-[100dvh] overflow-x-hidden pb-24 transition-colors duration-500 pt-[max(0rem,env(safe-area-inset-top))]">
           {renderActiveTab()}
           <footer className="relative z-10 text-center my-8 space-y-6 w-full max-w-7xl mx-auto px-4 pb-12">
             <div className="flex flex-col items-center gap-6">
-                <ToggleControls />
+                <div className="flex justify-center gap-6">
+                    <button onClick={() => setIsChillMode(!isChillMode)} className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95">
+                        <span className="text-xl">{isChillMode ? '☀️' : '🌙'}</span>
+                    </button>
+                    <button onClick={() => setLanguage(language === 'en' ? 'es' : 'en')} className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95">
+                        <span className="text-xl">🌐</span>
+                    </button>
+                </div>
                 <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-100 items-center text-white font-bold tracking-tight drop-shadow-md">
-                    <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">namemypet.org</a>
-                    <span className="hidden sm:inline opacity-30">|</span>
-                    <button onClick={() => setView('privacy')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.privacy}</button>
-                    <span className="hidden sm:inline opacity-30">|</span>
-                    <button onClick={() => setView('terms')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.terms}</button>
-                    <span className="hidden sm:inline opacity-30">|</span>
-                    <button onClick={() => setView('contact')} className="hover:text-[var(--card-bg)] transition-colors underline underline-offset-4 decoration-white/30">{t.common.contact}</button>
+                    <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity underline underline-offset-4">namemypet.org</a>
+                    <button onClick={() => setView('privacy')} className="underline underline-offset-4">{t.common.privacy}</button>
+                    <button onClick={() => setView('terms')} className="underline underline-offset-4">{t.common.terms}</button>
+                    <button onClick={() => setView('contact')} className="underline underline-offset-4">{t.common.contact}</button>
                 </div>
             </div>
           </footer>
