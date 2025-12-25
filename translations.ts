@@ -33,7 +33,7 @@ export const translations = {
       btn_generating: "Generating...",
       error: "Failed to generate names. Please try again!",
       results_title: "Here are some ideas!",
-      loading_text: "Generating fresh name ideas...",
+      loading_text: "Generating fresh ideas...",
     },
     options: {
       types: {
@@ -157,8 +157,16 @@ export const translations = {
       privacy: "Privacy Policy",
       terms: "Terms & Conditions",
       contact: "Contact Us",
+      blog: "Blog",
       follow_us: "Follow Us!",
       app_title: "Name My Pet"
+    },
+    blog: {
+      title: "The Pet Blog",
+      subtitle: "Expert naming tips, lifestyle trends, and guides for your newest family member.",
+      back_to_blog: "Back to Blog",
+      read_more: "Read full story",
+      footer_note: "Finding the right name is just the beginning. Our AI generator uses personality insights to find names that actually fit your pet's vibe. Try it out on our home screen!"
     },
     image_editor: {
       title: "AI Scene Generator",
@@ -485,8 +493,16 @@ export const translations = {
       privacy: "Política de Privacidad",
       terms: "Términos y Condiciones",
       contact: "Contáctanos",
+      blog: "Blog",
       follow_us: "¡Síguenos!",
       app_title: "Name My Pet"
+    },
+    blog: {
+      title: "Blog de Mascotas",
+      subtitle: "Consejos, tendencias y más para tu mejor amigo.",
+      back_to_blog: "Volver al Blog",
+      read_more: "Leer más",
+      footer_note: "Encontrar el nombre correcto es solo el comienzo. Nuestro generador IA utiliza rasgos de personalidad para encontrar nombres que realmente encajen. ¡Pruébalo en la pantalla de inicio!"
     },
     image_editor: {
       title: "Generador de Escenas IA",
@@ -576,7 +592,7 @@ export const translations = {
       subtitle: "¿Qué edad tiene tu mejor amigo, realmente?",
       label_pet: "Mascota",
       label_age: "Edad (Años)",
-      btn_calculate: "Calcular",
+      btn_calculate: "Calculadora",
       result_prefix: "En años humanos tu amigo tiene:",
       result_suffix: "Años"
     },
@@ -587,7 +603,7 @@ export const translations = {
       label_type: "Tipo",
       label_zodiac: "Signo (o Mes de Adopción)",
       btn_read: "Leer Aura",
-      btn_reading: "Leyendo las Estrellas...",
+      btn_reading: "Leer las Estrellas...",
       result_title: "Vibe Check",
       lucky_item: "Objeto de la Suerte",
       signs: [
@@ -602,7 +618,7 @@ export const translations = {
       subtitle: "¡Cuéntanos sobre tu mascota, luego elige tus favoritos!",
       btn_start: "¡Comenzar!",
       btn_preparing: "Preparando...",
-      mode: "Mode",
+      mode: "Modo",
       round: "Ronda",
       pick_me: "¡Elígeme!",
       winner_title: "¡Círculo de Ganadores!",
