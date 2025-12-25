@@ -113,7 +113,6 @@ export const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedN
         if (petGender === 'Male') bgColor = '#aab2a1';
         else if (petGender === 'Any') bgColor = '#d4c4e0';
 
-        // Filter to prevent reading rules from cross-origin stylesheets (Google Fonts)
         const filter = (node: HTMLElement) => {
             return !(['LINK', 'STYLE', 'SCRIPT'].includes(node.tagName));
         };

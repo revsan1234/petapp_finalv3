@@ -9,7 +9,6 @@ import { PlayScreen } from './components/screens/PlayScreen';
 import { BioScreen } from './components/screens/BioScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { LandingPage } from './components/LandingPage';
-import { BusinessCardScreen } from './components/screens/BusinessCardScreen';
 import { BlogScreen } from './components/screens/BlogScreen';
 import { ContactUs } from './components/screens/ContactUs';
 import { GeneratedName, PetInfo, Tab } from './types';
@@ -38,7 +37,7 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-type View = 'app' | 'privacy' | 'terms' | 'contact' | 'blog' | 'business-card';
+type View = 'app' | 'privacy' | 'terms' | 'contact' | 'blog';
 
 const AppContent: React.FC = () => {
     const [view, setView] = useState<View>('app');
@@ -92,7 +91,6 @@ const AppContent: React.FC = () => {
     if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
     if (view === 'contact') return <ContactUs onBack={() => setView('app')} />;
     if (view === 'blog') return <BlogScreen onBack={() => setView('app')} />;
-    if (view === 'business-card') return <BusinessCardScreen onBack={() => setView('app')} />;
 
     return (
         <>

@@ -113,7 +113,6 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         if (!bioCardRef.current) return null;
         let bgColor = gender === 'Male' ? '#aab2a1' : gender === 'Any' ? '#d4c4e0' : '#e889b5';
         
-        // Filter to prevent reading rules from cross-origin stylesheets
         const filter = (node: HTMLElement) => {
             return !(['LINK', 'STYLE', 'SCRIPT'].includes(node.tagName));
         };
