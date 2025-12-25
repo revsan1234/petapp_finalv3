@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, MouseEvent } from 'react';
 import type { GeneratedName, PetGender } from '../types';
 import { Card } from './ui/Card';
@@ -113,16 +112,23 @@ export const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedN
         let bgColor = '#e889b5';
         if (petGender === 'Male') bgColor = '#aab2a1';
         else if (petGender === 'Any') bgColor = '#d4c4e0';
+
+        // Filter to prevent reading rules from cross-origin stylesheets (Google Fonts)
+        const filter = (node: HTMLElement) => {
+            return !(['LINK', 'STYLE', 'SCRIPT'].includes(node.tagName));
+        };
+
         return {
             quality: 1.0,
-            pixelRatio: 2, 
+            pixelRatio: 3, 
             fontEmbedCSS: fontEmbedCss,
             backgroundColor: bgColor,
             cacheBust: true,
+            filter: filter,
             style: {
-                transform: 'scale(1)',
+                transform: 'none',
                 margin: '0',
-                padding: '32px', // Matches p-8 on ShareableListCard
+                padding: '32px', 
                 left: '0',
                 top: '0'
             }
@@ -134,7 +140,7 @@ export const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedN
         const options = getSnapshotOptions();
         try {
             await toPng(cardRef.current, options);
-            await new Promise(resolve => setTimeout(resolve, 150));
+            await new Promise(resolve => setTimeout(resolve, 200));
             return await toPng(cardRef.current, options);
         } catch (err) {
             console.error("Capture Error:", err);

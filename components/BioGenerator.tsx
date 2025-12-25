@@ -112,9 +112,20 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
     const captureImage = async (): Promise<string | null> => {
         if (!bioCardRef.current) return null;
         let bgColor = gender === 'Male' ? '#aab2a1' : gender === 'Any' ? '#d4c4e0' : '#e889b5';
+        
+        // Filter to prevent reading rules from cross-origin stylesheets
+        const filter = (node: HTMLElement) => {
+            return !(['LINK', 'STYLE', 'SCRIPT'].includes(node.tagName));
+        };
+
         const options = { 
-          quality: 1.0, pixelRatio: 3, fontEmbedCSS: fontEmbedCss, backgroundColor: bgColor, cacheBust: true,
-          style: { transform: 'scale(1)', margin: '0', padding: '0', borderRadius: '0' }
+          quality: 1.0, 
+          pixelRatio: 3, 
+          fontEmbedCSS: fontEmbedCss, 
+          backgroundColor: bgColor, 
+          cacheBust: true,
+          filter: filter,
+          style: { transform: 'none', margin: '0', padding: '0', borderRadius: '0' }
         };
         try { return await toPng(bioCardRef.current, options); } catch (err) { return null; }
     };
@@ -190,12 +201,14 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
                             {isLoading ? t.generator.btn_generating : t.bio.btn_generate} 
                         </Button>
                     </fieldset>
+                    
                     {isLoading && (
                         <div className="p-8 flex flex-col items-center justify-center animate-fade-in bg-white/10 rounded-2xl border border-white/20">
                             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#AA336A] mb-3"></div>
                             <p className="text-lg font-bold text-[#333333]">{t.generator.loading_text}</p>
                         </div>
                     )}
+
                     {generatedBios.length > 0 && !isLoading && (
                         <div className="space-y-4 animate-fade-in bg-white/5 p-6 rounded-2xl border border-white/10 shadow-inner">
                             <h4 className="font-bold text-center text-xl font-['Poppins'] mb-3 text-[#333333]">{t.bio.pick_bio}</h4>
