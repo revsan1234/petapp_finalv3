@@ -1,9 +1,9 @@
 import React from 'react';
 import { Header } from '../Header';
-import { BioGenerator } from '../BioGenerator';
 import type { PetInfo } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { BackToHomeButton } from '../../App';
+import BioGenerator from '../BioGenerator';
 
 interface BioScreenProps {
     petInfo: PetInfo;

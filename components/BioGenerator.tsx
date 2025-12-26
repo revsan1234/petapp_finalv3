@@ -9,7 +9,6 @@ import { generatePetBio } from '../services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from '../constants';
 import type { PetPersonality, PetKind, PetInfo, PetGender, PetType } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { PetCharacter } from './assets/pets/PetCharacter';
 
 const fontEmbedCss = `
 @font-face {
@@ -54,7 +53,7 @@ interface BioGeneratorProps {
     setImageForBio: (image: string | null) => void;
 }
 
-export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, setImageForBio }) => {
+const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, setImageForBio }) => {
     const { t, language } = useLanguage();
     const [petName, setPetName] = useState('');
     const [personality, setPersonality] = useState<PetPersonality>(petInfo.personality);
@@ -240,3 +239,5 @@ export const BioGenerator: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio
         </Card>
     );
 };
+
+export default BioGenerator;

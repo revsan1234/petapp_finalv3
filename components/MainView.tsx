@@ -1,12 +1,12 @@
 import React from 'react';
 import { Header } from './Header';
 import { NameGenerator } from './NameGenerator';
-import { SavedNames } from './SavedNames';
 import type { GeneratedName, PetInfo } from '../types';
 import { NameOfTheDay } from './NameOfTheDay';
 import { NameMeaningFinder } from './NameMeaningFinder';
 import { TrendingTicker } from './TrendingTicker';
 import { useLanguage } from '../contexts/LanguageContext';
+import SavedNames from './SavedNames';
 
 const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
