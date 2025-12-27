@@ -12,43 +12,13 @@ import { ShareableListCard } from './ui/ShareableListCard';
 import { toPng } from 'html-to-image';
 
 /**
- * TECHNICAL CONFIG
+ * INTERNAL SAVED NAMES COMPONENT
  */
-const fontEmbedCss = `
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 300 700;
-  src: url(https://fonts.gstatic.com/s/fredoka/v12/6N097E9Ax05WnLtmWTMAdU6p.woff2) format('woff2');
-}
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
-}
-`;
-
-const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-    </svg>
-);
-
 const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
 );
 
-/**
- * SAVED NAMES COMPONENT (Consolidated here)
- */
-interface SavedNamesProps {
-    savedNames: GeneratedName[];
-    removeSavedName: (nameId: string) => void;
-    petGender: PetGender;
-}
-
-const SavedNamesLocal: React.FC<SavedNamesProps> = ({ savedNames, removeSavedName, petGender }) => {
+const SavedNamesInternal: React.FC<{ savedNames: GeneratedName[]; removeSavedName: (id: string) => void; petGender: PetGender }> = ({ savedNames, removeSavedName, petGender }) => {
     const { t } = useLanguage();
     const [showImageCreator, setShowImageCreator] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -74,7 +44,7 @@ const SavedNamesLocal: React.FC<SavedNamesProps> = ({ savedNames, removeSavedNam
         if (!cardRef.current) return;
         setIsDownloading(true);
         try {
-             const dataUrl = await toPng(cardRef.current, { pixelRatio: 3, fontEmbedCSS: fontEmbedCss, cacheBust: true });
+             const dataUrl = await toPng(cardRef.current, { pixelRatio: 3, cacheBust: true });
              const link = document.createElement('a');
              link.href = dataUrl;
              link.download = 'MyPetPicks.png';
@@ -155,9 +125,12 @@ const SavedNamesLocal: React.FC<SavedNamesProps> = ({ savedNames, removeSavedNam
     );
 };
 
-/**
- * MAIN VIEW COMPONENT
- */
+const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+);
+
 interface MainViewProps {
     savedNames: GeneratedName[];
     addSavedName: (name: GeneratedName) => void;
@@ -177,13 +150,27 @@ export const MainView: React.FC<MainViewProps> = ({ savedNames, addSavedName, re
         <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
           {goHome && (
             <div className="-mt-4">
-                <button onClick={goHome} className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full font-bold text-sm">
-                    <BackIcon className="w-4 h-4" /> {t.common.back_home}
+                <button 
+                    onClick={goHome} 
+                    className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
+                >
+                    <BackIcon className="w-4 h-4" />
+                    {t.common.back_home}
                 </button>
             </div>
           )}
-          <NameGenerator addSavedName={addSavedName} savedNames={savedNames} petInfo={petInfo} setPetInfo={setPetInfo} />
-          <SavedNamesLocal savedNames={savedNames} removeSavedName={removeSavedName} petGender={petInfo.gender} />
+
+          <NameGenerator 
+            addSavedName={addSavedName} 
+            savedNames={savedNames} 
+            petInfo={petInfo}
+            setPetInfo={setPetInfo}
+          />
+          <SavedNamesInternal 
+            savedNames={savedNames} 
+            removeSavedName={removeSavedName} 
+            petGender={petInfo.gender}
+          />
           <TrendingTicker />
           <NameOfTheDay />
           <NameMeaningFinder />

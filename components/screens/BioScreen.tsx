@@ -12,34 +12,13 @@ import { BioCard } from '../ui/BioCard';
 import { generatePetBio } from '../../services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from '../../constants';
 
-const fontEmbedCss = `
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 300 700;
-  src: url(https://fonts.gstatic.com/s/fredoka/v12/6N097E9Ax05WnLtmWTMAdU6p.woff2) format('woff2');
-}
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
-}
-`;
-
 const UploadIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
     </svg>
 );
 
-interface BioGeneratorProps {
-    petInfo: PetInfo;
-    imageForBio: string | null;
-    setImageForBio: (image: string | null) => void;
-}
-
-const BioGeneratorLocal: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, setImageForBio }) => {
+const BioGeneratorInternal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; }> = ({ petInfo, imageForBio, setImageForBio }) => {
     const { t, language } = useLanguage();
     const [petName, setPetName] = useState('');
     const [personality, setPersonality] = useState<PetPersonality>(petInfo.personality);
@@ -88,7 +67,7 @@ const BioGeneratorLocal: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, 
         if (!bioCardRef.current) return;
         setIsDownloading(true);
         try {
-            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, fontEmbedCSS: fontEmbedCss, cacheBust: true });
+            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, cacheBust: true });
             const link = document.createElement('a'); 
             link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
             link.click();
@@ -116,22 +95,20 @@ const BioGeneratorLocal: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, 
                     </div>
                 </Card>
                 <Card>
-                    <Button onClick={() => fileInputRef.current?.click()} variant="secondary">
+                    <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full">
                         <UploadIcon className="w-5 h-5 mr-2"/> {imagePreview ? t.bio.btn_change : t.bio.btn_upload}
                     </Button>
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                    <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="mt-4"> 
+                    <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="mt-4 w-full"> 
                         {isLoading ? t.generator.btn_generating : t.bio.btn_generate} 
                     </Button>
                 </Card>
                 {generatedBios.length > 0 && (
-                    <Card>
-                        <div className="space-y-2">
-                            {generatedBios.map((bio, i) => (
-                                <button key={i} onClick={() => setSelectedBio(bio)} className={`w-full p-4 text-left rounded-lg transition-all ${selectedBio === bio ? 'bg-[#AA336A]/20 border-2 border-[#AA336A]/40' : 'bg-black/5'}`}> {bio} </button>
-                            ))}
-                        </div>
-                    </Card>
+                    <div className="space-y-2">
+                        {generatedBios.map((bio, i) => (
+                            <button key={i} onClick={() => setSelectedBio(bio)} className={`w-full p-4 text-left rounded-[1.5rem] transition-all bg-white/20 border-2 ${selectedBio === bio ? 'border-[#AA336A] bg-white/40' : 'border-transparent'}`}> {bio} </button>
+                        ))}
+                    </div>
                 )}
             </div>
             <div className="space-y-4 flex flex-col items-center">
@@ -140,7 +117,7 @@ const BioGeneratorLocal: React.FC<BioGeneratorProps> = ({ petInfo, imageForBio, 
                 </div>
                 <div className="w-full max-w-sm space-y-4">
                     <input type="range" min="1" max="3" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full" />
-                    <Button onClick={handleDownload} disabled={isDownloading || !imagePreview}>{isDownloading ? '...' : t.bio.btn_download}</Button>
+                    <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} className="w-full">{isDownloading ? '...' : t.bio.btn_download}</Button>
                 </div>
             </div>
         </div>
@@ -152,7 +129,7 @@ export const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null;
         <Header leftPet="bird" rightPet="fish" onLogoClick={goHome} />
         <main className="py-4 px-4 max-w-7xl mx-auto">
             <div className="-mt-4 mb-8"><BackToHomeButton onClick={goHome} /></div>
-            <BioGeneratorLocal petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} />
+            <BioGeneratorInternal petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} />
         </main>
     </div>
 );
