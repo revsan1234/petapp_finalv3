@@ -9,13 +9,14 @@ import { PlayScreen } from './components/screens/PlayScreen';
 import { BioScreen } from './components/screens/BioScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { LandingPage } from './components/LandingPage';
-import { ContactUs } from './components/screens/ContactUs';
 import { GeneratedName, PetInfo, Tab, Language } from './types';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { CustomCursor } from './components/ui/CustomCursor';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { Card } from './components/ui/Card';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
+
+// --- SHARED UI COMPONENTS ---
 
 export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
     const { t } = useLanguage();
@@ -32,7 +33,41 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-// Internal Blog Component to avoid path errors
+// --- CONTACT US COMPONENT ---
+
+const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+    const { t } = useLanguage();
+    return (
+        <div className="min-h-screen p-4 flex flex-col items-center justify-center animate-fade-in">
+            <div className="w-full max-w-lg">
+                <div className="mb-8">
+                    <BackToHomeButton onClick={onBack} />
+                </div>
+                <Card className="text-center py-20 px-8 w-full border-4 border-[#AA336A]/20 shadow-2xl">
+                    <div className="flex justify-center mb-6">
+                        <div className="bg-[#AA336A]/10 p-6 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-[#AA336A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h1 className="text-4xl font-black mb-6 text-[#AA336A] uppercase tracking-tight font-heading">
+                        {t.contact_us.title}
+                    </h1>
+                    <p className="text-xl mb-10 opacity-80 font-medium">
+                        {t.contact_us.p1}
+                    </p>
+                    <a href={`mailto:${t.contact_us.email}`} className="text-2xl font-black text-[#AA336A] hover:underline break-all block py-4 bg-white/40 rounded-2xl border border-white/40 shadow-sm">
+                        {t.contact_us.email}
+                    </a>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
+// --- BLOG COMPONENT ---
+
 interface BlogPost {
     id: string;
     title: string;
@@ -83,7 +118,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
     if (selectedPost) {
         return (
-            <div className="min-h-screen p-4 flex flex-col items-center">
+            <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in">
                 <div className="w-full max-w-2xl mb-8 flex justify-start">
                      <button 
                         onClick={() => setSelectedPost(null)} 
@@ -107,7 +142,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }
 
     return (
-        <div className="min-h-screen p-4 flex flex-col items-center">
+        <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in">
             <div className="w-full max-w-5xl mb-8 flex justify-start">
                 <BackToHomeButton onClick={onBack} />
             </div>
@@ -121,7 +156,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-20">
                 {posts.map(post => (
                     <Card key={post.id} className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group" onClick={() => setSelectedPost(post)}>
                         <div className="flex items-center gap-4 mb-6">
@@ -144,6 +179,8 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         </div>
     );
 };
+
+// --- MAIN APP CONTENT ---
 
 type View = 'app' | 'privacy' | 'terms' | 'contact' | 'blog';
 

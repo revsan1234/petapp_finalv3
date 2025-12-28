@@ -1,161 +1,143 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { Header } from '../Header';
-import { PetCharacter } from '../assets/pets/PetCharacter';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { getPetConsultantResponse } from '../../services/geminiService';
-import type { ChatMessage } from '../../types';
 
-interface ConsultantScreenProps {
-    goHome: () => void;
+import React, { useState } from 'react';
+import { Header } from '../Header';
+import { PersonalityQuiz } from '../PersonalityQuiz';
+import { QuickFireDiscovery } from '../QuickFireDiscovery';
+import { NameTranslator } from '../NameTranslator';
+import { PetHoroscope } from '../PetHoroscope';
+import { PetAgeCalculator } from '../PetAgeCalculator';
+import { ConsultantScreen } from './ConsultantScreen';
+import { GeneratedName, PetInfo, PetPersonalityResult, PetKind } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { BackToHomeButton } from '../../App';
+import { PetCharacter } from '../assets/pets/PetCharacter';
+
+interface PlayScreenProps {
+  onQuizComplete: (result: PetPersonalityResult) => void;
+  savedNames: GeneratedName[];
+  addSavedName: (name: GeneratedName) => void;
+  petInfo: PetInfo;
+  setPetInfo: (info: PetInfo | ((prev: PetInfo) => PetInfo)) => void;
+  goHome: () => void;
 }
 
-export const ConsultantScreen: React.FC<ConsultantScreenProps> = ({ goHome }) => {
-    const { t, language } = useLanguage();
-    const [messages, setMessages] = useState<ChatMessage[]>(() => {
-        const saved = localStorage.getItem('pet_chat_history');
-        return saved ? JSON.parse(saved) : [];
-    });
-    const [inputValue, setInputValue] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+type PlayMode = 'menu' | 'quiz' | 'quickfire' | 'translator' | 'horoscope' | 'calculator' | 'expert';
 
-    useEffect(() => {
-        localStorage.setItem('pet_chat_history', JSON.stringify(messages));
-        scrollToBottom();
-    }, [messages]);
+// The PlayScreen acts as a central hub for all interactive naming games and tools.
+// Fix: Renamed exported component to PlayScreen to match App.tsx import.
+export const PlayScreen: React.FC<PlayScreenProps> = ({
+  onQuizComplete,
+  savedNames,
+  addSavedName,
+  petInfo,
+  setPetInfo,
+  goHome,
+}) => {
+  const { t } = useLanguage();
+  const [mode, setMode] = useState<PlayMode>('menu');
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
+  const handleBackToMenu = () => setMode('menu');
 
-    const handleSendMessage = async (e?: React.FormEvent) => {
-        if (e) e.preventDefault();
-        if (!inputValue.trim() || isTyping) return;
+  const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+  );
 
-        const userMsg: ChatMessage = {
-            role: 'user',
-            text: inputValue,
-            timestamp: Date.now()
-        };
-
-        setMessages(prev => [...prev, userMsg]);
-        setInputValue('');
-        setIsTyping(true);
-
-        try {
-            const responseText = await getPetConsultantResponse(
-                messages,
-                inputValue,
-                language,
-                t.expert.system_instruction
-            );
-
-            const modelMsg: ChatMessage = {
-                role: 'model',
-                text: responseText,
-                timestamp: Date.now()
-            };
-
-            setMessages(prev => [...prev, modelMsg]);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsTyping(false);
-        }
-    };
-
-    const clearChat = () => {
-        if (window.confirm(t.expert.clear_confirm || "Clear chat?")) {
-            setMessages([]);
-            localStorage.removeItem('pet_chat_history');
-        }
-    };
+  if (mode === 'menu') {
+    const menuItems: { id: PlayMode; title: string; desc: string; pet: PetKind }[] = [
+      { id: 'quiz', title: t.quiz.title, desc: t.quiz.subtitle, pet: 'hamster' },
+      { id: 'quickfire', title: t.quick_fire.title, desc: t.quick_fire.subtitle, pet: 'cat' },
+      { id: 'expert', title: t.expert.title, desc: t.expert.subtitle, pet: 'dog' },
+      { id: 'translator', title: t.translator.title, desc: t.translator.subtitle, pet: 'bird' },
+      { id: 'horoscope', title: t.horoscope.title, desc: t.horoscope.subtitle, pet: 'lizard' },
+      { id: 'calculator', title: t.age_calc.title, desc: t.age_calc.subtitle, pet: 'rabbit' },
+    ];
 
     return (
-        <div className="relative min-h-screen flex flex-col">
-            <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-            
-            <main className="flex-grow py-4 px-4 pb-32 flex flex-col max-w-4xl mx-auto w-full">
-                <Card className="flex-grow flex flex-col overflow-hidden max-h-[70vh]">
-                    <div className="flex items-center justify-between mb-4 border-b border-black/10 pb-4">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-[#AA336A]/20 p-2 rounded-full">
-                                <PetCharacter pet="other" className="w-10 h-10" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-[var(--text-main)]">{t.expert.title}</h2>
-                                <p className="text-sm opacity-60 font-medium">{t.expert.subtitle}</p>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={clearChat}
-                            className="text-xs uppercase tracking-widest font-bold opacity-40 hover:opacity-100 transition-opacity"
-                        >
-                            {t.expert.btn_clear}
-                        </button>
-                    </div>
+      <div className="relative min-h-screen">
+        <Header leftPet="hamster" rightPet="bird" onLogoClick={goHome} />
+        <main className="px-4 pb-24 max-w-4xl mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2">
+          <div className="-mt-4">
+            <BackToHomeButton onClick={goHome} />
+          </div>
 
-                    <div className="flex-grow overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-                        {messages.length === 0 && (
-                            <div className="h-full flex flex-col items-center justify-center text-center p-8 opacity-60 space-y-4">
-                                <PetCharacter pet="other" className="w-24 h-24 mb-2 animate-bounce-wiggle" />
-                                <p className="text-xl font-medium max-w-xs">
-                                    {t.expert.welcome}
-                                </p>
-                            </div>
-                        )}
-
-                        {messages.map((msg, i) => (
-                            <div 
-                                key={i} 
-                                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-                            >
-                                <div 
-                                    className={`max-w-[85%] p-4 rounded-2xl shadow-sm text-lg leading-relaxed ${
-                                        msg.role === 'user' 
-                                            ? 'bg-[#AA336A] text-white rounded-tr-none' 
-                                            : 'bg-white/50 text-[var(--text-main)] rounded-tl-none border border-white/20'
-                                    }`}
-                                >
-                                    {msg.text}
-                                    <div className={`text-[10px] mt-1 opacity-50 text-right`}>
-                                        {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        
-                        {isTyping && (
-                            <div className="flex justify-start animate-pulse">
-                                <div className="bg-white/30 text-[var(--text-main)] p-3 rounded-2xl rounded-tl-none text-sm italic">
-                                    {t.expert.typing}
-                                </div>
-                            </div>
-                        )}
-                        <div ref={messagesEndRef} />
-                    </div>
-
-                    <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex gap-2">
-                        <input 
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder={t.expert.placeholder}
-                            className="flex-grow bg-white/40 border border-white/30 text-[var(--text-main)] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#AA336A] outline-none transition-all placeholder:text-[var(--text-main)]/40"
-                        />
-                        <Button 
-                            type="submit" 
-                            disabled={!inputValue.trim() || isTyping}
-                            className="!w-auto !py-3 !px-6"
-                        >
-                            {t.expert.btn_send}
-                        </Button>
-                    </form>
-                </Card>
-            </main>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setMode(item.id)}
+                className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-6 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+              >
+                <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
+                  <PetCharacter pet={item.pet} className="w-20 h-20 drop-shadow-md" />
+                </div>
+                <h3 className="text-2xl font-black text-[var(--text-main)] group-hover:text-[#AA336A] transition-colors">{item.title}</h3>
+                <p className="text-[var(--text-main)] font-bold text-sm opacity-80 line-clamp-2">
+                  {item.desc}
+                </p>
+              </button>
+            ))}
+          </div>
+        </main>
+      </div>
     );
+  }
+
+  const renderActiveMode = () => {
+    switch (mode) {
+      case 'quiz':
+        return (
+          <PersonalityQuiz
+            onQuizComplete={onQuizComplete}
+            petInfo={petInfo}
+            setPetInfo={setPetInfo}
+            addSavedName={addSavedName}
+            savedNames={savedNames}
+          />
+        );
+      case 'quickfire':
+        return (
+          <QuickFireDiscovery
+            addSavedName={addSavedName}
+            savedNames={savedNames}
+            petInfo={petInfo}
+            setPetInfo={setPetInfo}
+          />
+        );
+      case 'translator':
+        return <NameTranslator />;
+      case 'horoscope':
+        return <PetHoroscope />;
+      case 'calculator':
+        return <PetAgeCalculator />;
+      case 'expert':
+        return <ConsultantScreen goHome={handleBackToMenu} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="relative min-h-screen">
+      <Header leftPet="hamster" rightPet="bird" onLogoClick={handleBackToMenu} />
+      <main className="py-4 px-4 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 w-full">
+          <div className="-mt-4 flex gap-3">
+            <button
+              onClick={handleBackToMenu}
+              className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
+            >
+              <BackIcon className="w-4 h-4" />
+              {t.common.menu_label}
+            </button>
+            <BackToHomeButton onClick={goHome} />
+          </div>
+          <div className="animate-fade-in">
+            {renderActiveMode()}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 };
