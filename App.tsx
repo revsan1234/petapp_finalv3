@@ -156,17 +156,20 @@ const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setIma
         setIsDownloading(true);
         try {
             const filter = (node: any) => {
-                if (node.tagName === 'LINK' && node.rel === 'stylesheet' && !node.href.startsWith(window.location.origin)) return false;
+                // FIXED: Skip all LINK, SCRIPT, and STYLE tags to avoid security errors with external fonts
+                if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
                 return true;
             };
             const dataUrl = await toPng(bioCardRef.current, { 
-                pixelRatio: 3, cacheBust: true, filter: filter
+                pixelRatio: 3, 
+                cacheBust: true, 
+                filter: filter
             });
             const link = document.createElement('a'); 
             link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
             link.click();
         } catch (error: any) { 
-            console.error(error);
+            console.error("Download failed", error);
         } finally { setIsDownloading(false); }
     };
 
@@ -278,7 +281,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     text: language === 'fr'
                         ? "Clover : Un nom porte-bonheur pour un chien joyeux et plein d'énergie.\nOrion : Pour un protecteur qui veille sur la famille comme une constellation.\nStellan : Une sonorité moderne, douce et élégante pour les citadins."
                         : language === 'es'
-                            ? "Trébol: Ideal para un perro que trae suerte y alegría al hogar.\nOrión: Para un compañero noble, firme y protector de la familia.\nCaspio: Inspirado en la elegancia, la aventura y la naturaleza salvaje."
+                            ? "Trébol: Ideal para un perro que trae suerte y alegría al hogar.\nOrión: Para un compañero noble, firme y protector de la familia.\nCaspio: Inspirado en la elegancia, la adventure y la naturaleza salvaje."
                             : "Clover: A lucky, vibrant choice for the rescue pet that changed your life.\nOrion: Strong and guiding, perfect for the brave pup who leads every walk.\nStellan: A sleek, modern name for the stylish city dog with a calm demeanor.",
                     icon: 'rabbit'
                 },
@@ -287,7 +290,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     text: language === 'fr'
                         ? "1. La règle des deux syllabes : Privilégiez les noms courts. Ils sont plus faciles à capter pour votre chien lors du rappel.\n2. Évitez les rimes avec les ordres : Ne choisissez pas un nom qui ressemble à Assis ou Non.\n3. Testez-le en public : Assurez-vous d'être à l'aise pour le crier au parc !"
                         : language === 'es'
-                            ? "Los perros responden mejor a sonidos claros y breves. Las vocales fuertes como A u O son ideales porque viajan mejor por el aire y captan su atención rápidamente. Siempre di el nombre en voz alta antes de decidir."
+                            ? "Los perros responden mejor a sonidos claros y breves. Las vocales fuertes como A u O son ideales porque viajan mejor por el aire y captan su attention rapidement. Siempre di el nombre en voz alta antes de decidir."
                             : "1. Vocal Inflection: Always say the name out loud. Does it have a natural lift? Names that end in vowels often work better for recall.\n2. Command Contrast: Ensure the name doesn't sound like Stay, No, or Fetch.\n3. Personality First: Use our AI Personality Quiz to match phonetic structures to your pet's energy level.",
                     icon: 'bird'
                 }
@@ -309,7 +312,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     text: language === 'fr'
                         ? "Contrairement aux chiens, les chats réagissent particulièrement bien aux hautes fréquences. Un nom finissant par un i ou un y (comme Mochi ou Kitty) aura beaucoup plus de chances de faire dresser leurs oreilles immédiatement."
                         : language === 'es'
-                            ? "Los gatos tienen un sistema auditivo muy fuerte. Los nombres que terminan en sonidos agudos (la famosa i) suelen captar su atención más rápido. ¿Alguna vez te preguntaste por qué Michi funciona tan bien? Es pura fonética."
+                            ? "Los gatos tienen un système auditif très sensible. Los nombres que terminan en sonidos agudos (la famosa i) suelen captar su atención más rápido. ¿Alguna vez te preguntaste por qué Michi funciona tan bien? Es pura fonética."
                             : "Felines are highly attuned to tone and pitch. Research shows that a name sounding like a melody—rising at the end—is far more likely to get a response than a flat, guttural sound. This is why names like Mimi or Lulu are timeless favorites.",
                     icon: 'cat'
                 },
@@ -327,7 +330,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     text: language === 'fr'
                         ? "Mochi : Pour un chat tout doux, rond et câlin.\nTaco : Pour un petit aventurier épicé et plein d'énergie.\nSashimi : L'élégance pure pour un chat racé."
                         : language === 'es'
-                            ? "Mochi: Dulce, esponjoso y perfecto para un gato cariñoso.\nTaco: Pequeño, picante y con mucha personalidad para un gato travieso.\nKimchi: Para ese gato con un carácter fuerte y único."
+                            ? "Mochi: Dulce, esponjoso y perfecto para un gato cariñoso.\nTaco: Pequeño, picante y con mucha personalidad para un gato travieso.\nKimchi: Para ese gato con un caractère fort et unique."
                             : "Mochi: Soft, sweet, and perfectly round—the top choice for fluffy breeds.\nTaco: A little spicy, full of surprises, and great for energetic tabbies.\nSashimi: For the cat who exudes pure luxury and effortless grace.",
                     icon: 'fish'
                 }

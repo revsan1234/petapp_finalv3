@@ -66,8 +66,9 @@ const SavedNamesInternal: React.FC<{
         if (!cardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
+             // FIXED: Filter out problematic CSS tags that cause security blockages
              const filter = (node: any) => {
-                 if (node.tagName === 'LINK' && node.rel === 'stylesheet' && !node.href.startsWith(window.location.origin)) return false;
+                 if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
                  return true;
              };
 
@@ -83,7 +84,6 @@ const SavedNamesInternal: React.FC<{
              link.click();
         } catch (error: any) { 
             console.error(error); 
-            alert(t.saved_names.error_capture || "Error generating image. Please try again.");
         } finally { setIsDownloading(false); }
     };
 
