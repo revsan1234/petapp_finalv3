@@ -1,4 +1,3 @@
-
 import React, { forwardRef, MouseEvent } from 'react';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import type { PetKind, PetGender } from '../../types';
@@ -37,26 +36,27 @@ export const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({
     objectFit: 'cover',
   };
 
-  let bgClass = "bg-gradient-to-b from-[#e889b5] to-[#ffc4d6]";
-  if (gender === 'Male') bgClass = "bg-gradient-to-b from-[#aab2a1] to-[#8da38d]";
-  else if (gender === 'Any') bgClass = "bg-gradient-to-b from-[#d4c4e0] to-[#bca6c9]";
+  let bgClass = "bg-gradient-to-b from-[#e889b5] to-[#ffc4d6]"; // Female Default
+  if (gender === 'Male') {
+      bgClass = "bg-gradient-to-b from-[#aab2a1] to-[#8da38d]";
+  } else if (gender === 'Any') {
+      bgClass = "bg-gradient-to-b from-[#d4c4e0] to-[#bca6c9]";
+  }
 
   return (
     <div 
         ref={ref} 
-        className={`${bgClass} p-6 pt-12 text-[#666666] flex flex-col items-center justify-start w-[500px] min-h-[650px] shadow-2xl rounded-[3rem] overflow-hidden relative border-4 border-white/40`}
+        className={`${bgClass} p-6 text-[#666666] flex flex-col items-center justify-between w-full max-w-[480px] min-h-[600px] shadow-2xl rounded-3xl overflow-hidden relative`}
         style={{ fontFamily: "'Fredoka', sans-serif" }} 
     >
-        {/* PET NAME - Positioned high with wide tracking */}
-        <h2 className="text-6xl font-bold text-center text-white drop-shadow-2xl z-10 mt-0 mb-8 tracking-[0.18em] leading-none uppercase">
-            {petName || t.bio.card_pet_name_placeholder}
-        </h2>
+        {/* HEADLINE */}
+        <h2 className="text-6xl font-bold text-center text-white drop-shadow-md z-10 mt-4 tracking-wide leading-tight">{petName || t.bio.card_pet_name_placeholder}</h2>
 
-        <div className="flex flex-col items-center gap-6 w-full z-10">
-             {/* PHOTO CONTAINER - Removed SVG frame to fix "two lines" issue */}
-             <div className="relative w-[420px] h-[420px]">
+        <div className="flex flex-col items-center gap-4 w-full z-10 flex-grow justify-center">
+             {/* PHOTO FRAME */}
+             <div className="relative w-72 h-72">
                  <div 
-                    className="w-full h-full overflow-hidden flex items-center justify-center bg-white/40 relative rounded-[3rem] shadow-inner border-2 border-white/20"
+                    className="w-full h-full overflow-hidden flex items-center justify-center relative rounded-2xl bg-black/5"
                     onMouseDown={onImageMouseDown}
                   >
                      {imagePreview ? (
@@ -68,19 +68,17 @@ export const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({
                           draggable="false"
                         />
                      ) : (
-                        <PetCharacter pet={defaultPetKind} className="w-full h-full opacity-80 p-16" />
+                        <PetCharacter pet="cat" className="w-full h-full opacity-80 p-4" />
                      )}
                 </div>
             </div>
 
-            {/* BIO TEXT */}
-            <p className="text-2xl font-normal text-center leading-relaxed px-8 text-white drop-shadow-lg flex items-center justify-center tracking-tight mt-6">
+            <p className="text-2xl font-medium text-center leading-snug px-6 text-white drop-shadow-md flex items-center justify-center mt-4">
                 {bio || t.bio.fallback_bio}
             </p>
         </div>
 
-        {/* FOOTER */}
-        <div className="flex items-center gap-2 text-[10px] font-medium text-white/90 tracking-[0.5em] uppercase text-center z-10 mt-auto mb-4">
+        <div className="flex items-center gap-2 text-sm font-bold text-white/60 tracking-wider text-center z-10 mb-4">
             <span>{t.bio.generated_by}</span>
         </div>
     </div>

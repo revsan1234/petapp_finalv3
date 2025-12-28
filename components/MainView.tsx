@@ -11,14 +11,36 @@ import { Button } from './ui/Button';
 import { ShareableListCard } from './ui/ShareableListCard';
 import { toPng } from 'html-to-image';
 
-/**
- * INTERNAL SAVED NAMES COMPONENT
- */
+const FONT_EMBED_CSS = `
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  src: url(https://fonts.gstatic.com/s/fredoka/v12/6N097E9Ax05WnLtmWTMAdU6p.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2) format('woff2');
+}
+`;
+
 const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
 );
 
-const SavedNamesInternal: React.FC<{ savedNames: GeneratedName[]; removeSavedName: (id: string) => void; petGender: PetGender }> = ({ savedNames, removeSavedName, petGender }) => {
+const SavedNamesInternal: React.FC<{ 
+    savedNames: GeneratedName[]; 
+    removeSavedName: (id: string) => void; 
+    petGender: PetGender;
+}> = ({ savedNames, removeSavedName, petGender }) => {
     const { t } = useLanguage();
     const [showImageCreator, setShowImageCreator] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -41,15 +63,28 @@ const SavedNamesInternal: React.FC<{ savedNames: GeneratedName[]; removeSavedNam
     };
 
     const handleDownloadImage = async () => {
-        if (!cardRef.current) return;
+        if (!cardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-             const dataUrl = await toPng(cardRef.current, { pixelRatio: 3, cacheBust: true });
+             const filter = (node: any) => {
+                 if (node.tagName === 'LINK' && node.rel === 'stylesheet' && !node.href.startsWith(window.location.origin)) return false;
+                 return true;
+             };
+
+             const dataUrl = await toPng(cardRef.current, { 
+                pixelRatio: 3, 
+                cacheBust: true,
+                fontEmbedCSS: FONT_EMBED_CSS,
+                filter: filter
+             });
              const link = document.createElement('a');
              link.href = dataUrl;
              link.download = 'MyPetPicks.png';
              link.click();
-        } catch (error) { console.error(error); } finally { setIsDownloading(false); }
+        } catch (error: any) { 
+            console.error(error); 
+            alert("Error generating image. Please try again.");
+        } finally { setIsDownloading(false); }
     };
 
     const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
@@ -89,7 +124,7 @@ const SavedNamesInternal: React.FC<{ savedNames: GeneratedName[]; removeSavedNam
             {showImageCreator && (
                 <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-md flex items-center justify-center p-4">
                     <div className="bg-[var(--card-bg)] rounded-2xl max-w-4xl w-full p-8 relative overflow-y-auto max-h-[90vh]">
-                        <button onClick={() => setShowImageCreator(false)} className="absolute top-4 right-4 text-2xl">✕</button>
+                        <button onClick={() => setShowImageCreator(false)} className="absolute top-4 right-4 text-2xl bg-white/20 p-2 rounded-full hover:bg-white/40">✕</button>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
                                 <h3 className="text-2xl font-bold">{t.saved_names.card_step1}</h3>
@@ -97,11 +132,15 @@ const SavedNamesInternal: React.FC<{ savedNames: GeneratedName[]; removeSavedNam
                                 <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
                                 {imagePreview && (
                                     <div className="space-y-2">
-                                        <label className="font-bold">{t.saved_names.zoom_label}</label>
-                                        <input type="range" min="0.5" max="3" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(parseFloat(e.target.value))} className="w-full" />
+                                        <div className="flex justify-between items-center">
+                                            <label className="font-bold">{t.saved_names.zoom_label}</label>
+                                            <span className="opacity-50 text-xs font-mono">{imageZoom.toFixed(1)}x</span>
+                                        </div>
+                                        <input type="range" min="0.5" max="5" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(parseFloat(e.target.value))} className="w-full accent-[#AA336A]" />
+                                        <p className="text-xs opacity-60">Drag the photo to reposition</p>
                                     </div>
                                 )}
-                                <Button onClick={handleDownloadImage} disabled={isDownloading}>{isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}</Button>
+                                <Button onClick={handleDownloadImage} disabled={isDownloading || !imagePreview}>{isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}</Button>
                             </div>
                             <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="flex justify-center">
                                 <div className="transform scale-[0.7] origin-top">

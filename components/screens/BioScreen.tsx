@@ -12,13 +12,38 @@ import { BioCard } from '../ui/BioCard';
 import { generatePetBio } from '../../services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from '../../constants';
 
+const FONT_EMBED_CSS = `
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  src: url(https://fonts.gstatic.com/s/fredoka/v12/6N097E9Ax05WnLtmWTMAdU6p.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2) format('woff2');
+}
+`;
+
 const UploadIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
     </svg>
 );
 
-const BioGeneratorInternal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; }> = ({ petInfo, imageForBio, setImageForBio }) => {
+const BioGeneratorInternal: React.FC<{ 
+    petInfo: PetInfo; 
+    imageForBio: string | null; 
+    setImageForBio: (img: string | null) => void;
+}> = ({ petInfo, imageForBio, setImageForBio }) => {
     const { t, language } = useLanguage();
     const [petName, setPetName] = useState('');
     const [personality, setPersonality] = useState<PetPersonality>(petInfo.personality);
@@ -64,14 +89,27 @@ const BioGeneratorInternal: React.FC<{ petInfo: PetInfo; imageForBio: string | n
     };
 
     const handleDownload = async () => {
-        if (!bioCardRef.current) return;
+        if (!bioCardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, cacheBust: true });
+            const filter = (node: any) => {
+                if (node.tagName === 'LINK' && node.rel === 'stylesheet' && !node.href.startsWith(window.location.origin)) return false;
+                return true;
+            };
+
+            const dataUrl = await toPng(bioCardRef.current, { 
+                pixelRatio: 3, 
+                cacheBust: true,
+                fontEmbedCSS: FONT_EMBED_CSS,
+                filter: filter
+            });
             const link = document.createElement('a'); 
             link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
             link.click();
-        } catch (error) { console.error(error); } finally { setIsDownloading(false); }
+        } catch (error: any) { 
+            console.error(error); 
+            alert("Error: " + error.message);
+        } finally { setIsDownloading(false); }
     };
 
     const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
@@ -81,27 +119,34 @@ const BioGeneratorInternal: React.FC<{ petInfo: PetInfo; imageForBio: string | n
     const handleMouseUpOrLeave = () => setIsDragging(false);
     
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div className="space-y-6">
+        <div className="flex flex-col gap-10 items-center max-w-2xl mx-auto w-full pb-20">
+            <div className="space-y-6 w-full">
                 <Card>
                     <div className="space-y-4">
                         <Input id="name" label={t.bio.label_name} value={petName} onChange={e => setPetName(e.target.value)} />
-                        <Select id="type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>
-                            {PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}
-                        </Select>
-                        <Select id="gender" label={t.bio.label_gender} value={gender} onChange={e => setGender(e.target.value as PetGender)}>
-                            {PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Select id="type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>
+                                {PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}
+                            </Select>
+                            <Select id="gender" label={t.bio.label_gender} value={gender} onChange={e => setGender(e.target.value as PetGender)}>
+                                {PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}
+                            </Select>
+                        </div>
+                        <Select id="personality" label={t.generator.label_personality} value={personality} onChange={e => setPersonality(e.target.value as PetPersonality)}>
+                            {PET_PERSONALITIES.map(p => <option key={p} value={p}>{t.options.personalities[p] || p}</option>)}
                         </Select>
                     </div>
                 </Card>
                 <Card>
-                    <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full">
-                        <UploadIcon className="w-5 h-5 mr-2"/> {imagePreview ? t.bio.btn_change : t.bio.btn_upload}
-                    </Button>
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                    <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="mt-4 w-full"> 
-                        {isLoading ? t.generator.btn_generating : t.bio.btn_generate} 
-                    </Button>
+                    <div className="flex flex-col gap-4">
+                        <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full">
+                            <UploadIcon className="w-5 h-5 mr-2"/> {imagePreview ? t.bio.btn_change : t.bio.btn_upload}
+                        </Button>
+                        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                        <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="w-full"> 
+                            {isLoading ? t.generator.btn_generating : t.bio.btn_generate} 
+                        </Button>
+                    </div>
                 </Card>
                 {generatedBios.length > 0 && (
                     <div className="space-y-2">
@@ -111,22 +156,38 @@ const BioGeneratorInternal: React.FC<{ petInfo: PetInfo; imageForBio: string | n
                     </div>
                 )}
             </div>
-            <div className="space-y-4 flex flex-col items-center">
-                <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="transform scale-[0.8] origin-top">
-                    <BioCard ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
+
+            <div className="space-y-6 flex flex-col items-center w-full">
+                <div className="w-full border-t border-white/20 pt-8 flex justify-center">
+                    <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="origin-top transition-transform duration-300">
+                        <BioCard ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
+                    </div>
                 </div>
                 <div className="w-full max-w-sm space-y-4">
-                    <input type="range" min="1" max="3" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full" />
-                    <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} className="w-full">{isDownloading ? '...' : t.bio.btn_download}</Button>
+                    <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/30">
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="font-bold text-white">Photo Zoom</label>
+                            <span className="text-white/60 font-mono text-xs">{imageZoom.toFixed(1)}x</span>
+                        </div>
+                        <input type="range" min="0.5" max="8" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full accent-[#AA336A]" />
+                    </div>
+                    <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl">
+                        {isDownloading ? '...' : t.bio.btn_download}
+                    </Button>
                 </div>
             </div>
         </div>
     );
 };
 
-export const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; goHome: () => void; }> = ({ petInfo, imageForBio, setImageForBio, goHome }) => (
+export const BioScreen: React.FC<{ 
+    petInfo: PetInfo; 
+    imageForBio: string | null; 
+    setImageForBio: (img: string | null) => void; 
+    goHome: () => void; 
+}> = ({ petInfo, imageForBio, setImageForBio, goHome }) => (
     <div className="relative min-h-screen">
-        <Header leftPet="bird" rightPet="fish" onLogoClick={goHome} />
+        <Header leftPet="bird" rightPet="cat" onLogoClick={goHome} />
         <main className="py-4 px-4 max-w-7xl mx-auto">
             <div className="-mt-4 mb-8"><BackToHomeButton onClick={goHome} /></div>
             <BioGeneratorInternal petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} />
