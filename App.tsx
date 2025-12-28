@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, MouseEvent } from 'react';
+import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
 import { MainView } from './components/MainView';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
@@ -6,15 +7,21 @@ import { TermsAndConditions } from './components/TermsAndConditions';
 import { TabNavigator } from './components/layout/TabNavigator';
 import { PhotoScreen } from './components/screens/PhotoScreen';
 import { PlayScreen } from './components/screens/PlayScreen';
-import { BioScreen } from './components/screens/BioScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { LandingPage } from './components/LandingPage';
-import { GeneratedName, PetInfo, Tab, Language } from './types';
+import { GeneratedName, PetInfo, Tab, Language, PetPersonality, PetKind, PetGender, PetType } from './types';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { CustomCursor } from './components/ui/CustomCursor';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { Card } from './components/ui/Card';
+import { Button } from './components/ui/Button';
+import { Input } from './components/ui/Input';
+import { Select } from './components/ui/Select';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
+import { generatePetBio } from './services/geminiService';
+import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from './constants';
+// Added missing Header import to fix error on line 180
+import { Header } from './components/Header';
 
 // --- SHARED UI COMPONENTS ---
 
@@ -33,6 +40,201 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
+// --- BIO CARD PREVIEW COMPONENT ---
+
+interface BioCardProps {
+  imagePreview: string | null;
+  petName: string;
+  bio: string | null;
+  imageZoom: number;
+  imagePosition: { x: number; y: number };
+  onImageMouseDown: (e: MouseEvent<HTMLDivElement>) => void;
+  isDragging: boolean;
+  gender?: PetGender;
+}
+
+const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({ 
+    imagePreview, 
+    petName, 
+    bio, 
+    imageZoom,
+    imagePosition,
+    onImageMouseDown,
+    isDragging,
+    gender = 'Any',
+}, ref) => {
+  const { t } = useLanguage();
+  
+  const imageStyle: React.CSSProperties = {
+    transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+    transition: isDragging ? 'none' : 'transform 0.1s linear',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  };
+
+  let bgClass = "bg-gradient-to-b from-[#e889b5] to-[#ffc4d6]"; 
+  if (gender === 'Male') bgClass = "bg-gradient-to-b from-[#aab2a1] to-[#8da38d]";
+  else if (gender === 'Any') bgClass = "bg-gradient-to-b from-[#d4c4e0] to-[#bca6c9]";
+
+  return (
+    <div 
+        ref={ref} 
+        className={`${bgClass} p-6 text-[#666666] flex flex-col items-center justify-between w-full max-w-[480px] min-h-[600px] shadow-2xl rounded-3xl overflow-hidden relative`}
+        style={{ fontFamily: "'Fredoka', sans-serif" }} 
+    >
+        <h2 className="text-6xl font-bold text-center text-white drop-shadow-md z-10 mt-4 tracking-wide leading-tight">{petName || t.bio.card_pet_name_placeholder}</h2>
+        <div className="flex flex-col items-center gap-4 w-full z-10 flex-grow justify-center">
+             <div className="relative w-72 h-72">
+                 <div className="w-full h-full overflow-hidden flex items-center justify-center relative rounded-2xl bg-black/5" onMouseDown={onImageMouseDown}>
+                     {imagePreview ? (
+                        <img src={imagePreview} alt={petName || 'Your pet'} className="pointer-events-none select-none" style={imageStyle} draggable="false" />
+                     ) : (
+                        <PetCharacter pet="cat" className="w-full h-full opacity-80 p-4" />
+                     )}
+                </div>
+            </div>
+            <p className="text-2xl font-medium text-center leading-snug px-6 text-white drop-shadow-md flex items-center justify-center mt-4">
+                {bio || t.bio.fallback_bio}
+            </p>
+        </div>
+        <div className="flex items-center gap-2 text-sm font-bold text-white/60 tracking-wider text-center z-10 mb-4">
+            <span>{t.bio.generated_by}</span>
+        </div>
+    </div>
+  );
+});
+
+// --- BIO SCREEN EDITOR COMPONENT ---
+
+const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; goHome: () => void; }> = ({ petInfo, imageForBio, setImageForBio, goHome }) => {
+    const { t, language } = useLanguage();
+    const [petName, setPetName] = useState('');
+    const [personality, setPersonality] = useState<PetPersonality>(petInfo.personality);
+    const [gender, setGender] = useState<PetGender>(petInfo.gender);
+    const [petType, setPetType] = useState<PetType>(petInfo.type);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [selectedBio, setSelectedBio] = useState<string>('');
+    const [generatedBios, setGeneratedBios] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [imageZoom, setImageZoom] = useState(1);
+    const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const bioCardRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => { 
+        setPersonality(petInfo.personality); setGender(petInfo.gender); setPetType(petInfo.type);
+    }, [petInfo]);
+
+    useEffect(() => {
+        if (imageForBio) { setImagePreview(imageForBio); setImageZoom(1); setImagePosition({ x: 0, y: 0 }); setImageForBio(null); }
+    }, [imageForBio, setImageForBio]);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => { setImagePreview(reader.result as string); setGeneratedBios([]); setSelectedBio(''); };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const handleGenerateBio = async () => {
+        if (!petName) return;
+        setIsLoading(true);
+        try {
+            const bios = await generatePetBio(petName, petType, personality, language);
+            setGeneratedBios(bios); if (bios.length > 0) setSelectedBio(bios[0]);
+        } catch (err) { console.error(err); } finally { setIsLoading(false); }
+    };
+
+    const handleDownload = async () => {
+        if (!bioCardRef.current || isDownloading) return;
+        setIsDownloading(true);
+        try {
+            const filter = (node: any) => {
+                if (node.tagName === 'LINK' && node.rel === 'stylesheet' && !node.href.startsWith(window.location.origin)) return false;
+                return true;
+            };
+            const dataUrl = await toPng(bioCardRef.current, { 
+                pixelRatio: 3, cacheBust: true, filter: filter
+            });
+            const link = document.createElement('a'); 
+            link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
+            link.click();
+        } catch (error: any) { 
+            console.error(error);
+        } finally { setIsDownloading(false); }
+    };
+
+    const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+        e.preventDefault(); setIsDragging(true); setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y });
+    };
+    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => { if (isDragging) setImagePosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y }); };
+    const handleMouseUpOrLeave = () => setIsDragging(false);
+    
+    return (
+        <div className="relative min-h-screen">
+            {/* Header used here - fixed error on line 180 by adding missing import above */}
+            <Header leftPet="bird" rightPet="cat" onLogoClick={goHome} />
+            <main className="py-4 px-4 max-w-7xl mx-auto">
+                <div className="-mt-4 mb-8"><BackToHomeButton onClick={goHome} /></div>
+                <div className="flex flex-col gap-10 items-center max-w-2xl mx-auto w-full pb-20">
+                    <div className="space-y-6 w-full">
+                        <Card>
+                            <div className="space-y-4">
+                                <Input id="name" label={t.bio.label_name} value={petName} onChange={e => setPetName(e.target.value)} />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <Select id="type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>
+                                        {PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}
+                                    </Select>
+                                    <Select id="gender" label={t.bio.label_gender} value={gender} onChange={e => setGender(e.target.value as PetGender)}>
+                                        {PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}
+                                    </Select>
+                                </div>
+                                <Select id="personality" label={t.generator.label_personality} value={personality} onChange={e => setPersonality(e.target.value as PetPersonality)}>
+                                    {PET_PERSONALITIES.map(p => <option key={p} value={p}>{t.options.personalities[p] || p}</option>)}
+                                </Select>
+                            </div>
+                        </Card>
+                        <Card>
+                            <div className="flex flex-col gap-4">
+                                <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="w-full">Upload Photo</Button>
+                                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+                                <Button onClick={handleGenerateBio} disabled={isLoading || !petName} className="w-full">{isLoading ? 'Generating...' : t.bio.btn_generate}</Button>
+                            </div>
+                        </Card>
+                        {generatedBios.length > 0 && (
+                            <div className="space-y-2">
+                                {generatedBios.map((bio, i) => (
+                                    <button key={i} onClick={() => setSelectedBio(bio)} className={`w-full p-4 text-left rounded-[1.5rem] transition-all bg-white/20 border-2 ${selectedBio === bio ? 'border-[#AA336A] bg-white/40' : 'border-transparent'}`}> {bio} </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <div className="space-y-6 flex flex-col items-center w-full">
+                        <div className="w-full border-t border-white/20 pt-8 flex justify-center">
+                            <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave}>
+                                <BioCard ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
+                            </div>
+                        </div>
+                        <div className="w-full max-w-sm space-y-4">
+                            <input type="range" min="0.5" max="8" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full accent-[#AA336A]" />
+                            <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl">
+                                {isDownloading ? '...' : t.bio.btn_download}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+};
+
 // --- CONTACT US COMPONENT ---
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
@@ -47,7 +249,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <div className="flex justify-center mb-6">
                         <div className="bg-[#AA336A]/10 p-6 rounded-full">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-[#AA336A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
                     </div>
@@ -93,7 +295,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             content: language === 'fr'
                 ? "Vous venez d'accueillir un nouveau toutou ? Félicitations ! Votre compagnon est unique.\n\n**Noms Originaux**\n• Trèfle\n• Orion\n• Stellan\n\nL'appli Name My Pet analyse le caractère de votre animal."
                 : language === 'es' 
-                    ? "¡Felicidades por tu nuevo amigo peludo! Elegir un nombre único para tu perro es una excelente manera de celebrar su individualidad.\n\n**Nombres Recomendados**\n• Trébol\n• Orión\n• Caspio" 
+                    ? "¡Felicidades por tu nuevo amigo peludo! Elegir un nombre unique para tu perro es una excelente manera de celebrar su individualidad.\n\n**Nombres Recomendados**\n• Trébol\n• Orión\n• Caspio" 
                     : "Choosing a unique name for your dog is a great way to celebrate their individuality. Use our AI tools to match their vibe.",
             pet: 'dog',
             date: language === 'fr' ? '1er Jan 2026' : 'Jan 1, 2026'
