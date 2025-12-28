@@ -9,7 +9,7 @@ import { PhotoScreen } from './components/screens/PhotoScreen';
 import { PlayScreen } from './components/screens/PlayScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { LandingPage } from './components/LandingPage';
-import { GeneratedName, PetInfo, Tab, Language, PetPersonality, PetKind, PetGender, PetType } from './types';
+import { GeneratedName, PetInfo, Tab, PetPersonality, PetKind, PetGender, PetType, ChatMessage } from './types';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { CustomCursor } from './components/ui/CustomCursor';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
@@ -20,7 +20,6 @@ import { Select } from './components/ui/Select';
 import { PetCharacter } from './components/assets/pets/PetCharacter';
 import { generatePetBio } from './services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from './constants';
-// Added missing Header import to fix error on line 180
 import { Header } from './components/Header';
 
 // --- SHARED UI COMPONENTS ---
@@ -29,7 +28,7 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     const { t } = useLanguage();
     return (
         <button 
-            onClick={onClick} 
+            onClick={(e) => { e.stopPropagation(); onClick(); }} 
             className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -179,7 +178,6 @@ const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setIma
     
     return (
         <div className="relative min-h-screen">
-            {/* Header used here - fixed error on line 180 by adding missing import above */}
             <Header leftPet="bird" rightPet="cat" onLogoClick={goHome} />
             <main className="py-4 px-4 max-w-7xl mx-auto">
                 <div className="-mt-4 mb-8"><BackToHomeButton onClick={goHome} /></div>
@@ -235,47 +233,20 @@ const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setIma
     );
 };
 
-// --- CONTACT US COMPONENT ---
+// --- BLOG SCREEN COMPONENT ---
 
-const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const { t } = useLanguage();
-    return (
-        <div className="min-h-screen p-4 flex flex-col items-center justify-center animate-fade-in">
-            <div className="w-full max-w-lg">
-                <div className="mb-8">
-                    <BackToHomeButton onClick={onBack} />
-                </div>
-                <Card className="text-center py-20 px-8 w-full border-4 border-[#AA336A]/20 shadow-2xl">
-                    <div className="flex justify-center mb-6">
-                        <div className="bg-[#AA336A]/10 p-6 rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-[#AA336A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h1 className="text-4xl font-black mb-6 text-[#AA336A] uppercase tracking-tight font-heading">
-                        {t.contact_us.title}
-                    </h1>
-                    <p className="text-xl mb-10 opacity-80 font-medium">
-                        {t.contact_us.p1}
-                    </p>
-                    <a href={`mailto:${t.contact_us.email}`} className="text-2xl font-black text-[#AA336A] hover:underline break-all block py-4 bg-white/40 rounded-2xl border border-white/40 shadow-sm">
-                        {t.contact_us.email}
-                    </a>
-                </Card>
-            </div>
-        </div>
-    );
-};
-
-// --- BLOG COMPONENT ---
+interface BlogSection {
+    title: string;
+    text: string;
+    icon: PetKind;
+}
 
 interface BlogPost {
     id: string;
     title: string;
     excerpt: string;
-    content: string;
-    pet: 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster';
+    sections: BlogSection[];
+    pet: PetKind;
     date: string;
 }
 
@@ -290,13 +261,37 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 ? 'Plus de 150 Noms de Chiens Uniques pour 2025' 
                 : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025',
             excerpt: language === 'fr'
-                ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure !'
+                ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Voici nos conseils.'
                 : language === 'es' ? '¡Felicidades por tu nuevo amigo peludo! Encuentra el nombre ideal.' : 'Finding the perfect name for your companion...',
-            content: language === 'fr'
-                ? "Vous venez d'accueillir un nouveau toutou ? Félicitations ! Votre compagnon est unique.\n\n**Noms Originaux**\n• Trèfle\n• Orion\n• Stellan\n\nL'appli Name My Pet analyse le caractère de votre animal."
-                : language === 'es' 
-                    ? "¡Felicidades por tu nuevo amigo peludo! Elegir un nombre unique para tu perro es una excelente manera de celebrar su individualidad.\n\n**Nombres Recomendados**\n• Trébol\n• Orión\n• Caspio" 
-                    : "Choosing a unique name for your dog is a great way to celebrate their individuality. Use our AI tools to match their vibe.",
+            sections: [
+                {
+                    title: language === 'fr' ? "Pourquoi l'IA ?" : language === 'es' ? "El Poder de la IA" : "Why AI?",
+                    text: language === 'fr' 
+                        ? "L'intelligence artificielle peut croiser des milliers de racines linguistiques pour trouver des sonorités inédites. Finis les Rex ou Médor, place à l'innovation ! Notre algorithme analyse la race, la couleur et le tempérament."
+                        : language === 'es'
+                            ? "Nuestra herramienta no solo busca en una base de datos estática, sino que genera ideas creativas basadas en la vibra real de tu mascota. ¿Es juguetón? ¿Es un líder? La IA descifra su esencia."
+                            : "Artificial intelligence can cross-reference thousands of linguistic roots to find unprecedented sounds. Gone are the days of Rex or Fido—it's time for innovation! Our algorithm analyzes breed, color, and temperament.",
+                    icon: 'dog'
+                },
+                {
+                    title: language === 'fr' ? "Nos coups de cœur 2025" : language === 'es' ? "Tendencias 2025" : "Our Top Picks 2025",
+                    text: language === 'fr'
+                        ? "Clover : Un nom porte-bonheur pour un chien joyeux et plein d'énergie.\nOrion : Pour un protecteur qui veille sur la famille comme une constellation.\nStellan : Une sonorité moderne, douce et élégante pour les citadins."
+                        : language === 'es'
+                            ? "Trébol: Ideal para un perro que trae suerte y alegría al hogar.\nOrión: Para un compañero noble, firme y protector de la familia.\nCaspio: Inspirado en la elegancia, la aventura y la naturaleza salvaje."
+                            : "Clover: A lucky, vibrant choice for the rescue pet that changed your life.\nOrion: Strong and guiding, perfect for the brave pup who leads every walk.\nStellan: A sleek, modern name for the stylish city dog with a calm demeanor.",
+                    icon: 'rabbit'
+                },
+                {
+                    title: language === 'fr' ? "Conseils d'experts" : language === 'es' ? "La Ciencia Detrás de un Nombre" : "Professional Naming Tips",
+                    text: language === 'fr'
+                        ? "1. La règle des deux syllabes : Privilégiez les noms courts. Ils sont plus faciles à capter pour votre chien lors du rappel.\n2. Évitez les rimes avec les ordres : Ne choisissez pas un nom qui ressemble à Assis ou Non.\n3. Testez-le en public : Assurez-vous d'être à l'aise pour le crier au parc !"
+                        : language === 'es'
+                            ? "Los perros responden mejor a sonidos claros y breves. Las vocales fuertes como A u O son ideales porque viajan mejor por el aire y captan su atención rápidamente. Siempre di el nombre en voz alta antes de decidir."
+                            : "1. Vocal Inflection: Always say the name out loud. Does it have a natural lift? Names that end in vowels often work better for recall.\n2. Command Contrast: Ensure the name doesn't sound like Stay, No, or Fetch.\n3. Personality First: Use our AI Personality Quiz to match phonetic structures to your pet's energy level.",
+                    icon: 'bird'
+                }
+            ],
             pet: 'dog',
             date: language === 'fr' ? '1er Jan 2026' : 'Jan 1, 2026'
         },
@@ -306,13 +301,37 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 ? 'La Magie des Noms de Chats : Tendances 2025' 
                 : language === 'es' ? 'Magia para Nombres de Gatos: Tendencias 2025' : 'Cat Naming Magic: 2025 Trends',
             excerpt: language === 'fr'
-                ? 'Découvrez les dernières tendances pour chats.'
+                ? 'Découvrez les dernières tendances pour chats et comment choisir.'
                 : language === 'es' ? 'Los michis merecen nombres misteriosos.' : 'Discover the most mysterious and fun names for your feline friends.',
-            content: language === 'fr'
-                ? "Le chat est un animal mystérieux. En 2025, on adore appeler nos chats comme nos grands-parents : Albert, Ginette, ou Marcel."
-                : language === 'es'
-                    ? "En 2025, los nombres de 'michis' están evolucionando. Los nombres de comida como 'Mochi' o 'Taco' son tendencia absoluta."
-                    : "Cats respond best to shorter names with high-pitched endings. Try our AI tool to match a name to your cat's specific attitude!",
+            sections: [
+                {
+                    title: language === 'fr' ? "Le Mystère de l'Ouïe Féline" : language === 'es' ? "Sonidos que los Gatos Aman" : "Why Names Matter for Cats",
+                    text: language === 'fr'
+                        ? "Contrairement aux chiens, les chats réagissent particulièrement bien aux hautes fréquences. Un nom finissant par un i ou un y (comme Mochi ou Kitty) aura beaucoup plus de chances de faire dresser leurs oreilles immédiatement."
+                        : language === 'es'
+                            ? "Los gatos tienen un sistema auditivo muy fuerte. Los nombres que terminan en sonidos agudos (la famosa i) suelen captar su atención más rápido. ¿Alguna vez te preguntaste por qué Michi funciona tan bien? Es pura fonética."
+                            : "Felines are highly attuned to tone and pitch. Research shows that a name sounding like a melody—rising at the end—is far more likely to get a response than a flat, guttural sound. This is why names like Mimi or Lulu are timeless favorites.",
+                    icon: 'cat'
+                },
+                {
+                    title: language === 'fr' ? "La Tendance Vintage" : language === 'es' ? "Personalidad Única" : "The 2025 Old Soul Trend",
+                    text: language === 'fr'
+                        ? "Le chat est un animal mystérieux. En 2025, on adore appeler nos chats avec des prénoms vintage qui rappellent nos grands-parents : Albert, Ginette, ou Marcel. Cela crée un décalage amusant avec leur caractère intrépide."
+                        : language === 'es'
+                            ? "No todos los gatos son iguales. Algunos son Señores refinados y otros son Caos con patas. Nuestra IA ayuda a categorizar ese comportamiento salvaje en un nombre que le quede como anillo al dedo."
+                            : "We are seeing a massive surge in Old Person names for cats this year. Think Arthur, Eleanor, or Barnaby. It creates a hilarious and charming contrast with their often chaotic and playful kitten behavior.",
+                    icon: 'hamster'
+                },
+                {
+                    title: language === 'fr' ? "Tendances Gourmandes" : language === 'es' ? "Inspiración Gastronómica" : "International Foodie Favorites",
+                    text: language === 'fr'
+                        ? "Mochi : Pour un chat tout doux, rond et câlin.\nTaco : Pour un petit aventurier épicé et plein d'énergie.\nSashimi : L'élégance pure pour un chat racé."
+                        : language === 'es'
+                            ? "Mochi: Dulce, esponjoso y perfecto para un gato cariñoso.\nTaco: Pequeño, picante y con mucha personalidad para un gato travieso.\nKimchi: Para ese gato con un carácter fuerte y único."
+                            : "Mochi: Soft, sweet, and perfectly round—the top choice for fluffy breeds.\nTaco: A little spicy, full of surprises, and great for energetic tabbies.\nSashimi: For the cat who exudes pure luxury and effortless grace.",
+                    icon: 'fish'
+                }
+            ],
             pet: 'cat',
             date: language === 'fr' ? '15 Fév 2026' : 'Feb 15, 2026'
         }
@@ -336,8 +355,27 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <div className="flex justify-center mb-6">
                         <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
                     </div>
-                    <h1 className="text-3xl font-black mb-4 text-center text-[#5D4037]">{selectedPost.title}</h1>
-                    <p className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium">{selectedPost.content}</p>
+                    <h1 className="text-3xl font-black mb-8 text-center text-[#5D4037] leading-tight">{selectedPost.title}</h1>
+                    
+                    <div className="space-y-10">
+                        {selectedPost.sections.map((section, idx) => (
+                            <div key={idx} className="animate-fade-in" style={{ animationDelay: `${idx * 150}ms` }}>
+                                <div className="flex items-center gap-3 mb-3 border-b border-black/5 pb-2">
+                                    <div className="bg-white shadow-sm p-1 rounded-lg border border-black/5">
+                                        <PetCharacter pet={section.icon} className="w-8 h-8" />
+                                    </div>
+                                    <h2 className="text-xl font-black text-[#AA336A] uppercase tracking-tight">{section.title}</h2>
+                                </div>
+                                <div className="whitespace-pre-wrap text-lg leading-relaxed text-[#494d43] font-medium pl-2">
+                                    {section.text}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-12 pt-6 border-t border-black/5 text-center">
+                        <p className="text-sm font-bold opacity-30 uppercase tracking-[0.2em]">{t.blog.footer_note}</p>
+                    </div>
                 </Card>
             </div>
         );
@@ -348,28 +386,26 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <div className="w-full max-w-5xl mb-8 flex justify-start">
                 <BackToHomeButton onClick={onBack} />
             </div>
-            
             <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-md font-heading uppercase tracking-tight">
-                    {t.blog.title}
-                </h1>
-                <p className="text-white text-xl md:text-2xl font-bold opacity-90 drop-shadow-sm">
-                    {t.blog.subtitle}
-                </p>
+                <h1 className="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-md uppercase tracking-tight">{t.blog.title}</h1>
+                <p className="text-white text-xl md:text-2xl font-bold opacity-90">{t.blog.subtitle}</p>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-20">
                 {posts.map(post => (
-                    <Card key={post.id} className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group" onClick={() => setSelectedPost(post)}>
+                    <Card 
+                        key={post.id} 
+                        onClick={() => setSelectedPost(post)} 
+                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 h-full flex flex-col group active:scale-95"
+                    >
                         <div className="flex items-center gap-4 mb-6">
-                            <PetCharacter pet={post.pet} className="w-20 h-20 group-hover:rotate-6 transition-transform" />
+                            <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
                             <div className="text-left">
-                                <span className="text-xs font-black opacity-40 uppercase tracking-widest block mb-1">{post.date}</span>
+                                <span className="text-xs font-black opacity-40 uppercase tracking-widest block">{post.date}</span>
                                 <h2 className="text-2xl font-black leading-tight text-[#5D4037] group-hover:text-[#AA336A] transition-colors">{post.title}</h2>
                             </div>
                         </div>
-                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed">{post.excerpt}</p>
-                        <div className="mt-6 pt-6 border-t border-black/5 flex items-center gap-2 text-[#AA336A] font-black text-sm uppercase tracking-widest group-hover:gap-4 transition-all">
+                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 mb-6 leading-relaxed">{post.excerpt}</p>
+                        <div className="mt-auto pt-4 border-t border-black/5 flex items-center gap-2 text-[#AA336A] font-black text-sm uppercase tracking-widest group-hover:gap-4 transition-all">
                             {t.blog.read_more}
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
@@ -377,6 +413,33 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         </div>
                     </Card>
                 ))}
+            </div>
+        </div>
+    );
+};
+
+// --- CONTACT US COMPONENT ---
+
+const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+    const { t } = useLanguage();
+    return (
+        <div className="min-h-screen p-4 flex flex-col items-center justify-center animate-fade-in">
+            <div className="w-full max-w-lg">
+                <div className="mb-8"><BackToHomeButton onClick={onBack} /></div>
+                <Card className="text-center py-20 px-8 w-full border-4 border-[#AA336A]/20 shadow-2xl">
+                    <div className="flex justify-center mb-6">
+                        <div className="bg-[#AA336A]/10 p-6 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-[#AA336A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h1 className="text-4xl font-black mb-6 text-[#AA336A] uppercase tracking-tight">{t.contact_us.title}</h1>
+                    <p className="text-xl mb-10 opacity-80 font-medium">{t.contact_us.p1}</p>
+                    <a href={`mailto:${t.contact_us.email}`} className="text-2xl font-black text-[#AA336A] hover:underline break-all block py-4 bg-white/40 rounded-2xl">
+                        {t.contact_us.email}
+                    </a>
+                </Card>
             </div>
         </div>
     );
@@ -391,56 +454,31 @@ const AppContent: React.FC = () => {
     const [activeTab, setActiveTab] = useState<Tab>('home');
     const [isChillMode, setIsChillMode] = useState(false);
     const { language, setLanguage, t } = useLanguage();
-    
-    const [footerTooltip, setFooterTooltip] = useState<string | null>(null);
-    const tooltipTimer = useRef<any>(null);
-
-    useEffect(() => {
-        if (isChillMode) document.body.classList.add('chill-mode');
-        else document.body.classList.remove('chill-mode');
-    }, [isChillMode]);
-
     const [savedNames, setSavedNames] = useState<GeneratedName[]>(() => {
         try {
             const saved = localStorage.getItem('mySavedNames');
             return saved ? JSON.parse(saved) : [];
         } catch (e) { return []; }
     });
-
-    const [petInfo, setPetInfo] = useState<PetInfo>({
-        type: 'Dog', gender: 'Any', personality: 'Playful', style: 'Trending',
-    });
+    const [petInfo, setPetInfo] = useState<PetInfo>({ type: 'Dog', gender: 'Any', personality: 'Playful', style: 'Trending' });
     const [imageForBio, setImageForBio] = useState<string | null>(null);
 
     useEffect(() => {
-        localStorage.setItem('mySavedNames', JSON.stringify(savedNames));
-    }, [savedNames]);
+        if (isChillMode) document.body.classList.add('chill-mode');
+        else document.body.classList.remove('chill-mode');
+    }, [isChillMode]);
+
+    useEffect(() => { localStorage.setItem('mySavedNames', JSON.stringify(savedNames)); }, [savedNames]);
 
     const handleSetTab = (tab: Tab) => { setView('app'); setActiveTab(tab); window.scrollTo(0, 0); };
     const goHome = () => { handleSetTab('home'); };
 
-    const addSavedName = (name: GeneratedName) => {
-        setSavedNames((prev) => prev.find(n => n.id === name.id) ? prev : [...prev, name]);
-    };
-    const removeSavedName = (nameId: string) => { setSavedNames((prev) => prev.filter(n => n.id !== nameId)); };
-
-    const startTooltip = (desc: string) => {
-        tooltipTimer.current = setTimeout(() => {
-            setFooterTooltip(desc);
-        }, 400);
-    };
-
-    const clearTooltip = () => {
-        if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
-        setFooterTooltip(null);
-    };
-
     const renderActiveTab = () => {
         switch(activeTab) {
             case 'home': return <LandingPage setTab={handleSetTab} />;
-            case 'generate': return <MainView savedNames={savedNames} addSavedName={addSavedName} removeSavedName={removeSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
+            case 'generate': return <MainView savedNames={savedNames} addSavedName={(n) => setSavedNames(prev => prev.find(x => x.id === n.id) ? prev : [...prev, n])} removeSavedName={(id) => setSavedNames(prev => prev.filter(n => n.id !== id))} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
             case 'bio': return <BioScreen petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
-            case 'play': return <PlayScreen onQuizComplete={(res) => setPetInfo(p => ({...p, ...res.keywords}))} savedNames={savedNames} addSavedName={addSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
+            case 'play': return <PlayScreen onQuizComplete={(res) => setPetInfo(p => ({...p, ...res.keywords}))} savedNames={savedNames} addSavedName={(n) => setSavedNames(prev => prev.find(x => x.id === n.id) ? prev : [...prev, n])} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
             case 'photo': return <PhotoScreen setActiveTab={handleSetTab} setImageForBio={setImageForBio} goHome={goHome} />;
             case 'adopt': return <AdoptScreen goHome={goHome} />;
             case 'partnerships': return <Partnerships goHome={goHome} />;
@@ -457,82 +495,33 @@ const AppContent: React.FC = () => {
         <div className="relative min-h-[100dvh]">
             <CustomCursor />
             <BackgroundPattern />
-            
-            {footerTooltip && (
-                <div className="fixed bottom-32 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
-                    <div className="bg-black/90 text-white p-4 rounded-2xl backdrop-blur-xl border border-white/20 shadow-2xl max-w-sm text-center animate-fade-in">
-                        <p className="text-sm font-medium leading-relaxed opacity-90">{footerTooltip}</p>
-                    </div>
-                </div>
-            )}
-
             <div className="relative min-h-[100dvh] overflow-x-hidden">
-                <div className="pb-24">
-                    {renderActiveTab()}
-                </div>
-                
+                <div className="pb-24">{renderActiveTab()}</div>
                 <footer className="relative z-10 text-center my-8 space-y-8 w-full max-w-7xl mx-auto px-4 pb-12">
                     <div className="flex flex-col items-center gap-8">
-                        <div className="flex justify-center items-center gap-8 md:gap-12 flex-wrap">
-                            <button 
-                                onClick={() => setIsChillMode(!isChillMode)} 
-                                onMouseEnter={() => startTooltip(isChillMode ? t.common.chill_mode_off : t.common.chill_mode_on)}
-                                onMouseLeave={clearTooltip}
-                                className="flex flex-col items-center gap-2 group"
-                            >
-                                <div className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transition-all group-hover:scale-110 group-active:scale-95 group-hover:bg-white/50">
+                        <div className="flex justify-center items-center gap-8 flex-wrap">
+                            <button onClick={() => setIsChillMode(!isChillMode)} className="flex flex-col items-center gap-2 group">
+                                <div className="w-14 h-14 rounded-full bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg group-hover:scale-110">
                                     <span className="text-2xl">{isChillMode ? '☀️' : '🌙'}</span>
                                 </div>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-white drop-shadow-md opacity-80 group-hover:opacity-100">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-white drop-shadow-md">
                                     {isChillMode ? t.common.mode_light : t.common.mode_dark}
                                 </span>
                             </button>
-
-                            <div className="flex gap-6 items-center bg-white/10 p-4 rounded-[2rem] backdrop-blur-sm border border-white/20 shadow-inner">
-                                <button 
-                                    onClick={() => setLanguage('en')} 
-                                    onMouseEnter={() => startTooltip(t.common.switch_language_en)}
-                                    onMouseLeave={clearTooltip}
-                                    className={`flex flex-col items-center gap-2 group transition-all ${language === 'en' ? 'scale-110' : 'opacity-50 hover:opacity-100'}`}
-                                >
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-md transition-all ${language === 'en' ? 'bg-[#AA336A] text-white' : 'bg-white/30'}`}>
-                                        <span className="text-xl">🌐</span>
-                                    </div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white drop-shadow-md">EN</span>
-                                </button>
-
-                                <button 
-                                    onClick={() => setLanguage('es')} 
-                                    onMouseEnter={() => startTooltip(t.common.switch_language_es)}
-                                    onMouseLeave={clearTooltip}
-                                    className={`flex flex-col items-center gap-2 group transition-all ${language === 'es' ? 'scale-110' : 'opacity-50 hover:opacity-100'}`}
-                                >
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-md transition-all ${language === 'es' ? 'bg-[#AA336A] text-white' : 'bg-white/30'}`}>
-                                        <span className="text-xl">🌐</span>
-                                    </div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white drop-shadow-md">ES</span>
-                                </button>
-
-                                <button 
-                                    onClick={() => setLanguage('fr')} 
-                                    onMouseEnter={() => startTooltip(t.common.switch_language_fr)}
-                                    onMouseLeave={clearTooltip}
-                                    className={`flex flex-col items-center gap-2 group transition-all ${language === 'fr' ? 'scale-110' : 'opacity-50 hover:opacity-100'}`}
-                                >
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-md transition-all ${language === 'fr' ? 'bg-[#AA336A] text-white' : 'bg-white/30'}`}>
-                                        <span className="text-xl">🌐</span>
-                                    </div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white drop-shadow-md">FR</span>
-                                </button>
+                            <div className="flex gap-4 items-center bg-white/10 p-3 rounded-[2rem] backdrop-blur-sm border border-white/20">
+                                {(['en', 'es', 'fr'] as const).map(lang => (
+                                    <button key={lang} onClick={() => setLanguage(lang)} className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-xs transition-all ${language === lang ? 'bg-[#AA336A] text-white scale-110' : 'bg-white/30 text-white opacity-50'}`}>
+                                        {lang.toUpperCase()}
+                                    </button>
+                                ))}
                             </div>
                         </div>
-
-                        <div className="flex justify-center flex-wrap gap-x-8 gap-y-4 text-base items-center text-white font-bold tracking-tight drop-shadow-md">
-                            <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity underline underline-offset-8 decoration-2">namemypet.org</a>
-                            <button onClick={() => setView('blog')} className="underline underline-offset-8 decoration-2 hover:text-pink-200 transition-colors">{t.common.blog || 'Blog'}</button>
-                            <button onClick={() => setView('privacy')} className="underline underline-offset-8 decoration-2 hover:text-pink-200 transition-colors">{t.common.privacy}</button>
-                            <button onClick={() => setView('terms')} className="underline underline-offset-8 decoration-2 hover:text-pink-200 transition-colors">{t.common.terms}</button>
-                            <button onClick={() => setView('contact')} className="underline underline-offset-8 decoration-2 hover:text-pink-200 transition-colors">{t.common.contact}</button>
+                        <div className="flex justify-center flex-wrap gap-x-8 gap-y-4 text-base items-center text-white font-bold tracking-tight">
+                            <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-8 decoration-2">namemypet.org</a>
+                            <button onClick={() => setView('blog')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
+                            <button onClick={() => setView('privacy')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
+                            <button onClick={() => setView('terms')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
+                            <button onClick={() => setView('contact')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
                         </div>
                     </div>
                 </footer>
