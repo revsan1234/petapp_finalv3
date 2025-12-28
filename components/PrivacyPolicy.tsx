@@ -31,10 +31,21 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
             p6: "Usted es libre de rechazar nuestra solicitud de información personal, con el entendimiento de que es posible que no podamos brindarle algunos de sus servicios deseados.",
             p7: "Su uso continuado de nuestra aplicación se considerará como la aceptación de nuestras prácticas en materia de privacidad e información personal. Si tiene alguna pregunta sobre cómo manejamos los datos de los usuarios y la información personal, no dude en contactarnos.",
             p8: "Esta política es efectiva a partir del 29 de julio de 2024."
+        },
+        fr: {
+            title: "Politique de Confidentialité",
+            p1: "Votre vie privée est importante pour nous. La politique de Name My Pet est de respecter votre vie privée concernant toute information que nous pourrions recueillir auprès de vous sur notre application et d'autres sites que nous possédons et exploitons.",
+            p2: "Nous ne demandons des informations personnelles que lorsque nous en avons réellement besoin pour vous fournir un service. Nous les collectons par des moyens justes et légaux, avec votre connaissance et votre consentement. Nous vous informons également de la raison pour laquelle nous les collectons et de la manière dont elles seront utilisées.",
+            p3: "Nous ne conservons les informations collectées que le temps nécessaire pour vous fournir le service demandé. Les données que nous stockons seront protégées par des moyens commercialement acceptables pour éviter la perte et le vol, ainsi que l'accès, la divulgation, la copie, l'utilisation ou la modification non autorisés.",
+            p4: "Nous ne partageons aucune information d'identification personnelle publiquement ou avec des tiers, sauf si la loi l'exige.",
+            p5: "Notre application peut renvoyer vers des sites externes qui ne sont pas exploités par nous. Sachez que nous n'avons aucun contrôle sur le contenu et les pratiques de ces sites, et que nous ne pouvons accepter aucune responsabilité quant à leurs politiques de confidentialité respectives.",
+            p6: "Vous êtes libre de refuser notre demande d'informations personnelles, étant entendu que nous pourrions ne pas être en mesure de vous fournir certains des services souhaités.",
+            p7: "Votre utilisation continue de notre application sera considérée comme une acceptation de nos pratiques en matière de confidentialité et d'informations personnelles. Si vous avez des questions sur la manière dont nous traitons les données utilisateur et les informations personnelles, n'hésitez pas à nous contacter.",
+            p8: "Cette politique est effective à partir du 29 juillet 2024."
         }
     };
 
-    const t = content[language];
+    const t = content[language] || content.en;
 
     return (
         <div className="min-h-screen p-4 sm:p-6 md:p-8">

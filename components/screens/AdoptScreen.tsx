@@ -85,20 +85,20 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                         </div>
 
                         <Card>
-                            <div className="flex justify-center items-end -space-x-16 sm:-space-x-20 md:-space-x-28 mb-6 h-56 sm:h-72 md:h-[340px]">
-                                <PetCharacter pet="dog" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-48 h-48 sm:w-80 sm:h-80 z-30 -mb-2 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '400ms' }} />
+                            <div className="flex justify-center items-end -space-x-16 sm:-space-x-20 md:-space-x-28 mb-6 h-56 sm:h-72 md:h-[340px] overflow-visible">
+                                <PetCharacter pet="dog" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-48 h-48 sm:w-80 sm:h-80 z-30 -mb-2 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '400ms' }} />
                             </div>
 
                             <div className="flex flex-col items-center gap-2 mb-6 text-center">
                                 <div className="bg-[#494d43]/10 p-3 rounded-full mb-2">
                                     <PawIcon className="w-8 h-8 text-[#AA336A]" />
                                 </div>
-                                <h2 className="text-3xl font-bold">{t.adopt.title}</h2>
-                                <p className="opacity-95 max-w-lg text-xl text-[#333333]">
+                                <h2 className="text-3xl font-bold text-[var(--text-main)]">{t.adopt.title}</h2>
+                                <p className="opacity-95 max-w-lg text-xl text-[var(--text-main)]">
                                     {t.adopt.subtitle}
                                 </p>
                             </div>
@@ -136,17 +136,17 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             {centers.map((center, index) => (
                                 <div 
                                     key={index} 
-                                    className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/50 flex flex-col h-full transform hover:-translate-y-1 transition-transform duration-300"
+                                    className="bg-[var(--card-bg)] backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/50 flex flex-col h-full transform hover:-translate-y-1 transition-transform duration-300"
                                 >
-                                    <h3 className="text-xl font-bold text-[#2d4a2d] mb-2">{center.name}</h3>
-                                    <p className="text-sm mb-4 flex-grow italic font-bold text-[#333333]">"{center.mission}"</p>
-                                    <div className="space-y-3 text-sm text-[#2d4a2d] font-semibold">
+                                    <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">{center.name}</h3>
+                                    <p className="text-sm mb-4 flex-grow italic font-bold text-[var(--text-main)] opacity-90">"{center.mission}"</p>
+                                    <div className="space-y-3 text-sm text-[var(--text-main)] font-semibold opacity-90">
                                         <div className="flex items-start gap-2">
-                                            <LocationIcon className="w-5 h-5 shrink-0 opacity-70 text-[#2d4a2d]" />
+                                            <LocationIcon className="w-5 h-5 shrink-0 opacity-70" />
                                             <span>{center.address}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <PhoneIcon className="w-5 h-5 shrink-0 opacity-70 text-[#2d4a2d]" />
+                                            <PhoneIcon className="w-5 h-5 shrink-0 opacity-70" />
                                             <span>{center.phone}</span>
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             ))}
                         </div>
                         {hasSearched && !isLoading && centers.length === 0 && !error && (
-                            <div className="text-center opacity-60 mt-8"><p className="text-xl text-[#333333] font-bold">{t.adopt.no_results}</p></div>
+                            <div className="text-center opacity-60 mt-8"><p className="text-xl text-[var(--text-main)] font-bold">{t.adopt.no_results}</p></div>
                         )}
                     </div>
                 </main>

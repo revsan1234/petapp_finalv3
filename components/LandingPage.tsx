@@ -18,7 +18,7 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onClick }) => (
     <button 
         onClick={onClick}
-        className="flex flex-col items-center text-center rounded-[2.5rem] p-6 sm:p-8 shadow-md border-2 border-white/40 h-full w-full justify-start group gap-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:border-[#AA336A]/30 active:scale-95 bg-[var(--card-bg)] backdrop-blur-md text-[#5D4037] select-none min-h-[220px] focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
+        className="flex flex-col items-center text-center rounded-[2.5rem] p-6 sm:p-8 shadow-md border-2 border-white/40 h-full w-full justify-start group gap-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:border-[#AA336A]/30 active:scale-95 bg-[var(--card-bg)] backdrop-blur-md select-none min-h-[220px] focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
     >
         <div className="transform transition-transform duration-500 group-hover:-translate-y-2 group-hover:scale-110">
             <div className="flex items-center justify-center h-24 sm:h-28 w-24 sm:w-28 mb-1">
@@ -30,7 +30,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, onC
             <h3 className="text-2xl sm:text-3xl font-black leading-tight tracking-tight text-[var(--text-main)] group-hover:text-[#AA336A] transition-colors">
                 {title}
             </h3>
-            <p className="text-lg font-bold leading-relaxed text-[#333333] opacity-80 group-hover:opacity-100 transition-opacity px-2">
+            <p className="text-lg font-bold leading-relaxed text-[var(--text-main)] opacity-80 group-hover:opacity-100 transition-opacity px-2">
                 {description}
             </p>
         </div>

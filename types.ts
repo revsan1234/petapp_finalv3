@@ -1,11 +1,10 @@
-
 export type PetType = 'Dog' | 'Cat' | 'Bird' | 'Fish' | 'Rabbit' | 'Hamster' | 'Lizard';
-export type PetKind = 'dog' | 'cat' | 'bird' | 'fish' | 'rabbit' | 'hamster' | 'lizard' | 'ferret';
+export type PetKind = 'dog' | 'cat' | 'bird' | 'fish' | 'rabbit' | 'hamster' | 'lizard' | 'ferret' | 'other';
 export type PetGender = 'Male' | 'Female' | 'Any';
 export type PetPersonality = 'Playful' | 'Calm' | 'Mischievous' | 'Elegant' | 'Goofy' | 'Brave';
 export type NameStyle = 'Trending' | 'Unique' | 'Classic' | 'Mythological' | 'Nature-inspired' | 'Funny';
 export type ImageStyle = 'Photorealistic' | 'Anime' | 'Cartoon';
-export type Language = 'en' | 'es';
+export type Language = 'en' | 'es' | 'fr';
 
 export interface PetInfo {
   type: PetType;
@@ -49,3 +48,12 @@ export interface AdoptionCenter {
   phone: string;
   website: string;
 }
+
+// Added ChatMessage type for the Pet Consultant feature
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+  timestamp: number;
+}
+
+export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'partnerships';

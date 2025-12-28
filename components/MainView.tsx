@@ -83,7 +83,7 @@ const SavedNamesInternal: React.FC<{
              link.click();
         } catch (error: any) { 
             console.error(error); 
-            alert("Error generating image. Please try again.");
+            alert(t.saved_names.error_capture || "Error generating image. Please try again.");
         } finally { setIsDownloading(false); }
     };
 
@@ -137,7 +137,7 @@ const SavedNamesInternal: React.FC<{
                                             <span className="opacity-50 text-xs font-mono">{imageZoom.toFixed(1)}x</span>
                                         </div>
                                         <input type="range" min="0.5" max="5" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(parseFloat(e.target.value))} className="w-full accent-[#AA336A]" />
-                                        <p className="text-xs opacity-60">Drag the photo to reposition</p>
+                                        <p className="text-xs opacity-60">{t.saved_names.zoom_hint_drag}</p>
                                     </div>
                                 )}
                                 <Button onClick={handleDownloadImage} disabled={isDownloading || !imagePreview}>{isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}</Button>

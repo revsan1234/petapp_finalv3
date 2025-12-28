@@ -58,8 +58,8 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                             <PetCharacter pet="lizard" className="w-28 h-28 drop-shadow-md" />
                         </div>
-                        <h3 className="text-3xl font-black text-[#5D4037]">{t.image_editor.title}</h3>
-                        <p className="text-[#333333] font-bold leading-relaxed text-lg px-4 opacity-100">
+                        <h3 className="text-3xl font-black text-[var(--text-main)]">{t.image_editor.title}</h3>
+                        <p className="text-[var(--text-main)] font-bold leading-relaxed text-lg px-4 opacity-100">
                             {t.image_editor.subtitle}
                         </p>
                     </button>
@@ -71,8 +71,8 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
                         <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
                              <PetCharacter pet="rabbit" className="w-28 h-28 drop-shadow-md" />
                         </div>
-                        <h3 className="text-3xl font-black text-[#5D4037]">{t.video_studio.title}</h3>
-                        <p className="text-[#333333] font-bold leading-relaxed text-lg px-4 opacity-100">
+                        <h3 className="text-3xl font-black text-[var(--text-main)]">{t.video_studio.title}</h3>
+                        <p className="text-[var(--text-main)] font-bold leading-relaxed text-lg px-4 opacity-100">
                              {t.video_studio.subtitle}
                         </p>
                     </button>
@@ -95,7 +95,7 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
                             className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
                         >
                             <BackIcon className="w-4 h-4" />
-                            {t.navigation.photo.label} Menu
+                            {t.common.menu_label} {t.navigation.photo.label}
                         </button>
                         <BackToHomeButton onClick={goHome} />
                     </div>
@@ -109,8 +109,8 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
 
                             <Card>
                                 <div className="flex flex-col items-center gap-2 mb-6 text-center">
-                                    <h2 className="text-4xl font-black text-[#5D4037]">{t.bio.turn_photo_into_card}</h2>
-                                    <p className="opacity-100 text-xl font-bold text-[#333333]">
+                                    <h2 className="text-4xl font-black text-[var(--text-main)]">{t.bio.turn_photo_into_card}</h2>
+                                    <p className="opacity-100 text-xl font-bold text-[var(--text-main)]">
                                         {t.bio.turn_photo_desc}
                                     </p>
                                 </div>

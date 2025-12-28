@@ -60,17 +60,46 @@ export const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onBack }
                 },
                 {
                     title: "5. Enlaces a Otros Sitios",
-                    text: "Name My Pet no ha revisado todos los sitios vinculados a su aplicación (como enlaces de productos afiliados y servicios de generación de video) y no es responsable de los contenidos de dichos sitios vinculados. La inclusión de cualquier enlace no implica el respaldo por parte de Name My Pet del sitio. El uso de cualquier sitio web vinculado es bajo el propio riesgo del usuario."
+                    text: "Name My Pet ha not recibido todos los sitios vinculados a su aplicación (como enlaces de productos afiliados y servicios de generación de video) y no es responsable de los contenidos de dichos sitios vinculados. La inclusión de cualquier enlace no implica el respaldo por parte de Name My Pet del sitio. El uso de cualquier sitio web vinculado es bajo el propio riesgo del usuario."
                 },
                 {
                     title: "6. Modificaciones",
                     text: "Name My Pet puede revisar estos términos de servicio para su aplicación en cualquier momento sin previo aviso. Al usar esta aplicación, usted acepta estar sujeto a la versión actual de estos términos de servicio."
                 }
             ]
+        },
+        fr: {
+            title: "Conditions Générales d'Utilisation",
+            sections: [
+                {
+                    title: "1. Conditions",
+                    text: "En accédant à l'application Name My Pet, vous acceptez d'être lié par ces conditions de service, toutes les lois et réglementations applicables, et acceptez que vous êtes responsable de la conformité avec les lois locales applicables. Si vous n'acceptez pas l'une de ces conditions, il vous est interdit d'utiliser ou d'accéder à cette application. Le contenu de cette application est protégé par les lois applicables sur le droit d'auteur et les marques de commerce."
+                },
+                {
+                    title: "2. Licence d'Utilisation",
+                    text: "La permission est accordée d'utiliser temporairement le contenu de l'application Name My Pet pour un visionnage personnel, non commercial et transitoire uniquement. Il s'agit de l'octroi d'une licence, et non d'un transfert de titre. Cette licence sera automatiquement résiliée si vous violez l'une de ces restrictions et peut être résiliée par Name My Pet à tout moment."
+                },
+                {
+                    title: "3. Clause de Non-responsabilité",
+                    text: "Le contenu de l'application Name My Pet est fourni 'en l'état'. Name My Pet ne donne aucune garantie, expresse ou implicite, et rejette par la présente toute autre garantie, y compris, sans s'y limiter, les garanties implicites de qualité marchande, d'adéquation à un usage particulier ou de non-violation de la propriété intellectuelle."
+                },
+                {
+                    title: "4. Limitations",
+                    text: "En aucun cas Name My Pet ou ses fournisseurs ne seront responsables de tout dommage (y compris, sans s'y limiter, les dommages pour perte de données ou de profit, ou dus à une interruption d'activité) découlant de l'utilisation ou de l'impossibilité d'utiliser le contenu de l'application Name My Pet."
+                },
+                {
+                    title: "5. Liens vers d'autres sites",
+                    text: "Name My Pet n'a pas examiné tous les sites liés à son application (tels que les liens de produits affiliés et les services de génération de vidéo) et n'est pas responsable du contenu de ces sites. L'inclusion d'un lien n'implique pas l'approbation du site par Name My Pet. L'utilisation de ces sites web liés est aux risques et périls de l'utilisateur."
+                },
+                {
+                    title: "6. Modifications",
+                    text: "Name My Pet peut réviser ces conditions de service pour son application à tout moment et sans préavis. En utilisant cette application, vous acceptez d'être lié par la version alors en vigueur de ces conditions de service."
+                }
+            ]
         }
     };
 
-    const t = content[language];
+    const t = content[language] || content.en;
 
     return (
         <div className="min-h-screen p-4 sm:p-6 md:p-8">

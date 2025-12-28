@@ -5,7 +5,8 @@ import { translations } from '../translations';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  // Use React's Dispatch type to match useState's return type exactly
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
   t: typeof translations.en;
 }
 
@@ -14,13 +15,11 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  // Ensure t is defined even if the language key is missing in translations
-  const t = translations[language] || translations.en;
-
-  const value = {
+  // Ensure 't' is strictly typed as the base translation shape (English)
+  const value: LanguageContextType = {
     language,
     setLanguage,
-    t,
+    t: translations[language] as typeof translations.en,
   };
 
   return (

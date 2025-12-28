@@ -80,9 +80,12 @@ const personalityQuizSchema = {
 export const generatePetNames = async (petInfo: PetInfo, language: Language = 'en'): Promise<GeneratedName[]> => {
   const { type, gender, personality, style } = petInfo;
 
-  const langInstruction = language === 'es' 
-    ? "OUTPUT MUST BE IN NATIVE, CONVERSATIONAL SPANISH (Latino Neutral). Do NOT translate English names literally. Provide names that sound natural to a native Spanish speaker." 
-    : "Output in English.";
+  let langInstruction = "Output in English.";
+  if (language === 'es') {
+    langInstruction = "OUTPUT MUST BE IN NATIVE, CONVERSATIONAL SPANISH (Latino Neutral). Do NOT translate English names literally. Provide names that sound natural to a native Spanish speaker.";
+  } else if (language === 'fr') {
+    langInstruction = "OUTPUT MUST BE IN NATIVE, MODERN FRENCH. Suggest names that are currently popular or culturally relevant in France/Quebec. Do NOT translate English names literally.";
+  }
 
   const prompt = `
     Generate a list of 10 creative, fun pet names for a ${gender} ${type}.
@@ -115,9 +118,12 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
 };
 
 export const generatePetBio = async (name: string, petType: PetType, personality: PetPersonality, language: Language = 'en'): Promise<string[]> => {
-    const langInstruction = language === 'es' 
-        ? "OUTPUT MUST BE IN NATIVE, WITTY SPANISH (Latino/Gen Z style). Use terms like 'michi' (cat), 'lomito' (dog). Do not sound like a textbook." 
-        : "Output in English.";
+    let langInstruction = "Output in English.";
+    if (language === 'es') {
+        langInstruction = "OUTPUT MUST BE IN NATIVE, WITTY SPANISH (Latino/Gen Z style). Use terms like 'michi' (cat), 'lomito' (dog). Do not sound like a textbook.";
+    } else if (language === 'fr') {
+        langInstruction = "OUTPUT MUST BE IN NATIVE, WITTY CONVERSATIONAL FRENCH. Use terms like 'toutou' (dog), 'minou' (cat), 'mimi'. Make it sound like a social media post for a pet.";
+    }
         
     const prompt = `Generate 4 short, witty social media bios for a ${petType} named ${name} who is ${personality}. Do not use hashtags. ${langInstruction}`;
     
@@ -141,7 +147,7 @@ export const generatePetBio = async (name: string, petType: PetType, personality
 };
 
 export const generateNameOfTheDay = async (language: Language = 'en'): Promise<{ name: string; meaning: string }> => {
-    const prompt = `Generate one unique pet name and fun meaning for today. Output in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `Generate one unique pet name and fun meaning for today. Output in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
@@ -159,7 +165,7 @@ export const generateNameOfTheDay = async (language: Language = 'en'): Promise<{
 };
 
 export const getPetNameMeaning = async (name: string, language: Language = 'en'): Promise<string> => {
-    const prompt = `Explain the fun meaning/origin of the pet name "${name}" in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `Explain the fun meaning/origin of the pet name "${name}" in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     try {
       const response = await ai.models.generateContent({
           model: 'gemini-3-flash-preview',
@@ -176,7 +182,7 @@ export const getPetNameMeaning = async (name: string, language: Language = 'en')
 };
 
 export const generatePetPersonality = async (quizAnswers: string[], language: Language = 'en'): Promise<PetPersonalityResult> => {
-    const prompt = `Analyze these quiz answers: ${quizAnswers.join(', ')}. Generate a pet personality profile in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `Analyze these quiz answers: ${quizAnswers.join(', ')}. Generate a pet personality profile in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
@@ -193,7 +199,7 @@ export const generatePetPersonality = async (quizAnswers: string[], language: La
 };
 
 export const generateQuickFireList = async (style: NameStyle, petType: PetType, petGender: PetGender, language: Language = 'en'): Promise<string[]> => {
-    const prompt = `List 20 ${style} names for a ${petGender} ${petType}. Output in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `List 20 ${style} names for a ${petGender} ${petType}. Output in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
@@ -262,7 +268,7 @@ export const translatePetName = async (name: string, targetLanguage: string): Pr
 };
 
 export const generatePetHoroscope = async (sign: string, petType: string, name: string, language: Language = 'en'): Promise<{ prediction: string; luckyItem: string }> => {
-    const prompt = `Weekly horoscope for ${petType} ${name} who is ${sign}. Output in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `Weekly horoscope for ${petType} ${name} who is ${sign}. Output in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
@@ -279,7 +285,7 @@ export const generatePetHoroscope = async (sign: string, petType: string, name: 
 };
 
 export const findAdoptionCenters = async (location: string, language: Language = 'en'): Promise<AdoptionCenter[]> => {
-    const prompt = `Find 3 adoption centers near ${location}. Mission in ${language === 'es' ? 'Spanish' : 'English'}.`;
+    const prompt = `Find 3 adoption centers near ${location}. Mission in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     const schema = { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, mission: { type: Type.STRING }, address: { type: Type.STRING }, phone: { type: Type.STRING }, website: { type: Type.STRING } }, required: ["name", "mission", "address", "phone", "website"] } };
     try {
         const response = await ai.models.generateContent({
