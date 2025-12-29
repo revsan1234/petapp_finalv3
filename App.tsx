@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
@@ -39,7 +40,7 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-// --- CONTACT US SCREEN (INLINED TO FIX BUILD ERRORS) ---
+// --- CONTACT US SCREEN (INLINED TO PREVENT BUILD ERRORS) ---
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();
@@ -80,6 +81,128 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         </div>
                     </Card>
                 </main>
+            </div>
+        </div>
+    );
+};
+
+// --- BLOG SCREEN COMPONENT (INLINED WITH FULL ARTICLES) ---
+
+interface BlogPost {
+    id: string;
+    title: string;
+    excerpt: string;
+    content: string;
+    pet: 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster';
+    date: string;
+}
+
+const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+    const { language, t } = useLanguage();
+    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+
+    const posts = useMemo<BlogPost[]>(() => [
+        {
+            id: '1',
+            title: language === 'fr' 
+                ? 'Plus de 150 Noms de Chiens Uniques pour 2025' 
+                : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025',
+            excerpt: language === 'fr'
+                ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Voici nos conseils d\'experts.'
+                : language === 'es' ? '¡Felicidades por tu nuevo amigo peludo! Elegir un nombre es una gran aventura.' : 'Finding the perfect name for your companion is a journey. Here are our top expert tips.',
+            content: language === 'fr'
+                ? "Accueillir un chien est un moment magique. Le nom que vous choisirez sera prononcé des milliers de fois, il doit donc être parfait !\n\n**Pourquoi l'IA Change Tout**\nEn 2025, nous ne nous contentons plus de 'Médor'. L'intelligence artificielle nous permet d'analyser la personnalité unique de votre animal (est-il un aventurier courageux ou un clown rigolo ?) pour trouver un nom qui résonne.\n\n**Les Tendances de cette Année**\n• Noms de Nature : Trèfle, Orion, Céleste.\n• Noms 'Humains Vintage' : Albert, Marcel, Henriette.\n• Noms de Pop Culture : Grogu, Zuko, Ahsoka.\n\nPrenez votre temps, testez le nom à haute voix, et utilisez nos outils de génération pour explorer des milliers d'options uniques !"
+                : language === 'es' 
+                    ? "¡Felicidades por tu nuevo compañero! Elegir un nombre es el primer gran paso en vuestra vida juntos.\n\n**El Poder de la Personalidad**\nNo todos los perros son iguales. Algunos son 'Lomitos' tranquilos y otros son pura energía 'Mischievous'. Nuestra IA te ayuda a filtrar por vibra para que el nombre encaje como un guante.\n\n**Tendencias para 2025**\n• Nombres Galácticos: Caspio, Orión, Nova.\n• Nombres de Comida: Mochi, Taco, Canela.\n• Clásicos con Giro: Maximo, Daenerys.\n\nRecuerda: los perros responden mejor a nombres de dos sílabas. ¡Usa nuestro generador para encontrar el match perfecto!" 
+                    : "Welcome to the world of dog ownership! Picking a name is the first big responsibility. In 2025, we're seeing a shift towards meaningful, personality-driven names.\n\n**Why Personality Matters**\nIs your dog a 'Brave' guardian or a 'Goofy' entertainer? Matching the sound of the name to the pet's energy creates a stronger bond. Short, punchy names with clear vowels work best for training.\n\n**Top Picks for 2025**\n1. Retro Classics: Archie, Mabel, Otis.\n2. Cosmic Names: Zenith, Lyra, Nebula.\n3. Nature Inspired: River, Aspen, Sage.\n\nUse our 'Names' tool to generate custom lists and save your favorites to your top picks!",
+            pet: 'dog',
+            date: 'Jan 1, 2026'
+        },
+        {
+            id: '2',
+            title: language === 'fr' 
+                ? 'La Magie des Noms de Chats : Tendances 2025' 
+                : language === 'es' ? 'Magia para Nombres de Gatos: Tendencias 2025' : 'Cat Naming Magic: 2025 Trends',
+            excerpt: language === 'fr'
+                ? 'Les minous méritent des noms mystérieux. Découvrez pourquoi les noms courts sont les meilleurs.'
+                : language === 'es' ? 'Los michis merecen nombres misteriosos. Descubre lo que es tendencia para gatos.' : 'Cats deserve names that reflect their mysterious nature. Explore the latest trends.',
+            content: language === 'fr'
+                ? "Le chat est un animal d'une élégance rare, mais aussi capable des pitreries les plus folles. Son nom doit refléter cette dualité.\n\n**La Science du Nom Félin**\nSaviez-vous que les chats réagissent mieux aux fréquences aiguës ? Les noms se terminant par 'i' ou 'y' (comme Mochi ou Kitty) capturent leur attention plus facilement.\n\n**Ce qui cartonne en 2025**\n• Le style 'Grand-Parent' : Gaston, Ginette, Suzanne.\n• Le style 'Mystique' : Luna, Onyx, Salem.\n• Le style 'Gourmand' : Croissant, Sushi, Cookie.\n\nN'oubliez pas d'utiliser notre 'Bio Creator' pour imaginer la vie secrète de votre chat une fois son nom trouvé !"
+                : language === 'es'
+                    ? "El gato es el rey de la casa. Su nombre debe ser digno de su realeza (o de su locura nocturna).\n\n**Nombres que 'Michis' Adoran**\nLos expertos sugieren nombres cortos de una o dos sílabas. En 2025, los nombres con sonidos suaves están de moda.\n\n**Lo más buscado este año**\n• Nombres Japoneses: Yuki, Haru, Sora.\n• Nombres de Piedras: Ámbar, Jade, Opalo.\n• Nombres de Fantasía: Gandalf, Pixie, Loki.\n\nPrueba nuestro Quiz de Personalidad para ver si tu gato es un 'Elegant' o un 'Mischievous' y deja que la IA haga el resto."
+                    : "Cats are independent, mysterious, and often hilarious. Their names should be just as diverse as their attitudes.\n\n**Feline Naming Science**\nCats respond best to high-pitched sounds and names that end in vowels. A name like 'Ziggy' is more likely to get a response than 'Kingston'.\n\n**Hot Trends for 2025**\n- Mythological: Apollo, Hecate, Freya.\n- Cottagecore: Fern, Willow, Bramble.\n- Tiny Foods: Bean, Olive, Peppercorn.\n\nCheck out our 'Name of the Day' for daily inspiration, or use the 'Global Explorer' to see how names translate across cultures!",
+            pet: 'cat',
+            date: 'Feb 15, 2026'
+        }
+    ], [language]);
+
+    const handleOpenPost = (post: BlogPost) => {
+        setSelectedPost(post);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    if (selectedPost) {
+        return (
+            <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
+                <div className="w-full max-w-2xl mb-8 flex justify-start">
+                     <button 
+                        onClick={() => setSelectedPost(null)} 
+                        className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                        {t.blog.back_to_blog}
+                    </button>
+                </div>
+                <Card className="p-8 max-w-2xl w-full border-4 border-white/20 shadow-2xl">
+                    <div className="flex justify-center mb-6">
+                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg animate-bounce-wiggle" />
+                    </div>
+                    <h1 className="text-4xl font-black mb-8 text-center text-[#5D4037] leading-tight drop-shadow-sm">{selectedPost.title}</h1>
+                    <div className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium opacity-90 pb-8">
+                        {selectedPost.content}
+                    </div>
+                    <div className="pt-8 border-t border-black/5 text-center">
+                        <p className="text-sm font-bold text-[#AA336A] uppercase tracking-widest">{t.blog.footer_note}</p>
+                    </div>
+                </Card>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
+            <div className="w-full max-w-5xl mb-8 flex justify-start">
+                <BackToHomeButton onClick={onBack} />
+            </div>
+            <div className="text-center mb-12">
+                <h1 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase drop-shadow-md tracking-tight">{t.blog.title}</h1>
+                <p className="text-white text-xl md:text-2xl font-bold opacity-90 drop-shadow-sm">{t.blog.subtitle}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-20">
+                {posts.map(post => (
+                    <Card 
+                        key={post.id} 
+                        onClick={() => handleOpenPost(post)} 
+                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group relative z-20 flex flex-col h-full shadow-md"
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
+                            <div className="text-left">
+                                <span className="text-xs font-black opacity-40 uppercase tracking-widest block">{post.date}</span>
+                                <h2 className="text-2xl font-black leading-tight text-[#5D4037] group-hover:text-[#AA336A] transition-colors">{post.title}</h2>
+                            </div>
+                        </div>
+                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed mb-6 flex-grow">{post.excerpt}</p>
+                        <div className="mt-auto pt-4 border-t border-black/5 flex items-center gap-2 text-[#AA336A] font-black text-sm uppercase tracking-widest">
+                            {t.blog.read_more}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 group-hover:translate-x-2 transition-transform">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </div>
+                    </Card>
+                ))}
             </div>
         </div>
     );
@@ -149,93 +272,6 @@ const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({
     </div>
   );
 });
-
-// --- BLOG SCREEN COMPONENT (INTERNAL) ---
-
-interface BlogPost {
-    id: string;
-    title: string;
-    excerpt: string;
-    content: string;
-    pet: 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster';
-    date: string;
-}
-
-const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const { language, t } = useLanguage();
-    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-
-    const posts = useMemo<BlogPost[]>(() => [
-        {
-            id: '1',
-            title: language === 'fr' ? 'Plus de 150 Noms de Chiens Uniques pour 2025' : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025',
-            excerpt: language === 'fr' ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure !' : language === 'es' ? '¡Felicidades por tu nuevo amigo peludo! Encuentra el nombre ideal.' : 'Finding the perfect name for your companion...',
-            content: language === 'fr' ? "Félicitations pour votre nouveau compagnon ! Utiliser une IA pour trouver un nom permet d'explorer des options créatives et uniques." : "Choosing a name is a big step. Use our AI tools to find something that matches your pet's energy and personality perfectly.",
-            pet: 'dog',
-            date: 'Jan 1, 2026'
-        },
-        {
-            id: '2',
-            title: language === 'fr' ? 'La Magie des Noms de Chats' : language === 'es' ? 'Magia para Nombres de Gatos' : 'Cat Naming Magic',
-            excerpt: 'Discover the most mysterious and fun names for your feline friends.',
-            content: "Cats often respond best to names with high-pitched vowels like 'i' or 'y'. Think names like Mochi, Kitty, or Pixie!",
-            pet: 'cat',
-            date: 'Feb 15, 2026'
-        }
-    ], [language]);
-
-    const handleOpenPost = (post: BlogPost) => {
-        setSelectedPost(post);
-        window.scrollTo(0, 0);
-    };
-
-    if (selectedPost) {
-        return (
-            <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-                <div className="w-full max-w-2xl mb-8 flex justify-start">
-                     <button onClick={() => setSelectedPost(null)} className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-                        {t.blog.back_to_blog}
-                    </button>
-                </div>
-                <Card className="p-8 max-w-2xl w-full border-4 border-white/20">
-                    <div className="flex justify-center mb-6">
-                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
-                    </div>
-                    <h1 className="text-3xl font-black mb-6 text-center text-[#5D4037] leading-tight">{selectedPost.title}</h1>
-                    <div className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium opacity-90">
-                        {selectedPost.content}
-                    </div>
-                </Card>
-            </div>
-        );
-    }
-
-    return (
-        <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-            <div className="w-full max-w-5xl mb-8 flex justify-start"><BackToHomeButton onClick={onBack} /></div>
-            <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase drop-shadow-md">{t.blog.title}</h1>
-                <p className="text-white text-xl md:text-2xl font-bold opacity-90">{t.blog.subtitle}</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
-                {posts.map(post => (
-                    <Card key={post.id} onClick={() => handleOpenPost(post)} className="p-8 cursor-pointer hover:scale-[1.03] transition-all border-2 border-white/10 group shadow-md hover:shadow-xl">
-                        <div className="flex items-center gap-4 mb-6">
-                            <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
-                            <div className="text-left">
-                                <span className="text-xs font-black opacity-40 uppercase">{post.date}</span>
-                                <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors">{post.title}</h2>
-                            </div>
-                        </div>
-                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed">{post.excerpt}</p>
-                        <div className="mt-4 text-[#AA336A] font-black text-sm uppercase tracking-widest">{t.blog.read_more}</div>
-                    </Card>
-                ))}
-            </div>
-        </div>
-    );
-};
 
 // --- BIO SCREEN EDITOR COMPONENT ---
 
@@ -441,10 +477,10 @@ const AppContent: React.FC = () => {
                         </div>
                         <div className="flex justify-center flex-wrap gap-x-8 gap-y-4 text-base items-center text-white font-bold tracking-tight">
                             <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-8 decoration-2">namemypet.org</a>
-                            <button onClick={() => { setView('blog'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
-                            <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
-                            <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
-                            <button onClick={() => { setView('contact'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
+                            <button onClick={() => { setView('blog'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
+                            <button onClick={() => { setView('privacy'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
+                            <button onClick={() => { setView('terms'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
+                            <button onClick={() => { setView('contact'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
                         </div>
                     </div>
                 </footer>
