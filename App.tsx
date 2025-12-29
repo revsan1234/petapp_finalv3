@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef, MouseEvent } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
 import { MainView } from './components/MainView';
@@ -165,7 +165,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { language, t } = useLanguage();
     const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
-    const posts: BlogPost[] = [
+    const posts = useMemo<BlogPost[]>(() => [
         {
             id: '1',
             title: language === 'fr' ? 'Plus de 150 Noms de Chiens Uniques pour 2025' : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025',
@@ -182,21 +182,30 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             pet: 'cat',
             date: 'Feb 15, 2026'
         }
-    ];
+    ], [language]);
+
+    const handleOpenPost = (post: BlogPost) => {
+        setSelectedPost(post);
+        window.scrollTo(0, 0);
+    };
 
     if (selectedPost) {
         return (
             <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
                 <div className="w-full max-w-2xl mb-8 flex justify-start">
-                     <button onClick={() => setSelectedPost(null)} className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm">
+                     <button onClick={() => setSelectedPost(null)} className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
                         {t.blog.back_to_blog}
                     </button>
                 </div>
                 <Card className="p-8 max-w-2xl w-full border-4 border-white/20">
-                    <PetCharacter pet={selectedPost.pet} className="w-24 h-24 mx-auto mb-6" />
-                    <h1 className="text-3xl font-black mb-4 text-center text-[#5D4037]">{selectedPost.title}</h1>
-                    <p className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium">{selectedPost.content}</p>
+                    <div className="flex justify-center mb-6">
+                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
+                    </div>
+                    <h1 className="text-3xl font-black mb-6 text-center text-[#5D4037] leading-tight">{selectedPost.title}</h1>
+                    <div className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium opacity-90">
+                        {selectedPost.content}
+                    </div>
                 </Card>
             </div>
         );
@@ -211,7 +220,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
                 {posts.map(post => (
-                    <Card key={post.id} onClick={() => setSelectedPost(post)} className="p-8 cursor-pointer hover:scale-[1.03] transition-all border-2 border-white/10 group">
+                    <Card key={post.id} onClick={() => handleOpenPost(post)} className="p-8 cursor-pointer hover:scale-[1.03] transition-all border-2 border-white/10 group shadow-md hover:shadow-xl">
                         <div className="flex items-center gap-4 mb-6">
                             <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
                             <div className="text-left">
@@ -219,7 +228,8 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                 <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors">{post.title}</h2>
                             </div>
                         </div>
-                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3">{post.excerpt}</p>
+                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed">{post.excerpt}</p>
+                        <div className="mt-4 text-[#AA336A] font-black text-sm uppercase tracking-widest">{t.blog.read_more}</div>
                     </Card>
                 ))}
             </div>
@@ -431,10 +441,10 @@ const AppContent: React.FC = () => {
                         </div>
                         <div className="flex justify-center flex-wrap gap-x-8 gap-y-4 text-base items-center text-white font-bold tracking-tight">
                             <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-8 decoration-2">namemypet.org</a>
-                            <button onClick={() => setView('blog')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
-                            <button onClick={() => setView('privacy')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
-                            <button onClick={() => setView('terms')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
-                            <button onClick={() => setView('contact')} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
+                            <button onClick={() => { setView('blog'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
+                            <button onClick={() => { setView('privacy'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
+                            <button onClick={() => { setView('terms'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
+                            <button onClick={() => { setView('contact'); window.scrollTo(0, 0); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
                         </div>
                     </div>
                 </footer>
