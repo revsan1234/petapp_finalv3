@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
@@ -40,7 +39,7 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-// --- CONTACT US SCREEN (INLINED TO PREVENT BUILD ERRORS) ---
+// --- CONTACT US SCREEN (INLINED) ---
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();
@@ -86,7 +85,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     );
 };
 
-// --- BLOG SCREEN COMPONENT (INLINED WITH FULL ARTICLES) ---
+// --- BLOG SCREEN COMPONENT (INLINED WITH SEO CONTENT) ---
 
 interface BlogPost {
     id: string;
@@ -104,33 +103,21 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const posts = useMemo<BlogPost[]>(() => [
         {
             id: '1',
-            title: language === 'fr' 
-                ? 'Plus de 150 Noms de Chiens Uniques pour 2025' 
-                : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025',
-            excerpt: language === 'fr'
-                ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Voici nos conseils d\'experts.'
-                : language === 'es' ? '¡Felicidades por tu nuevo amigo peludo! Elegir un nombre es una gran aventura.' : 'Finding the perfect name for your companion is a journey. Here are our top expert tips.',
-            content: language === 'fr'
-                ? "Accueillir un chien est un moment magique. Le nom que vous choisirez sera prononcé des milliers de fois, il doit donc être parfait !\n\n**Pourquoi l'IA Change Tout**\nEn 2025, nous ne nous contentons plus de 'Médor'. L'intelligence artificielle nous permet d'analyser la personnalité unique de votre animal (est-il un aventurier courageux ou un clown rigolo ?) pour trouver un nom qui résonne.\n\n**Les Tendances de cette Année**\n• Noms de Nature : Trèfle, Orion, Céleste.\n• Noms 'Humains Vintage' : Albert, Marcel, Henriette.\n• Noms de Pop Culture : Grogu, Zuko, Ahsoka.\n\nPrenez votre temps, testez le nom à haute voix, et utilisez nos outils de génération pour explorer des milliers d'options uniques !"
-                : language === 'es' 
-                    ? "¡Felicidades por tu nuevo compañero! Elegir un nombre es el primer gran paso en vuestra vida juntos.\n\n**El Poder de la Personalidad**\nNo todos los perros son iguales. Algunos son 'Lomitos' tranquilos y otros son pura energía 'Mischievous'. Nuestra IA te ayuda a filtrar por vibra para que el nombre encaje como un guante.\n\n**Tendencias para 2025**\n• Nombres Galácticos: Caspio, Orión, Nova.\n• Nombres de Comida: Mochi, Taco, Canela.\n• Clásicos con Giro: Maximo, Daenerys.\n\nRecuerda: los perros responden mejor a nombres de dos sílabas. ¡Usa nuestro generador para encontrar el match perfecto!" 
-                    : "Welcome to the world of dog ownership! Picking a name is the first big responsibility. In 2025, we're seeing a shift towards meaningful, personality-driven names.\n\n**Why Personality Matters**\nIs your dog a 'Brave' guardian or a 'Goofy' entertainer? Matching the sound of the name to the pet's energy creates a stronger bond. Short, punchy names with clear vowels work best for training.\n\n**Top Picks for 2025**\n1. Retro Classics: Archie, Mabel, Otis.\n2. Cosmic Names: Zenith, Lyra, Nebula.\n3. Nature Inspired: River, Aspen, Sage.\n\nUse our 'Names' tool to generate custom lists and save your favorites to your top picks!",
+            title: language === 'fr' ? '150+ Noms de Chiens Uniques et Tendances pour 2025' : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025: The Ultimate Guide',
+            excerpt: language === 'fr' ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez les tendances de cette année.' : 'Finding the perfect name for your companion is a journey. From nature-inspired to retro classics, here are the top picks for 2025.',
+            content: language === 'fr' 
+                ? "Félicitations pour votre nouveau compagnon ! Choisir un nom est la première grande étape de votre vie ensemble. En 2025, la tendance est aux noms courts, percutants et pleins de caractère.\n\n**Pourquoi l'IA change la donne ?**\nGrâce à l'intelligence artificielle, vous pouvez désormais générer des noms basés sur la personnalité réelle de votre chien. Est-il un aventurier courageux ou un clown maladroit ? Notre outil analyse ces traits pour vous proposer des options sur mesure.\n\n**Les Tendances Phares de 2025 :**\n1. **Noms Nature** : Forêt, Orion, Céleste et Zéphyr sont en tête de liste.\n2. **Noms Rétro** : Les prénoms de grands-parents comme Albert, Gaston ou Henriette reviennent en force.\n3. **Noms 'Foodie'** : Mochi, Sushi et Cookie restent des classiques indémodables.\n\n**Conseils d'Experts pour bien choisir :**\n- **La règle des deux syllabes** : Les chiens répondent mieux aux noms courts.\n- **Testez à voix haute** : Le nom doit être facile à crier au parc !\n- **Évitez les ordres** : Évitez les noms qui riment avec 'Assis' ou 'Couché' pour ne pas le troubler.\n\nUtilisez notre générateur intelligent pour explorer des milliers de combinaisons uniques !"
+                : "Welcome to the exciting world of pet parenting! Choosing a name is the first official act of bonding with your new dog. In 2025, we're seeing a shift away from 'Max' and 'Buddy' towards names that tell a story.\n\n**The Power of AI Naming**\nWhy guess when you can generate? Our AI name generator looks at your dog's breed, gender, and personality to suggest names that actually fit. Whether your pup is a 'Brave' protector or a 'Goofy' entertainer, the right sound makes all the difference.\n\n**Top Trends for 2025:**\n\n**1. Celestial & Cosmic Names**\nSpace exploration is inspiring names like Nova, Zenith, Apollo, and Nebula. These names sound grand and timeless.\n\n**2. Earthy & Organic Tones**\nNature names are booming. Think River, Aspen, Sage, Willow, and Jasper. These reflect a calm, grounded personality.\n\n**3. The 'Human-Classic' Revival**\nThere's a massive trend in giving dogs old-fashioned human names. Arlo, Mabel, Otis, and Florence are incredibly popular this year.\n\n**Expert Naming Tips:**\n- **Vowels Matter**: Dogs hear high-pitched vowels better. Names ending in 'y', 'ie', or 'a' are often recognized faster.\n- **Keep it Short**: One or two syllables are ideal for training and recall.\n- **Avoid Command Conflicts**: Make sure the name doesn't sound like 'Stay', 'No', or 'Fetch'.\n\nTake your time, use our personality quiz to narrow down your style, and remember: the best name is the one that makes you smile every time you say it!",
             pet: 'dog',
             date: 'Jan 1, 2026'
         },
         {
             id: '2',
-            title: language === 'fr' 
-                ? 'La Magie des Noms de Chats : Tendances 2025' 
-                : language === 'es' ? 'Magia para Nombres de Gatos: Tendencias 2025' : 'Cat Naming Magic: 2025 Trends',
-            excerpt: language === 'fr'
-                ? 'Les minous méritent des noms mystérieux. Découvrez pourquoi les noms courts sont les meilleurs.'
-                : language === 'es' ? 'Los michis merecen nombres misteriosos. Descubre lo que es tendencia para gatos.' : 'Cats deserve names that reflect their mysterious nature. Explore the latest trends.',
+            title: language === 'fr' ? 'La Magie des Noms de Chats : Styles et Significations' : language === 'es' ? 'Magia para Nombres de Gatos' : 'Cat Naming Magic: Finding the Vibe for 2025',
+            excerpt: language === 'fr' ? 'Les chats sont mystérieux et élégants. Découvrez comment trouver un nom qui reflète leur aura unique.' : 'Cats often choose their own names through their actions. Discover the science behind feline names and the latest 2025 styles.',
             content: language === 'fr'
-                ? "Le chat est un animal d'une élégance rare, mais aussi capable des pitreries les plus folles. Son nom doit refléter cette dualité.\n\n**La Science du Nom Félin**\nSaviez-vous que les chats réagissent mieux aux fréquences aiguës ? Les noms se terminant par 'i' ou 'y' (comme Mochi ou Kitty) capturent leur attention plus facilement.\n\n**Ce qui cartonne en 2025**\n• Le style 'Grand-Parent' : Gaston, Ginette, Suzanne.\n• Le style 'Mystique' : Luna, Onyx, Salem.\n• Le style 'Gourmand' : Croissant, Sushi, Cookie.\n\nN'oubliez pas d'utiliser notre 'Bio Creator' pour imaginer la vie secrète de votre chat une fois son nom trouvé !"
-                : language === 'es'
-                    ? "El gato es el rey de la casa. Su nombre debe ser digno de su realeza (o de su locura nocturna).\n\n**Nombres que 'Michis' Adoran**\nLos expertos sugieren nombres cortos de una o dos sílabas. En 2025, los nombres con sonidos suaves están de moda.\n\n**Lo más buscado este año**\n• Nombres Japoneses: Yuki, Haru, Sora.\n• Nombres de Piedras: Ámbar, Jade, Opalo.\n• Nombres de Fantasía: Gandalf, Pixie, Loki.\n\nPrueba nuestro Quiz de Personalidad para ver si tu gato es un 'Elegant' o un 'Mischievous' y deja que la IA haga el resto."
-                    : "Cats are independent, mysterious, and often hilarious. Their names should be just as diverse as their attitudes.\n\n**Feline Naming Science**\nCats respond best to high-pitched sounds and names that end in vowels. A name like 'Ziggy' is more likely to get a response than 'Kingston'.\n\n**Hot Trends for 2025**\n- Mythological: Apollo, Hecate, Freya.\n- Cottagecore: Fern, Willow, Bramble.\n- Tiny Foods: Bean, Olive, Peppercorn.\n\nCheck out our 'Name of the Day' for daily inspiration, or use the 'Global Explorer' to see how names translate across cultures!",
+                ? "Les chats ne sont pas de simples animaux de compagnie ; ce sont de petits êtres mystiques qui règnent sur nos foyers. Leur nom doit refléter cette élégance innée.\n\n**La Science derrière le Nom Félin**\nSaviez-vous que les chats réagissent mieux aux fréquences aiguës ? Les noms se terminant par un son en 'i' (comme Mochi, Kitty ou Pixie) attirent leur attention beaucoup plus facilement que des sons graves.\n\n**Tendances de Noms de Chats pour 2025 :**\n- **Le Style Mystique** : Luna, Onyx, Salem et Mystique sont parfaits pour les chats noirs ou gris.\n- **Le Style Gourmand** : Croissant, Baguette, Olive et Cannelle sont très populaires sur les réseaux sociaux.\n- **Le Style Mythologique** : Athéna, Zeus, Loki et Freya apportent une touche de noblesse.\n\n**Comment utiliser notre Bio Creator ?**\nUne fois le nom trouvé, passez à l'étape suivante ! Créez une carte de profil avec sa photo et une bio générée par IA. C'est le moyen idéal de présenter votre nouveau 'roi de la maison' à vos amis.\n\nN'oubliez pas : un chat peut prendre quelques jours pour s'habituer à son nouveau nom. Soyez patient et utilisez des friandises !"
+                : "A cat is the only animal that can make a living room feel like a palace. Their name should be just as regal, quirky, or mysterious as they are. In 2025, cat owners are leaning into personality-first naming.\n\n**Feline Phonetics: What Cats Actually Hear**\nResearch suggests that cats respond best to high-pitched sounds. Names ending in a long 'e' sound (like Ziggy, Mochi, or Kitty) are much more likely to get an ear flick or a look than a flat, low-frequency name.\n\n**Hot Cat Name Styles for 2025:**\n\n**1. The 'Grandma/Grandpa' Aesthetic**\nCottagecore is still huge. Names like Pearl, Walter, Gertrude, and Arthur are top-tier choices for indoor-only loungers.\n\n**2. Anime & Pop Culture**\nFrom Ghibli inspirations like Totoro and Jiji to Marvel icons like Loki, pop culture remains a massive source of inspiration.\n\n**3. Tiny Food Names**\nFood names are universally cute. Bean, Sprout, Taco, Pepper, and Noodle are currently trending on TikTok and Instagram.\n\n**Why Use the Name My Pet AI?**\nOur AI doesn't just look for words; it looks for 'Vibes'. By selecting 'Mischievous' or 'Elegant', you get results that match the glint in your cat's eyes. \n\n**Pro Tip**: Say the name while they are playing. If they look at you, you've found a winner! Once you decide, head over to our 'Bio' section to create a custom shareable card to introduce them to the world.",
             pet: 'cat',
             date: 'Feb 15, 2026'
         }
@@ -145,22 +132,17 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         return (
             <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
                 <div className="w-full max-w-2xl mb-8 flex justify-start">
-                     <button 
-                        onClick={() => setSelectedPost(null)} 
-                        className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                        </svg>
+                     <button onClick={() => setSelectedPost(null)} className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
                         {t.blog.back_to_blog}
                     </button>
                 </div>
-                <Card className="p-8 max-w-2xl w-full border-4 border-white/20 shadow-2xl">
+                <Card className="p-8 max-w-2xl w-full border-4 border-white/20 shadow-xl mb-24">
                     <div className="flex justify-center mb-6">
-                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg animate-bounce-wiggle" />
+                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
                     </div>
-                    <h1 className="text-4xl font-black mb-8 text-center text-[#5D4037] leading-tight drop-shadow-sm">{selectedPost.title}</h1>
-                    <div className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium opacity-90 pb-8">
+                    <h1 className="text-4xl font-black mb-8 text-center text-[#5D4037] leading-tight">{selectedPost.title}</h1>
+                    <div className="whitespace-pre-wrap text-xl leading-relaxed text-[#333333] font-medium opacity-90 pb-12">
                         {selectedPost.content}
                     </div>
                     <div className="pt-8 border-t border-black/5 text-center">
@@ -173,29 +155,23 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
     return (
         <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-            <div className="w-full max-w-5xl mb-8 flex justify-start">
-                <BackToHomeButton onClick={onBack} />
-            </div>
+            <div className="w-full max-w-5xl mb-8 flex justify-start"><BackToHomeButton onClick={onBack} /></div>
             <div className="text-center mb-12">
                 <h1 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase drop-shadow-md tracking-tight">{t.blog.title}</h1>
                 <p className="text-white text-xl md:text-2xl font-bold opacity-90 drop-shadow-sm">{t.blog.subtitle}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-24">
                 {posts.map(post => (
-                    <Card 
-                        key={post.id} 
-                        onClick={() => handleOpenPost(post)} 
-                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group relative z-20 flex flex-col h-full shadow-md"
-                    >
+                    <Card key={post.id} onClick={() => handleOpenPost(post)} className="p-8 cursor-pointer hover:scale-[1.03] transition-all border-2 border-white/10 group shadow-md hover:shadow-xl flex flex-col h-full">
                         <div className="flex items-center gap-4 mb-6">
                             <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
                             <div className="text-left">
-                                <span className="text-xs font-black opacity-40 uppercase tracking-widest block">{post.date}</span>
-                                <h2 className="text-2xl font-black leading-tight text-[#5D4037] group-hover:text-[#AA336A] transition-colors">{post.title}</h2>
+                                <span className="text-xs font-black opacity-40 uppercase tracking-widest">{post.date}</span>
+                                <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors leading-tight">{post.title}</h2>
                             </div>
                         </div>
                         <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed mb-6 flex-grow">{post.excerpt}</p>
-                        <div className="mt-auto pt-4 border-t border-black/5 flex items-center gap-2 text-[#AA336A] font-black text-sm uppercase tracking-widest">
+                        <div className="mt-auto pt-4 border-t border-black/5 text-[#AA336A] font-black text-sm uppercase tracking-widest flex items-center gap-2">
                             {t.blog.read_more}
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 group-hover:translate-x-2 transition-transform">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
@@ -221,7 +197,7 @@ interface BioCardProps {
   gender?: PetGender;
 }
 
-const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({ 
+const BioCardLocal = forwardRef<HTMLDivElement, BioCardProps>(({ 
     imagePreview, 
     petName, 
     bio, 
@@ -273,9 +249,9 @@ const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({
   );
 });
 
-// --- BIO SCREEN EDITOR COMPONENT ---
+// --- BIO SCREEN EDITOR COMPONENT (INLINED) ---
 
-const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; goHome: () => void; }> = ({ petInfo, imageForBio, setImageForBio, goHome }) => {
+const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; goHome: () => void; }> = ({ petInfo, imageForBio, setImageForBio, goHome }) => {
     const { t, language } = useLanguage();
     const [petName, setPetName] = useState('');
     const [personality, setPersonality] = useState<PetPersonality>(petInfo.personality);
@@ -388,7 +364,7 @@ const BioScreen: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setIma
                     <div className="space-y-6 flex flex-col items-center w-full">
                         <div className="w-full border-t border-white/20 pt-8 flex justify-center">
                             <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave}>
-                                <BioCard ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
+                                <BioCardLocal ref={bioCardRef} imagePreview={imagePreview} petName={petName} bio={selectedBio} imageZoom={imageZoom} imagePosition={imagePosition} onImageMouseDown={handleMouseDown} isDragging={isDragging} gender={gender} />
                             </div>
                         </div>
                         <div className="w-full max-w-sm space-y-4">
@@ -436,7 +412,7 @@ const AppContent: React.FC = () => {
         switch(activeTab) {
             case 'home': return <LandingPage setTab={handleSetTab} />;
             case 'generate': return <MainView savedNames={savedNames} addSavedName={(n) => setSavedNames(prev => prev.find(x => x.id === n.id) ? prev : [...prev, n])} removeSavedName={(id) => setSavedNames(prev => prev.filter(n => n.id !== id))} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
-            case 'bio': return <BioScreen petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
+            case 'bio': return <BioScreenLocal petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
             case 'play': return <PlayScreen onQuizComplete={(res) => setPetInfo(p => ({...p, ...res.keywords}))} savedNames={savedNames} addSavedName={(n) => setSavedNames(prev => prev.find(x => x.id === n.id) ? prev : [...prev, n])} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
             case 'photo': return <PhotoScreen setActiveTab={handleSetTab} setImageForBio={setImageForBio} goHome={goHome} />;
             case 'adopt': return <AdoptScreen goHome={goHome} />;
