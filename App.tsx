@@ -39,7 +39,7 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
     );
 };
 
-// --- CONTACT US SCREEN (INLINED) ---
+// --- CONTACT US SCREEN ---
 
 const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const { t } = useLanguage();
@@ -85,7 +85,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     );
 };
 
-// --- BLOG SCREEN COMPONENT (SEO OPTIMIZED) ---
+// --- BLOG SCREEN COMPONENT (FULLY MULTILINGUAL CONTENT) ---
 
 interface BlogPost {
     id: string;
@@ -103,38 +103,55 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const posts = useMemo<BlogPost[]>(() => [
         {
             id: '1',
-            title: language === 'fr' ? '150+ Noms de Chiens Uniques et Tendances pour 2025' : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025: The Ultimate Guide',
-            excerpt: language === 'fr' ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez comment l\'IA révolutionne le choix des prénoms.' : 'Finding the perfect name for your companion is a journey. From nature-inspired picks to retro classics, explore the top pet naming trends for 2025.',
+            title: language === 'fr' 
+                ? 'Plus de 150 Noms de Chiens Uniques pour 2025 : Le Guide Complet' 
+                : language === 'es' 
+                    ? 'Más de 150 Nombres de Perros Únicos para 2025: Guía de IA' 
+                    : '150+ Unique Dog Names for 2025: The Ultimate AI Guide',
+            excerpt: language === 'fr' 
+                ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez comment l\'IA et les tendances actuelles transforment le choix des prénoms.' 
+                : language === 'es'
+                    ? '¡Encontrar el nombre perfecto para tu perro es una aventura! Descubre cómo la IA está cambiando las tendencias este año.'
+                    : 'Finding the perfect name for your companion is a journey. From nature-inspired picks to retro classics, explore how AI is helping owners find the "one" in 2025.',
             pet: 'dog',
-            date: 'Jan 10, 2025',
+            date: language === 'fr' ? '10 Janvier 2025' : language === 'es' ? '10 Enero 2025' : 'Jan 10, 2025',
             content: (
-                <div className="space-y-6 text-left">
-                    <p className="text-xl leading-relaxed text-gray-700">
-                        Choosing a name for your new dog is more than just a label—it's the first step in building a lifelong bond. In 2025, pet owners are moving away from traditional names like "Buddy" or "Max" in favor of names that reflect personality, heritage, and even cosmic vibes.
+                <div className="space-y-6 text-left text-[#333333]">
+                    <p className="text-xl leading-relaxed">
+                        {language === 'fr' 
+                            ? "Accueillir un chien dans sa vie est un moment magique. C'est le début d'une amitié indéfectible, et le choix de son nom est le tout premier acte de complicité. En 2025, nous observons un changement radical. Fini les classiques 'Médor' ; aujourd'hui, le nom d'un chien est une extension de sa personnalité."
+                            : language === 'es'
+                                ? "Dar la bienvenida a un perro es un momento transformador. Es el comienzo de un vínculo de por vida, y elegir un nombre es el primer acto oficial. En 2025, vemos un cambio masivo. Los nombres estándar como 'Max' están dando paso a opciones más profundas y basadas en la personalidad."
+                                : "Welcoming a dog into your life is a transformative moment. It's the beginning of a lifelong bond, and choosing a name is the first official act of pet parenting. In 2025, we're seeing a massive shift in how owners approach this task."}
                     </p>
                     
-                    <h2 className="text-2xl font-black text-[#AA336A]">The Rise of AI in Pet Naming</h2>
-                    <p className="text-lg text-gray-700">
-                        Modern technology is changing how we interact with our pets before they even arrive home. AI-powered pet name generators, like the one here at <strong>Name My Pet</strong>, analyze breed traits, your personal aesthetic, and the dog's emerging personality to suggest names that "stick." Instead of scrolling through an alphabetical list of 5,000 words, AI helps you find the one name that actually resonates with your soul.
+                    <h2 className="text-2xl font-black text-[#AA336A]">
+                        {language === 'fr' ? "L'Intelligence Artificielle au Service du Nom Parfait" : language === 'es' ? "El Poder de la IA en los Nombres" : "The Power of AI in Pet Naming"}
+                    </h2>
+                    <p className="text-lg">
+                        {language === 'fr'
+                            ? "Grâce au générateur d'IA de Name My Pet, l'intelligence artificielle analyse des milliers de données pour vous proposer des options qui résonnent vraiment. Plus besoin de listes infinies, l'IA trouve la perle rare."
+                            : language === 'es'
+                                ? "Con el generador de IA de Name My Pet, la tecnología analiza miles de datos para sugerir nombres que realmente encajen con tu perro, evitando las listas genéricas y aburridas."
+                                : "With tools like the Name My Pet AI generator, you no longer have to scroll through endless alphabetical lists. AI technology analyzes data points to suggest names that actually 'stick'."}
                     </p>
 
-                    <h2 className="text-2xl font-black text-[#AA336A]">Top 2025 Dog Naming Trends</h2>
-                    <ul className="list-disc pl-5 space-y-4 text-lg text-gray-700">
-                        <li><strong>Cosmic & Celestial:</strong> With renewed interest in space exploration, names like <em>Nova, Zenith, Orion,</em> and <em>Galileo</em> are skyrocketing in popularity.</li>
-                        <li><strong>Retro Human Names:</strong> The "Grandpa/Grandma" trend is stronger than ever. Think <em>Archie, Mabel, Otis,</em> and <em>Pearl</em>. These names offer a sense of dignity and charm.</li>
-                        <li><strong>Earthy & Organic:</strong> Reflecting a global focus on sustainability, names like <em>River, Sage, Aspen,</em> and <em>Willow</em> remain top choices for active, outdoor-loving pups.</li>
-                        <li><strong>Anime Inspiration:</strong> For the Gen Z and Millennial pet parents, characters like <em>Zuko, Ahsoka,</em> and <em>Gojo</em> are becoming household staples.</li>
+                    <h2 className="text-2xl font-black text-[#AA336A]">
+                        {language === 'fr' ? "Tendances 2025" : language === 'es' ? "Tendencias 2025" : "2025 Trends"}
+                    </h2>
+                    <ul className="list-disc pl-5 space-y-4 text-lg">
+                        <li><strong>{language === 'fr' ? "Cosmique" : language === 'es' ? "Cósmico" : "Cosmic"}:</strong> {language === 'fr' ? "Orion, Nova, Zénith sont en plein essor." : language === 'es' ? "Nombres como Orión y Nova son tendencia." : "Orion, Nova, Zenith are skyrocketing."}</li>
+                        <li><strong>{language === 'fr' ? "Rétro" : language === 'es' ? "Retro" : "Retro"}:</strong> {language === 'fr' ? "Albert, Henriette, Marguerite sont de retour." : language === 'es' ? "Nombres clásicos como Arturo o Lola vuelven con fuerza." : "Archie, Mabel, Otis are stronger than ever."}</li>
                     </ul>
 
-                    <h2 className="text-2xl font-black text-[#AA336A]">Scientific Tips for Better Recall</h2>
-                    <p className="text-lg text-gray-700">
-                        Did you know that dogs respond better to certain frequencies? Veterinary behaviorists suggest choosing a name with two syllables and a strong ending vowel (like an "ee" or "ah" sound). Names like <em>Lucky, Luna,</em> or <em>Cookie</em> are much easier for a dog to distinguish from background noise than a single-syllable, flat-sounding name like <em>Bob</em>.
-                    </p>
-
-                    <div className="bg-[#AA336A]/5 p-6 rounded-2xl border border-[#AA336A]/10 mt-8">
-                        <p className="font-bold text-[#AA336A] mb-2">Expert Advice:</p>
+                    <div className="bg-[#AA336A]/5 p-6 rounded-2xl border border-[#AA336A]/10 mt-8 text-center">
+                        <p className="font-bold text-[#AA336A] mb-2">{language === 'fr' ? "Conseil d'Expert :" : language === 'es' ? "Consejo de Experto :" : "Expert Tip:"}</p>
                         <p className="italic text-gray-600">
-                            "Always test your favorite names in a 'shout test.' If it feels awkward to yell it across a crowded dog park, it's probably not the right one. Use our Name Generator to find short, punchy options that your dog will love!"
+                            {language === 'fr' 
+                                ? "Faites toujours le 'test du cri'. Si vous n'êtes pas à l'aise de crier le nom au parc, ce n'est pas le bon !" 
+                                : language === 'es'
+                                    ? "¡Haz la prueba del grito! Si te da vergüenza gritar el nombre en el parque, probablemente no sea el indicado."
+                                    : "Always perform the 'shout test.' If you feel awkward yelling it across a park, it's probably not the one."}
                         </p>
                     </div>
                 </div>
@@ -142,48 +159,56 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         },
         {
             id: '2',
-            title: language === 'fr' ? 'La Magie des Noms de Chats : Tendances Félines' : language === 'es' ? 'Magia para Nombres de Gatos' : 'Cat Naming Magic: Feline Trends for 2025',
-            excerpt: language === 'fr' ? 'Les chats sont mystérieux et élégants. Découvrez la science derrière les prénoms que les chats préfèrent vraiment.' : 'Cats often choose their own names through their quirky actions. Discover the science behind feline linguistics and the hottest cat names this year.',
+            title: language === 'fr' 
+                ? 'La Magie des Noms de Chats : Styles et Psychologie pour 2025' 
+                : language === 'es'
+                    ? 'Magia para Nombres de Gatos: Tendencias y Psicología 2025'
+                    : 'Cat Naming Magic: Aesthetic Trends and Psychology for 2025',
+            excerpt: language === 'fr' 
+                ? 'Les chats sont mystérieux et élégants. Découvrez pourquoi leur nom doit être aussi unique que leur aura.' 
+                : language === 'es'
+                    ? 'Los gatos son seres misteriosos. Descubre por qué su nombre debe ser tan único como su personalidad.'
+                    : 'A cat is more than a pet—it is a tiny, furry overlord. Discover the science of feline naming and the hottest aesthetic trends.',
             pet: 'cat',
-            date: 'Feb 15, 2025',
+            date: language === 'fr' ? '15 Février 2025' : language === 'es' ? '15 Febrero 2025' : 'Feb 15, 2025',
             content: (
-                <div className="space-y-6 text-left">
-                    <p className="text-xl leading-relaxed text-gray-700">
-                        Cats are the only animals that make a living room feel like a royal palace. Their names should be just as regal, mysterious, or hilariously specific as they are. In 2025, cat naming is all about the "Vibe."
+                <div className="space-y-6 text-left text-[#333333]">
+                    <p className="text-xl leading-relaxed">
+                        {language === 'fr'
+                            ? "Un chat transforme un salon en palais. Son nom doit refléter cette élégance ou sa malice légendaire. En 2025, on choisit des noms qui correspondent à la 'Vibe' énergétique de l'animal."
+                            : language === 'es'
+                                ? "Un gato es el único animal que convierte una sala en un palacio. Su nombre debe reflejar su elegancia o su picardía. En 2025, la tendencia es elegir nombres que coincidan con su 'vibra'."
+                                : "A cat is the only animal capable of transforming a room into a palace. Their name should be just as regal or quirky. In 2025, we focus on 'Vibe-Naming'."}
                     </p>
 
-                    <h2 className="text-2xl font-black text-[#AA336A]">Feline Phonetics: What Cats Actually Hear</h2>
-                    <p className="text-lg text-gray-700">
-                        Unlike dogs, who often look for directional commands, cats are sensitive to high-pitched frequencies. A study on feline behavior suggests they are more likely to respond to names that end in a high frequency, like "Ziggy" or "Mochi." This mimics the sounds of prey or kittens, naturally grabbing their attention.
+                    <h2 className="text-2xl font-black text-[#AA336A]">
+                        {language === 'fr' ? "Ce que les chats entendent" : language === 'es' ? "Lo que los gatos escuchan" : "What Cats Hear"}
+                    </h2>
+                    <p className="text-lg">
+                        {language === 'fr'
+                            ? "Les chats sont sensibles aux hautes fréquences. Les noms finissant par 'i' ou 'y' (Ziggy, Mochi) captent mieux leur attention."
+                            : language === 'es'
+                                ? "Los gatos son sensibles a las frecuencias altas. Los nombres que terminan en 'i' o 'y' (Mochi, Michi) captan mejor su atención."
+                                : "Cats are sensitive to high frequencies. Names ending in 'i' or 'y' sounds (Ziggy, Mochi) grab their attention instantly."}
                     </p>
 
-                    <h2 className="text-2xl font-black text-[#AA336A]">The 2025 "Aesthetic" Categories</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-white/40 rounded-xl border border-white/20">
-                            <h3 className="font-bold text-[#AA336A]">Cottagecore Cats</h3>
-                            <p className="text-sm">Names like <em>Fern, Bramble, Clover,</em> and <em>Meadow</em> are trending for indoor-only loungers who enjoy a sunny windowsill.</p>
+                        <div className="p-5 bg-white/40 rounded-xl border border-white/20 shadow-sm">
+                            <h3 className="font-bold text-[#AA336A] text-lg">{language === 'fr' ? "Style Cottagecore" : language === 'es' ? "Estilo Rural" : "Cottagecore"}</h3>
+                            <p className="text-sm opacity-90">{language === 'fr' ? "Fougère, Willow, Basilic." : language === 'es' ? "Albahaca, Sauce, Helecho." : "Fern, Willow, Basil."}</p>
                         </div>
-                        <div className="p-4 bg-white/40 rounded-xl border border-white/20">
-                            <h3 className="font-bold text-[#AA336A]">Tiny Food Items</h3>
-                            <p className="text-sm">Universally cute! <em>Noodle, Bean, Sprout,</em> and <em>Taco</em> continue to dominate social media profiles.</p>
-                        </div>
-                        <div className="p-4 bg-white/40 rounded-xl border border-white/20">
-                            <h3 className="font-bold text-[#AA336A]">Mystical & Gothic</h3>
-                            <p className="text-sm">For the sleek black or grey cats: <em>Salem, Raven, Onyx,</em> and <em>Hecate</em> offer a touch of the supernatural.</p>
-                        </div>
-                        <div className="p-4 bg-white/40 rounded-xl border border-white/20">
-                            <h3 className="font-bold text-[#AA336A]">Luxury Labels</h3>
-                            <p className="text-sm">For the "Elegant" personality type: <em>Gucci, Chanel, Bentley,</em> and <em>Royal</em> fit their high-maintenance vibe.</p>
+                        <div className="p-5 bg-white/40 rounded-xl border border-white/20 shadow-sm">
+                            <h3 className="font-bold text-[#AA336A] text-lg">{language === 'fr' ? "Gastronomie" : language === 'es' ? "Comida" : "Food Names"}</h3>
+                            <p className="text-sm opacity-90">{language === 'fr' ? "Noodle, Sushi, Taco." : language === 'es' ? "Taco, Sushi, Frijol." : "Noodle, Sushi, Taco."}</p>
                         </div>
                     </div>
 
-                    <h2 className="text-2xl font-black text-[#AA336A]">Why Use a Persona-Based Generator?</h2>
-                    <p className="text-lg text-gray-700">
-                        Generic lists don't account for the fact that one cat might be a "Mischievous" jumper while another is a "Calm" sleeper. Using the <strong>Name My Pet</strong> system allows you to filter by these specific behaviors, ensuring the name matches the actual life your cat leads. 
-                    </p>
-
-                    <p className="text-lg text-gray-700 font-bold">
-                        Once you've found the winner, don't forget to head over to our "Bio Card" section to create a custom social media announcement for your new feline overlord!
+                    <p className="text-xl font-bold text-[#AA336A] text-center pt-4">
+                        {language === 'fr'
+                            ? "Trouvez le nom parfait avec Name My Pet !"
+                            : language === 'es'
+                                ? "¡Encuentra el nombre perfecto con Name My Pet!"
+                                : "Find the perfect name today with Name My Pet!"}
                     </p>
                 </div>
             )
@@ -198,7 +223,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     if (selectedPost) {
         return (
             <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-                <div className="w-full max-w-2xl mb-8 flex justify-start">
+                <div className="w-full max-w-3xl mb-8 flex justify-start">
                      <button 
                         onClick={() => setSelectedPost(null)} 
                         className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm"
@@ -207,15 +232,15 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         {t.blog.back_to_blog}
                     </button>
                 </div>
-                <Card className="p-8 md:p-12 max-w-3xl w-full border-4 border-white/20 shadow-2xl mb-24 rounded-[3rem]">
+                <Card className="p-8 md:p-12 max-w-4xl w-full border-4 border-white/20 shadow-2xl mb-24 rounded-[3rem] bg-white/90 backdrop-blur-sm">
                     <div className="flex justify-center mb-8">
                         <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black mb-4 text-center text-[#5D4037] leading-tight drop-shadow-sm">{selectedPost.title}</h1>
                     <div className="text-sm font-black opacity-30 text-center uppercase tracking-widest mb-10 border-b border-black/5 pb-6">
-                        Published on {selectedPost.date} by NameMyPet Editorial Team
+                        {language === 'fr' ? 'Publié le ' : language === 'es' ? 'Publicado el ' : 'Published on '} {selectedPost.date}
                     </div>
-                    <div className="prose prose-pink max-w-none">
+                    <div>
                         {selectedPost.content}
                     </div>
                     <div className="mt-16 pt-8 border-t border-black/5 text-center">
@@ -234,21 +259,21 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <h1 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase drop-shadow-md tracking-tight">{t.blog.title}</h1>
                 <p className="text-white text-xl md:text-2xl font-bold opacity-90 drop-shadow-sm">{t.blog.subtitle}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full pb-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full pb-24">
                 {posts.map(post => (
                     <Card 
                         key={post.id} 
                         onClick={() => handleOpenPost(post)} 
-                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group shadow-md hover:shadow-xl flex flex-col h-full rounded-[2.5rem]"
+                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group shadow-md hover:shadow-xl flex flex-col h-full rounded-[2.5rem] bg-white/90 backdrop-blur-sm"
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
                             <div className="text-left">
                                 <span className="text-xs font-black opacity-40 uppercase tracking-widest">{post.date}</span>
-                                <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors leading-tight">{post.title}</h2>
+                                <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors leading-tight text-[#5D4037]">{post.title}</h2>
                             </div>
                         </div>
-                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed mb-6 flex-grow">{post.excerpt}</p>
+                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 leading-relaxed mb-6 flex-grow text-[#666666]">{post.excerpt}</p>
                         <div className="mt-auto pt-4 border-t border-black/5 text-[#AA336A] font-black text-sm uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
                             {t.blog.read_more}
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
@@ -327,7 +352,7 @@ const BioCardLocal = forwardRef<HTMLDivElement, BioCardProps>(({
   );
 });
 
-// --- BIO SCREEN EDITOR COMPONENT (INLINED) ---
+// --- BIO SCREEN EDITOR COMPONENT ---
 
 const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; setImageForBio: (img: string | null) => void; goHome: () => void; }> = ({ petInfo, imageForBio, setImageForBio, goHome }) => {
     const { t, language } = useLanguage();
