@@ -66,7 +66,7 @@ const SavedNamesInternal: React.FC<{
         if (!cardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-             // FIXED: Filter out problematic CSS tags that cause security blockages
+             // SECURITY FIX: skip scanner external link/style nodes that block rule access
              const filter = (node: any) => {
                  if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
                  return true;

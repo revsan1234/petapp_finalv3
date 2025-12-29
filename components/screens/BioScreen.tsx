@@ -92,7 +92,6 @@ const BioGeneratorInternal: React.FC<{
         if (!bioCardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-            // FIXED: Skip security-sensitive tags during conversion
             const filter = (node: any) => {
                 if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
                 return true;
