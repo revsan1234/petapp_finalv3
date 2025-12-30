@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
@@ -275,6 +276,23 @@ const QuickFireDiscovery: React.FC<{
         else setState('results');
     };
 
+    /**
+     * Fix for "Cannot find name 'handleSaveSingleName'" error.
+     * Implements saving a single name from the Quick Fire results.
+     */
+    const handleSaveSingleName = (name: string) => {
+        const isAlreadySaved = savedNames.some(s => s.name === name);
+        if (isAlreadySaved) return;
+
+        const generatedName: GeneratedName = {
+            id: `${Date.now()}-${name}-${Math.random()}`,
+            name: name,
+            meaning: `${t.quick_fire.generated_meaning_prefix} ${t.options.styles[petInfo.style as keyof typeof t.options.styles] || petInfo.style} ${t.quick_fire.generated_meaning_suffix}`,
+            style: petInfo.style
+        };
+        addSavedName(generatedName);
+    };
+
     if (state === 'idle') return (
         <Card className="text-center">
             <PetCharacter pet="cat" className="w-24 h-24 mx-auto mb-4" />
@@ -300,7 +318,7 @@ const QuickFireDiscovery: React.FC<{
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button onClick={() => vote(p1)} className="h-32 bg-gradient-to-br from-[#aab2a1] to-[#8da38d] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p1}</button>
-                    <button onClick={() => vote(p2)} className="h-32 bg-gradient-to-br from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button>
+                    <button onClick={() => vote(p2)} className="h-32 bg-gradient-to-bl from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button>
                 </div>
             </Card>
         );
@@ -313,7 +331,7 @@ const QuickFireDiscovery: React.FC<{
                 {winners.map((w, i) => (
                     <div key={i} className="bg-white/20 p-2 rounded-lg font-bold flex justify-between items-center">
                         <span>{w}</span>
-                        <button onClick={() => addSavedName({id: Date.now()+w, name: w, meaning: "Quick Fire Pick", style: petInfo.style})} className="text-[#AA336A]">
+                        <button onClick={() => handleSaveSingleName(w)} className="text-[#AA336A]">
                              {savedNames.some(s => s.name === w) ? <HeartIconFilled className="w-5 h-5" /> : <HeartIconOutline className="w-5 h-5" />}
                         </button>
                     </div>
@@ -355,7 +373,7 @@ const Consultant: React.FC = () => {
     };
 
     return (
-        <Card className="flex flex-col h-[600px]">
+        <Card className="flex flex-col h-[600px] max-w-full">
             <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4">
                 <div className="flex items-center gap-3">
                     <PetCharacter pet="dog" className="w-10 h-10" />
@@ -373,9 +391,18 @@ const Consultant: React.FC = () => {
                 {isTyping && <div className="text-sm italic opacity-50 px-2 animate-pulse">{t.expert.typing}</div>}
                 <div ref={messagesEndRef} />
             </div>
-            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex gap-2">
-                <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={t.expert.placeholder} className="flex-grow bg-white/40 border border-white/30 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-[#AA336A]" />
-                <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-2 !px-5">{t.expert.btn_send}</Button>
+            {/* Added horizontal padding and flex shrink handling to fix button cutoff */}
+            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 w-full px-1">
+                <input 
+                    type="text" 
+                    value={inputValue} 
+                    onChange={e => setInputValue(e.target.value)} 
+                    placeholder={t.expert.placeholder} 
+                    className="flex-grow min-w-0 bg-white/40 border border-white/30 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#AA336A]" 
+                />
+                <div className="flex-shrink-0">
+                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-3 !px-4 sm:!px-6"> {t.expert.btn_send} </Button>
+                </div>
             </form>
         </Card>
     );
