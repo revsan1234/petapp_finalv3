@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
@@ -15,7 +14,7 @@ import {
     getPetNameMeaning
 } from '../../services/geminiService';
 import { PET_TYPES, PET_GENDERS, NAME_STYLES } from '../../constants';
-import { GeneratedName, PetInfo, PetPersonalityResult, PetKind, ChatMessage } from '../../types';
+import { GeneratedName, PetInfo, PetPersonalityResult, PetKind, ChatMessage, PetGender, PetType } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { BackToHomeButton } from '../../App';
 import { PetCharacter } from '../assets/pets/PetCharacter';
@@ -87,7 +86,8 @@ const NameTranslator: React.FC = () => {
 const PetHoroscope: React.FC = () => {
     const { t, language } = useLanguage();
     const [petName, setPetName] = useState('');
-    const [petType, setPetType] = useState('Dog');
+    const [petType, setPetType] = useState<PetType>('Dog');
+    const [petGender, setPetGender] = useState<PetGender>('Any');
     const [sign, setSign] = useState("Aries (Mar 21 - Apr 19)");
     const [reading, setReading] = useState<{ prediction: string; luckyItem: string } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -97,7 +97,8 @@ const PetHoroscope: React.FC = () => {
         if (!petName.trim()) return;
         setIsLoading(true);
         try {
-            const res = await generatePetHoroscope(sign, petType, petName, language);
+            // Enhanced with specific animal type and gender for better AI context
+            const res = await generatePetHoroscope(sign, `${petGender} ${petType}`, petName, language);
             setReading(res);
         } catch (err) { console.error(err); } finally { setIsLoading(false); }
     };
@@ -111,6 +112,14 @@ const PetHoroscope: React.FC = () => {
             </div>
             <div className="max-w-md mx-auto space-y-4">
                 <Input id="horo-name" label={t.horoscope.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" />
+                <div className="grid grid-cols-2 gap-4">
+                    <Select id="horo-type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>
+                        {PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}
+                    </Select>
+                    <Select id="horo-gender" label={t.generator.label_gender} value={petGender} onChange={e => setPetGender(e.target.value as PetGender)}>
+                        {PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}
+                    </Select>
+                </div>
                 <Select id="horo-sign" label={t.horoscope.label_zodiac} value={sign} onChange={e => setSign(e.target.value)}>
                     {signs.map(s => <option key={s} value={s}>{s}</option>)}
                 </Select>
@@ -137,7 +146,6 @@ const PetHoroscope: React.FC = () => {
 const PetAgeCalculator: React.FC = () => {
     const { t } = useLanguage();
     const [age, setAge] = useState('');
-    const [petType, setPetType] = useState('Dog');
     const [humanAge, setHumanAge] = useState<number | null>(null);
 
     const calculate = () => {
@@ -387,7 +395,6 @@ const Consultant: React.FC = () => {
                 {isTyping && <div className="text-sm italic opacity-50 px-2 animate-pulse">{t.expert.typing}</div>}
                 <div ref={messagesEndRef} />
             </div>
-            {/* Standardized horizontal padding and flex-shrink to prevent button clipping */}
             <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 w-full px-2">
                 <input 
                     type="text" 
@@ -471,4 +478,3 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, savedNam
     </div>
   );
 };
-
