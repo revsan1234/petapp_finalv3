@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
@@ -85,7 +86,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     );
 };
 
-// --- BLOG SCREEN COMPONENT (MASSIVE CONTENT & NO PROSE DEPENDENCY) ---
+// --- BLOG SCREEN COMPONENT (100% TRANSLATED LONG-FORM) ---
 
 interface BlogPost {
     id: string;
@@ -104,69 +105,101 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         {
             id: '1',
             title: language === 'fr' 
-                ? '150+ Noms de Chiens Uniques et Tendances pour 2025 : Le Guide Complet' 
-                : language === 'es' ? '150+ Nombres Únicos para Perros en 2025' : '150+ Unique Dog Names for 2025: The Ultimate AI Naming Guide',
+                ? '150+ Noms de Chiens Uniques pour 2025 : Le Guide Complet IA' 
+                : language === 'es' ? '150+ Nombres de Perros Únicos para 2025: Guía Completa de IA' : '150+ Unique Dog Names for 2025: The Ultimate AI Naming Guide',
             excerpt: language === 'fr' 
                 ? 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez comment l\'IA et les tendances actuelles transforment le choix des prénoms.' 
-                : 'Finding the perfect name for your companion is a journey. From nature-inspired picks to retro classics, explore how AI is helping owners find the "one" in 2025.',
+                : language === 'es' ? '¡Elegir el nombre perfecto es una aventura! Descubre cómo la IA y las tendencias están cambiando la forma de nombrar a tu perro.' : 'Finding the perfect name for your companion is a journey. From nature-inspired picks to retro classics, explore how AI is helping owners find the "one" in 2025.',
             pet: 'dog',
             date: language === 'fr' ? '15 Janvier 2025' : language === 'es' ? '15 de Enero 2025' : 'Jan 15, 2025',
             content: (
-                <div className="text-left text-gray-800 space-y-6">
-                    <p className="text-xl leading-relaxed font-medium">
-                        {language === 'fr' 
-                            ? "Accueillir un chien dans sa vie est un acte d'amour profond. C'est le début d'une amitié indéfectible, et le choix de son nom est le tout premier acte de complicité. En 2025, nous observons un changement radical dans la manière dont les propriétaires nomment leurs compagnons. Fini les classiques 'Médor' ou 'Rex' ; aujourd'hui, le nom d'un chien est une extension de sa personnalité, de son énergie et même du style de vie de ses maîtres. Les recherches Google pour 'noms de chiens uniques' ont augmenté de 40% cette année, montrant un désir de distinction."
-                            : language === 'es'
-                                ? "Dar la bienvenida a un perro es un acto de amor profundo. Es el comienzo de un vínculo de por vida, y elegir su nombre es el primer paso oficial. En 2025, estamos viendo un cambio masivo en cómo los dueños eligen los nombres. Nombres estándar como 'Max' están dando paso a opciones más profundas y basadas en la personalidad que cuentan una historia."
-                                : "Welcoming a dog into your life is a transformative moment. It's the beginning of a lifelong bond, and choosing a name is the first official act of pet parenting. In 2025, we're seeing a massive shift in how owners approach this task. Standard names like 'Buddy' or 'Max' are taking a backseat to meaningful, personality-driven choices that tell a story. Google searches for 'unique dog names' have surged by 40% this year, indicating a strong trend toward individuality."}
-                    </p>
-                    
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "L'IA au Service du Nom Parfait" : language === 'es' ? "IA: El futuro de los nombres" : "The Power of AI in Pet Naming"}
-                    </h2>
-                    <p className="text-lg leading-relaxed">
-                        {language === 'fr'
-                            ? "Grâce à des outils innovants comme le générateur d'IA de Name My Pet, vous n'avez plus besoin de parcourir des dictionnaires sans fin ou des listes alphabétiques ennuyeuses. L'intelligence artificielle analyse des milliers de points de données, de la race aux traits de caractère spécifiques comme 'Espiègle', 'Calme' ou 'Courageux', pour vous proposer des options qui résonnent vraiment. L'IA permet d'éviter les prénoms trop communs et de trouver cette perle rare qui fera sensation au parc canin."
-                            : language === 'es'
-                                ? "Con el generador de IA de Name My Pet, ya no tienes que leer listas infinitas. La tecnología analiza miles de puntos de datos, desde la raza hasta rasgos como 'Travieso' o 'Valiente', para sugerir nombres que realmente encajen con el alma de tu perro."
-                                : "With innovative tools like the Name My Pet AI generator, you no longer have to scroll through endless alphabetical lists. AI technology analyzes thousands of data points—from breed history to specific personality traits like 'Mischievous' or 'Brave'—to suggest names that actually 'stick' and resonate with your pup's soul. AI helps avoid overused labels and finds those rare gems."}
-                    </p>
+                <div className="text-left text-gray-800 space-y-8">
+                    {/* ENGLISH VERSION */}
+                    {language === 'en' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                Welcoming a dog into your life is a transformative moment. It's the beginning of a lifelong bond, and choosing a name is the first official act of pet parenting. In 2025, we're seeing a massive shift in how owners approach this task. Standard names like 'Buddy' or 'Max' are taking a backseat to meaningful, personality-driven choices that tell a story.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">The Science of Sound in Dog Naming</h2>
+                            <p className="text-lg leading-relaxed">
+                                Did you know that dogs respond better to specific frequencies? Veterinary behaviorists suggest names with two syllables and a strong ending vowel (like an 'ee' or 'ah' sound). Names like Lucky, Luna, or Cookie are much easier for a dog to distinguish from background noise than flat, single-syllable names. AI naming tools like Name My Pet analyze these phonetic patterns to ensure your choice is both stylish and functional for training.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Top Dog Naming Trends for 2025</h2>
+                            <ul className="list-disc pl-8 space-y-4 text-lg">
+                                <li><strong>Cosmic & Celestial:</strong> With a renewed global interest in space, names like Zenith, Nova, Orion, and Galileo are skyrocketing. They evoke wonder and greatness.</li>
+                                <li><strong>Retro-Classic Human Revival:</strong> The 'Grandpa/Grandma' trend is stronger than ever. Think Archie, Mabel, Otis, and Pearl. They offer dignity and a touch of whimsy.</li>
+                                <li><strong>Earthy & Organic:</strong> Reflecting our focus on sustainability, names like River, Sage, Aspen, and Willow remain top choices for active, adventure-loving pups.</li>
+                            </ul>
+                            <div className="bg-[#AA336A]/10 p-8 rounded-3xl border border-[#AA336A]/20">
+                                <p className="font-bold text-[#AA336A] mb-4 text-xl">Expert Naming Tip:</p>
+                                <p className="italic text-gray-700 text-lg leading-relaxed">
+                                    Perform the 'shout test.' If you feel awkward yelling the name across a crowded public park, it might not be the right fit. The name should be easy to project and carry a positive tone. Use our AI Generator to find punchy options your dog will recognize instantly!
+                                </p>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">The Impact of Social Media Branding</h2>
+                            <p className="text-lg leading-relaxed">
+                                In the age of Instagram and TikTok, your dog's name is part of their personal 'brand'. Unique names like 'Sashimi' or 'Galaxy' spark curiosity and higher engagement online. However, beyond social platforms, a well-chosen name strengthens the psychological bond between owner and pet. It's the word they will hear most often in their lifetime, so ensure it's charged with love and meaning.
+                            </p>
+                        </>
+                    )}
 
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "Les Grandes Tendances de 2025" : language === 'es' ? "Tendencias para 2025" : "Top Dog Naming Trends for 2025"}
-                    </h2>
-                    <ul className="list-disc pl-5 space-y-4 text-lg">
-                        <li><strong>{language === 'fr' ? "Cosmique et Céleste" : "Cosmic & Celestial"}:</strong> {language === 'fr' ? "Avec le renouveau de l'exploration spatiale, les noms comme Orion, Nova, Zénith et Galilée sont en plein essor. Ils évoquent la grandeur et le mystère." : "Reflecting our renewed interest in the stars, names like Zenith, Nova, Orion, and Galileo are skyrocketing in popularity."}</li>
-                        <li><strong>{language === 'fr' ? "Le Retour du Rétro" : "Retro-Classic Revival"}:</strong> {language === 'fr' ? "Les noms de 'grands-parents' sont plus branchés que jamais : Albert, Gaston, Henriette et Marguerite apportent charme et dignité." : "The 'Grandpa/Grandma' trend is stronger than ever. Think Archie, Mabel, Otis, and Pearl. These names offer a sense of charm and dignity."}</li>
-                        <li><strong>{language === 'fr' ? "Inspiration Nature" : "Earthy & Organic"}:</strong> {language === 'fr' ? "La conscience écologique se reflète dans les noms : Forêt, Sauge, Aspen et Willow sont les favoris des maîtres actifs." : "Reflecting a global focus on sustainability, names like River, Sage, Aspen, and Willow remain top choices."}</li>
-                    </ul>
+                    {/* FRENCH VERSION */}
+                    {language === 'fr' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                Accueillir un chien dans sa vie est un acte d'amour profond. C'est le début d'une amitié indéfectible, et le choix de son nom est le tout premier acte de complicité. En 2025, nous observons un changement radical dans la manière dont les propriétaires nomment leurs compagnons. Fini les classiques 'Médor' ou 'Rex' ; aujourd'hui, le nom d'un chien est une extension de sa personnalité, de son énergie et même du style de vie de ses maîtres.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">La Science du Rappel Canine</h2>
+                            <p className="text-lg leading-relaxed">
+                                Saviez-vous que les chiens entendent mieux certaines fréquences ? Les experts recommandent des noms de deux syllabes se terminant par un son en 'i' ou 'a'. Des prénoms comme Luna ou Cookie sont captés instantanément par l'ouïe canine, facilitant grandement l'éducation. L'intelligence artificielle de Name My Pet analyse ces motifs sonores pour garantir que le nom choisi est non seulement joli, mais aussi efficace pour le rappel.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Grandes Tendances 2025 en France</h2>
+                            <ul className="list-disc pl-8 space-y-4 text-lg">
+                                <li><strong>Cosmique et Céleste :</strong> Orion, Nova, Zénith et Galilée sont en plein essor. Ils évoquent la grandeur et le mystère de l'univers.</li>
+                                <li><strong>Le Retour du Rétro :</strong> Les noms de 'grands-parents' sont ultra-branchés : Albert, Gaston, Henriette et Marguerite apportent charme et noblesse.</li>
+                                <li><strong>Inspiration Nature :</strong> Forêt, Sauge, Aspen et Willow sont les favoris des maîtres qui aiment les randonnées et l'aventure en plein air.</li>
+                            </ul>
+                            <div className="bg-[#AA336A]/10 p-8 rounded-3xl border border-[#AA336A]/20">
+                                <p className="font-bold text-[#AA336A] mb-4 text-xl">Conseil d'Expert :</p>
+                                <p className="italic text-gray-700 text-lg leading-relaxed">
+                                    Faites le 'test du cri'. Si vous vous sentez gêné de crier le nom de votre chien dans un parc bondé, ce n'est probablement pas le bon. Le nom doit être facile à prononcer et avoir une consonance positive. Utilisez notre générateur pour tester des options percutantes !
+                                </p>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">L'Influence des Réseaux Sociaux</h2>
+                            <p className="text-lg leading-relaxed">
+                                À l'ère d'Instagram et TikTok, le nom de votre chien fait partie de sa 'marque'. Un nom original comme 'Sashimi' ou 'Galaxie' génère plus d'intérêt. Mais au-delà des réseaux sociaux, un nom bien choisi renforce le lien psychologique. C'est le mot qu'il entendra le plus souvent, alors assurez-vous qu'il soit chargé de tendresse.
+                            </p>
+                        </>
+                    )}
 
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "La Science du Rappel" : "The Science Behind a Name"}
-                    </h2>
-                    <p className="text-lg leading-relaxed">
-                        {language === 'fr'
-                            ? "Saviez-vous que les chiens entendent mieux les consonnes fortes et les voyelles aiguës ? Les experts recommandent des noms de deux syllabes se terminant par un son en 'i' ou 'a'. Des prénoms comme Luna ou Cookie sont captés instantanément par l'ouïe canine, facilitant grandement l'éducation. Évitez les noms qui riment avec des ordres comme 'Assis' pour ne pas créer de confusion mentale chez votre compagnon lors de son éducation."
-                            : "Did you know that dogs respond better to specific frequencies? Veterinary behaviorists suggest names with two syllables and a strong ending vowel (like an 'ee' or 'ah' sound). Names like Lucky, Luna, or Cookie are much easier for a dog to distinguish from background noise."}
-                    </p>
-
-                    <div className="bg-[#AA336A]/10 p-8 rounded-3xl border border-[#AA336A]/20 my-10">
-                        <p className="font-bold text-[#AA336A] mb-4 text-xl">{language === 'fr' ? "Conseil d'Expert :" : "Expert Tip:"}</p>
-                        <p className="italic text-gray-700 text-lg leading-relaxed">
-                            {language === 'fr' 
-                                ? "Faites le 'test du cri'. Si vous vous sentez gêné de crier le nom de votre chien dans un parc bondé, ce n'est probablement pas le bon. Le nom doit être facile à prononcer et avoir une consonance positive. Utilisez notre générateur pour tester des options percutantes !" 
-                                : "Always perform the 'shout test.' If you feel awkward yelling the name across a crowded park, it might not be the one. The name should be easy to project and carry a positive tone."}
-                        </p>
-                    </div>
-
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "L'Impact Social du Nom" : "The Social Impact of a Name"}
-                    </h2>
-                    <p className="text-lg leading-relaxed pb-10 border-b border-gray-100">
-                        {language === 'fr'
-                            ? "À l'ère d'Instagram et TikTok, le nom de votre chien fait partie de sa 'marque' personnelle. Un nom original génère plus d'engagement. Mais au-delà des réseaux sociaux, un nom bien choisi renforce le lien psychologique entre vous et votre animal. C'est le mot qu'il entendra le plus souvent dans sa vie, alors assurez-vous qu'il soit chargé d'amour et de sens."
-                            : "In the age of social media, your dog's name is part of their personal 'brand'. Unique names spark curiosity and engagement online. However, beyond social platforms, a well-chosen name strengthens the psychological bond between owner and pet."}
-                    </p>
+                    {/* SPANISH VERSION */}
+                    {language === 'es' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                Dar la bienvenida a un perro es un acto de amor profundo. Es el comienzo de un vínculo de por vida, y elegir su nombre es el primer paso oficial de tu camino juntos. En 2025, estamos viendo un cambio masivo en cómo los dueños eligen los nombres. Los nombres estándar como 'Firulais' están dando paso a opciones más profundas y basadas en la personalidad que realmente cuentan una historia única.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">La Ciencia del Sonido en el Nombre</h2>
+                            <p className="text-lg leading-relaxed">
+                                ¿Sabías que los perros responden mejor a ciertas frecuencias? Los expertos en comportamiento sugieren nombres de dos sílabas que terminen en una vocal fuerte (como sonido 'i' o 'a'). Nombres como Lucky, Luna o Mochi son mucho más fáciles de distinguir para un perro entre el ruido ambiental. Nuestra IA analiza estos patrones fonéticos para asegurar que tu elección sea perfecta para el entrenamiento.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Tendencias de Nombres para 2025</h2>
+                            <ul className="list-disc pl-8 space-y-4 text-lg">
+                                <li><strong>Cósmico y Celestial:</strong> Nombres como Zenit, Nova, Orión y Galileo son tendencia absoluta. Evocan asombro y grandeza.</li>
+                                <li><strong>Renacimiento Retro-Clásico:</strong> Los nombres de 'abuelos' están más fuertes que nunca: Arturo, Lola, Ramón y Perla aportan dignidad y simpatía.</li>
+                                <li><strong>Inspiración Terrenal:</strong> Reflejando un enfoque en la naturaleza, nombres como Río, Salvia, Aspen y Sauce son las opciones favoritas para perros activos.</li>
+                            </ul>
+                            <div className="bg-[#AA336A]/10 p-8 rounded-3xl border border-[#AA336A]/20">
+                                <p className="font-bold text-[#AA336A] mb-4 text-xl">Consejo de Experto:</p>
+                                <p className="italic text-gray-700 text-lg leading-relaxed">
+                                    Haz la 'prueba del grito'. Si te da vergüenza gritar el nombre en un parque público lleno de gente, probablemente no sea el indicado. El nombre debe ser fácil de proyectar y tener un tono positivo. ¡Usa nuestra IA para encontrar nombres con fuerza!
+                                </p>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">El Impacto de la Marca Personal</h2>
+                            <p className="text-lg leading-relaxed">
+                                En la era de Instagram y TikTok, el nombre de tu 'lomito' es parte de su marca. Nombres originales como 'Sashimi' o 'Galaxia' generan curiosidad y compromiso online. Pero más allá de las redes, un nombre bien elegido fortalece el vínculo psicológico entre dueño y mascota. Es la palabra que más escuchará en su vida, asegúrate de que esté llena de amor.
+                            </p>
+                        </>
+                    )}
                 </div>
             )
         },
@@ -174,59 +207,121 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             id: '2',
             title: language === 'fr' 
                 ? 'La Magie des Noms de Chats : Styles et Tendances Félines pour 2025' 
-                : language === 'es' ? 'Magia para Nombres de Gatos en 2025' : 'Cat Naming Magic: Finding the Perfect Vibe in 2025',
+                : language === 'es' ? 'Magia para Nombres de Gatos: Tendencias y Psicología 2025' : 'Cat Naming Magic: Finding the Perfect Feline Vibe in 2025',
             excerpt: language === 'fr' 
                 ? 'Les chats sont mystérieux et élégants. Découvrez pourquoi leur nom doit être aussi unique que leur aura.' 
-                : 'A cat is more than a pet—it is a tiny, furry overlord. Discover the science of feline naming and the hottest aesthetic trends this year.',
+                : language === 'es' ? 'Los gatos son misteriosos y elegantes. Descubre por qué su nombre debe ser tan único como su aura mística.' : 'A cat is more than a pet—it is a tiny, furry overlord. Discover the science of feline naming and the hottest aesthetic trends this year.',
             pet: 'cat',
             date: language === 'fr' ? '20 Février 2025' : language === 'es' ? '20 de Febrero 2025' : 'Feb 20, 2025',
             content: (
-                <div className="text-left text-gray-800 space-y-6">
-                    <p className="text-xl leading-relaxed font-medium">
-                        {language === 'fr'
-                            ? "Un chat est bien plus qu'un simple animal de compagnie ; c'est le seul être capable de transformer un simple salon en palais royal par sa seule présence. Leur nom doit refléter cette élégance innée, leur malice légendaire ou leur mystère profond. En 2025, la tendance mondiale est au 'Vibe-Naming' : choisir un nom qui correspond précisément à l'aura énergétique et visuelle de votre félin."
-                            : language === 'es'
-                                ? "Un gato es más que una mascota; es un pequeño soberano peludo. Su nombre debe reflejar su elegancia innata, su picardía o su misterio profundo. En 2025, la tendencia es el 'Vibe-Naming'."
-                                : "A cat is more than just a pet; they are the only animals capable of transforming a simple living room into a royal palace. Their name should be just as regal, quirky, or mysterious as they are. In 2025, cat owners are leaning into 'Vibe-Naming'—selecting a name that matches the energy of their feline."}
-                    </p>
+                <div className="text-left text-gray-800 space-y-8">
+                    {/* ENGLISH VERSION */}
+                    {language === 'en' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                A cat is more than just a pet; they are the only animals capable of transforming a simple living room into a royal palace with their mere presence. Their name should be just as regal, quirky, or mysterious as they are. In 2025, cat owners are leaning into 'Vibe-Naming'—selecting a name that perfectly matches the individual energy of their feline.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Feline Phonetics: What They Hear</h2>
+                            <p className="text-lg leading-relaxed">
+                                Unlike dogs, who often look for directional commands, cats are highly sensitive to high-pitched frequencies. Feline behavior research suggests they are much more likely to respond to names that end in a high frequency, like 'Ziggy', 'Mochi', or 'Kitty'. Choosing a name with a rising intonation isn't just cute—it's scientifically proven to improve recall and recognition in cats.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Cat Aesthetics for 2025</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Cottagecore Cats</h3>
+                                    <p className="text-base opacity-90">Names like Fern, Bramble, Clover, and Willow are trending for indoor-only loungers who enjoy a sunny windowsill and a cozy, organic aesthetic.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Gourmet Labels</h3>
+                                    <p className="text-base opacity-90">Universally cute! Noodle, Bean, Sprout, Taco, and Mochi continue to dominate pet social media profiles for their playful charm.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Mystical & Goth</h3>
+                                    <p className="text-base opacity-90">For sleek black, grey, or white cats: Salem, Raven, Onyx, and Nebula offer a touch of the supernatural and a sophisticated edge.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">High-Fashion</h3>
+                                    <p className="text-base opacity-90">For the 'Elegant' personality type: Gucci, Chanel, Bentley, and Dior fit their high-maintenance, regal, and sophisticated vibe.</p>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Why Use an AI Generator?</h2>
+                            <p className="text-lg leading-relaxed">
+                                Generic lists don't account for the unique spirit of your pet. Using Name My Pet allows you to filter by specific behaviors—ensuring the name matches the actual life your cat leads. Whether they are a 'Mischievous' night-hunter or a 'Calm' sun-bather, our AI finds the match that defines a lifetime of companionship.
+                            </p>
+                        </>
+                    )}
 
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "Phonétique Féline : Ce qu'ils entendent vraiment" : "Feline Phonetics: What Cats Actually Hear"}
-                    </h2>
-                    <p className="text-lg leading-relaxed">
-                        {language === 'fr'
-                            ? "Contrairement aux chiens qui réagissent souvent aux ordres directionnels, les chats sont extrêmement sensibles aux hautes fréquences. Les recherches suggèrent qu'ils sont beaucoup plus susceptibles de répondre à des noms se terminant par un son aigu (comme 'i' ou 'y'). Ces sons imitent les fréquences des proies naturelles ou des appels de chatons, captant instantanément leur attention. Des noms comme Ziggy, Mochi ou Pixie sont non seulement mignons, mais scientifiquement plus efficaces !"
-                            : "Unlike dogs, cats are sensitive to high-pitched frequencies. Research suggests they are more likely to respond to names that end in a high frequency, like 'Ziggy' or 'Mochi'. This mimics natural high-pitched calls and grabs their attention instantly."}
-                    </p>
+                    {/* FRENCH VERSION */}
+                    {language === 'fr' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                Un chat est bien plus qu'un simple animal de compagnie ; c'est le seul être capable de transformer un salon en palais par sa seule présence. Leur nom doit refléter cette élégance innée ou leur malice légendaire. En 2025, la tendance mondiale est au 'Vibe-Naming' : choisir un nom qui correspond précisément à l'aura énergétique de votre félin.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Phonétique Féline : Ce qu'ils entendent</h2>
+                            <p className="text-lg leading-relaxed">
+                                Contrairement aux chiens, les chats sont extrêmement sensibles aux hautes fréquences. Les recherches suggèrent qu'ils sont beaucoup plus susceptibles de répondre à des noms se terminant par un son aigu (comme 'i' ou 'y'). Choisir un nom comme 'Ziggy' ou 'Mochi' n'est pas seulement mignon, c'est scientifiquement prouvé pour améliorer la reconnaissance chez le chat.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Esthétiques Félines 2025</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Le Style 'Cottagecore'</h3>
+                                    <p className="text-base opacity-90">Fougère, Trèfle, Willow et Automne sont parfaits pour les chats d'intérieur qui aiment se prélasser sur un rebord de fenêtre ensoleillé.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Noms Gourmands</h3>
+                                    <p className="text-base opacity-90">Universellement adorables ! Noodle, Sushi, Olive et Taco continuent de dominer les profils Instagram pour leur charme ludique.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Mystique et Gothique</h3>
+                                    <p className="text-base opacity-90">Pour les chats noirs ou gris : Salem, Raven, Onyx et Nebula apportent une touche surnaturelle et sophistiquée.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Haute Couture</h3>
+                                    <p className="text-base opacity-90">Pour les personnalités 'Élégantes' : Gucci, Chanel, Bentley et Dior correspondent à leur port de tête royal et sophistiqué.</p>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Pourquoi utiliser l'IA ?</h2>
+                            <p className="text-lg leading-relaxed">
+                                Les listes génériques ne tiennent pas compte de l'esprit unique de votre animal. En utilisant Name My Pet, vous filtrez par comportement réel : votre chat est-il un sauteur intrépide ou un dormeur calme ? L'IA trouve le nom qui définit une vie entière de complicité.
+                            </p>
+                        </>
+                    )}
 
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "Les Catégories Esthétiques de 2025" : "The 2025 Cat Aesthetics"}
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-5 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-[#AA336A] text-lg mb-2">{language === 'fr' ? "Chats 'Cottagecore'" : "Cottagecore Cats"}</h3>
-                            <p className="text-sm opacity-90">{language === 'fr' ? "Fougère, Trèfle, Willow et Automne sont parfaits pour les chats d'intérieur qui aiment se prélasser au soleil." : "Names like Fern, Bramble, Clover, and Willow are trending for indoor-only loungers."}</p>
-                        </div>
-                        <div className="p-5 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-[#AA336A] text-lg mb-2">{language === 'fr' ? "Noms Gourmands" : "Tiny Food Items"}</h3>
-                            <p className="text-sm opacity-90">{language === 'fr' ? "Universellement mignons ! Noodle, Sushi, Olive et Taco continuent de dominer les profils Instagram." : "Universally cute! Noodle, Bean, Sprout, and Taco continue to dominate pet social media profiles."}</p>
-                        </div>
-                    </div>
-
-                    <h2 className="text-3xl font-black text-[#AA336A]">
-                        {language === 'fr' ? "Pourquoi l'IA ?" : "Why Use an AI Generator?"}
-                    </h2>
-                    <p className="text-lg leading-relaxed">
-                        {language === 'fr'
-                            ? "Parce qu'un chat n'est pas juste un mot dans un dictionnaire. En utilisant notre système intelligent, vous filtrez par comportement réel : votre chat est-il un sauteur intrépide ou un dormeur calme ? L'IA trouve le nom qui colle à la réalité de sa vie quotidienne. C'est cette précision qui fait la différence entre un nom qu'on oublie et un nom qui définit une vie entière de complicité."
-                            : "Generic lists don't account for the unique spirit of your pet. Using Name My Pet allows you to filter by specific behaviors—ensuring the name matches the actual life your cat leads."}
-                    </p>
-
-                    <p className="text-xl font-bold text-[#AA336A] text-center pt-6 border-t border-gray-100">
-                        {language === 'fr'
-                            ? "Une fois le nom trouvé, passez à l'onglet 'Bio' pour créer l'annonce officielle !"
-                            : "Once you've found the winner, head over to our 'Bio Card' section to create a custom social media announcement!"}
-                    </p>
+                    {/* SPANISH VERSION */}
+                    {language === 'es' && (
+                        <>
+                            <p className="text-xl leading-relaxed font-medium">
+                                Un gato es más que una simple mascota; son los únicos animales capaces de transformar una sala de estar en un palacio real con su mera presencia. Su nombre debe ser tan regio, peculiar o misterioso como ellos. En 2025, los dueños se inclinan por el 'Vibe-Naming': seleccionar un nombre que coincida perfectamente con la energía individual de su 'michi'.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Fonética Felina: Lo que escuchan</h2>
+                            <p className="text-lg leading-relaxed">
+                                A diferencia de los perros, los gatos son muy sensibles a las frecuencias altas. La investigación sugiere que es más probable que respondan a nombres que terminen en una frecuencia alta, como 'Ziggy', 'Mochi' o 'Michi'. Elegir un nombre con entonación ascendente no solo es lindo, está científicamente probado que mejora el reconocimiento en los gatos.
+                            </p>
+                            <h2 className="text-3xl font-black text-[#AA336A]">Estéticas para Gatos 2025</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Estilo 'Cottagecore'</h3>
+                                    <p className="text-base opacity-90">Nombres como Helecho, Trébol y Sauce son tendencia para gatos de interior que disfrutan de una ventana soleada y una estética acogedora.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Nombres de Comida</h3>
+                                    <p className="text-base opacity-90">¡Universalmente adorables! Noodle, Taco y Mochi siguen dominando los perfiles de redes sociales por su encanto juguetón.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Místico y Gótico</h3>
+                                    <p className="text-base opacity-90">Para gatos negros o grises: Salem, Raven, Ónix y Nebula ofrecen un toque sobrenatural y un aire sofisticado.</p>
+                                </div>
+                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm">
+                                    <h3 className="font-bold text-[#AA336A] text-xl mb-2">Alta Costura</h3>
+                                    <p className="text-base opacity-90">Para los gatos 'Elegantes': Gucci, Chanel, Bentley y Dior encajan con su porte regio y personalidad sofisticada.</p>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl font-black text-[#AA336A]">¿Por qué usar un generador de IA?</h2>
+                            <p className="text-lg leading-relaxed">
+                                Las listas genéricas no consideran el espíritu único de tu mascota. Name My Pet te permite filtrar por comportamientos específicos, asegurando que el nombre coincida con la vida real de tu gato. Nuestra IA encuentra el match que define una vida de compañerismo.
+                            </p>
+                        </>
+                    )}
                 </div>
             )
         }
@@ -255,7 +350,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black mb-4 text-center text-[#5D4037] leading-tight drop-shadow-sm tracking-tight">{selectedPost.title}</h1>
                     <div className="text-sm font-black opacity-30 text-center uppercase tracking-[0.3em] mb-12 border-b border-black/5 pb-8">
-                        {language === 'fr' ? 'Publié le ' : 'Published on '} {selectedPost.date}
+                        {language === 'fr' ? 'Publié le ' : language === 'es' ? 'Publicado el ' : 'Published on '} {selectedPost.date}
                     </div>
                     <div className="pb-10">
                         {selectedPost.content}
