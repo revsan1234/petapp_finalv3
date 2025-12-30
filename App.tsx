@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
@@ -58,7 +59,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </button>
                 </header>
                 <main>
-                    <Card className="text-center py-12 sm:py-20 border-4 border-[#AA336A]/20 shadow-2xl rounded-[3rem] bg-white/95 backdrop-blur-md">
+                    <Card className="text-center py-12 sm:py-20 border-4 border-[#AA336A]/20 shadow-2xl rounded-[3rem] bg-white/95">
                         <div className="flex justify-center mb-6">
                              <div className="bg-[#AA336A]/10 p-6 rounded-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-[#AA336A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,10 +68,10 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                              </div>
                         </div>
                         <h1 className="text-4xl sm:text-5xl font-black mb-6 text-[#AA336A] uppercase tracking-tight">{t.contact_us.title}</h1>
-                        <div className="space-y-8">
+                        <div className="space-y-10">
                             <p className="text-xl sm:text-2xl font-medium opacity-80 max-w-md mx-auto leading-relaxed text-[#666666]">{t.contact_us.p1}</p>
-                            <div className="inline-block p-1 rounded-[2.5rem] bg-gradient-to-r from-[#FF6B6B] to-[#AA336A] shadow-2xl transform hover:scale-105 transition-all duration-300 w-full max-w-sm">
-                                <a href={`mailto:${t.contact_us.email}`} className="block bg-white px-4 py-6 sm:py-8 rounded-[calc(2.5rem-4px)] text-lg sm:text-xl md:text-2xl font-black text-[#AA336A] hover:bg-transparent hover:text-white transition-all break-all overflow-hidden whitespace-normal leading-tight">
+                            <div className="inline-block p-1 rounded-[2.5rem] bg-gradient-to-r from-[#FF6B6B] to-[#AA336A] shadow-2xl transform hover:scale-105 transition-all duration-300 w-full max-w-sm overflow-hidden">
+                                <a href={`mailto:${t.contact_us.email}`} className="block bg-white px-4 py-8 rounded-[calc(2.5rem-4px)] text-lg sm:text-2xl font-black text-[#AA336A] hover:bg-transparent hover:text-white transition-all break-all leading-tight">
                                     {t.contact_us.email}
                                 </a>
                             </div>
@@ -85,7 +86,7 @@ const ContactUs: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     );
 };
 
-// --- BLOG SCREEN COMPONENT ---
+// --- BLOG SCREEN COMPONENT (MULTILINGUAL & LONG FORM) ---
 
 interface BlogPost {
     id: string;
@@ -104,44 +105,42 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         if (language === 'fr') {
             return [
                 {
-                    id: 'dog-names-2025',
+                    id: '1',
                     title: 'Plus de 150 Noms de Chiens Uniques pour 2025 : Le Guide Complet de l\'IA',
-                    excerpt: 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez comment l\'IA révolutionne le choix des prénoms et les dernières tendances françaises.',
+                    excerpt: 'Trouver le nom parfait pour votre nouveau toutou est une aventure ! Découvrez comment l\'IA révolutionne le choix des prénoms.',
                     pet: 'dog',
                     date: '10 Janvier 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
-                            <p>Accueillir un chien dans sa vie est un moment de pure magie. C\'est le début d\'une amitié indéfectible, et le choix de son nom est le tout premier acte officiel de votre complicité. En 2025, nous observons un changement radical dans la manière dont les propriétaires français nomment leurs compagnons.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Le Pouvoir de l\'IA au Service du Nom Parfait</h2>
-                            <p>Grâce aux outils modernes comme Name My Pet, vous n\'avez plus besoin de parcourir des listes alphabétiques sans fin. L\'IA suggère des noms qui résonnent avec l\'âme de votre chien, en analysant son caractère unique : est-il un "Loustic" joueur ou un "Duc" élégant ?</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Les Grandes Tendances en France pour 2025</h2>
-                            <ul className="list-disc pl-5 space-y-3">
-                                <li><strong>Le Retour du Rétro :</strong> Les prénoms de nos grands-parents sont ultra-tendances. On voit fleurir des Marcel, Ginette, Albert ou Marguerite dans les parcs canins parisiens.</li>
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
+                            <p>Accueillir un chien dans sa vie est un moment de pure magie. C'est le début d'une amitié indéfectible, et le choix de son nom est le tout premier acte officiel de votre complicité. En 2025, nous observons un changement radical : les propriétaires s'éloignent des classiques pour embrasser des noms qui racontent une véritable histoire.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">L'Intelligence Artificielle au Service du Nom Parfait</h2>
+                            <p>Grâce aux outils comme Name My Pet, vous n'avez plus besoin de parcourir des listes alphabétiques sans fin. L'IA analyse les traits de caractère — joueur, calme, ou espiègle — pour suggérer des noms qui résonnent avec l'âme de votre chien.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">Les Grandes Tendances de 2025</h2>
+                            <ul className="list-disc pl-5 space-y-4">
+                                <li><strong>Le Retour du Rétro :</strong> Les prénoms de nos grands-parents sont ultra-tendances. On voit fleurir des Marcel, Ginette, Albert ou Marguerite dans les parcs canins.</li>
                                 <li><strong>Inspiration Céleste :</strong> Orion, Nova, Zénith ou Galaxie apportent une touche de mystère et de grandeur.</li>
                                 <li><strong>Noms de "Nourriture" :</strong> Mochi, Taco, Sushi et Olive restent des favoris pour leur côté adorable et universel.</li>
                             </ul>
-                            <p>Un bon nom de chien doit être court (idéalement deux syllabes) et facile à crier au parc ! L\'intelligence artificielle de notre application filtre des milliers de données culturelles pour vous proposer uniquement ce qui "match" avec votre style personnel.</p>
+                            <p>Il est important de tester le nom : criez-le à voix haute ! Si vous vous sentez à l'aise de le prononcer en public, c'est que vous avez trouvé le bon. Un bon nom de chien doit être court (deux syllabes idéalement) pour être facilement reconnu par votre animal.</p>
+                            <p>Enfin, n'oubliez pas que votre chien changera au fil des ans, mais son nom restera sa signature. Prenez le temps de l'observation avant de valider votre choix final.</p>
                         </div>
                     )
                 },
                 {
-                    id: 'cat-names-2025',
+                    id: '2',
                     title: 'La Magie des Noms de Chats : Styles et Psychologie Félines 2025',
-                    excerpt: 'Les chats méritent des noms aussi mystérieux et élégants qu\'eux. Découvrez pourquoi le choix du nom influence leur comportement.',
+                    excerpt: 'Les chats méritent des noms aussi mystérieux et élégants qu\'eux. Découvrez les secrets pour capter leur attention.',
                     pet: 'cat',
                     date: '15 Février 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
-                            <p>Un chat ne se contente pas d\'habiter chez vous ; il règne sur son territoire. Son nom doit refléter cette élégance innée ou sa malice légendaire. En 2025, le "Vibe-Naming" (nommer selon l\'énergie) est au cœur des préoccupations des nouveaux propriétaires de félins.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">La Science derrière les Noms de Chats</h2>
-                            <p>Saviez-vous que les chats réagissent beaucoup mieux aux sons se terminant par une fréquence aiguë ? C\'est pourquoi les noms comme Mochi, Ziggy ou Minette fonctionnent si bien. Ils captent l\'attention de votre compagnon instantanément.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Esthétique Cottagecore vs High-Fashion</h2>
-                            <p>Nous voyons deux clans s\'affronter cette année :</p>
-                            <ul className="list-disc pl-5 space-y-3">
-                                <li><strong>Cottagecore :</strong> Des noms inspirés de la nature comme Fougère, Willow, Basilic ou Camomille.</li>
-                                <li><strong>High-Fashion :</strong> Pour les chats les plus majestueux, des noms comme Dior, Chanel, Bentley ou Prada.</li>
-                            </ul>
-                            <p>L\'utilisation d\'un générateur IA permet de tester des combinaisons auxquelles nous n\'aurions jamais pensé. Un chat noir n\'a pas à s\'appeler uniquement "Réglisse" ; pourquoi pas "Éclipse" ou "Vanta" ? Explorez notre studio pour voir votre chat sous un nouveau jour !</p>
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
+                            <p>Un chat ne se contente pas d'habiter chez vous ; il règne sur son territoire. Son nom doit refléter cette élégance innée ou sa malice légendaire. En 2025, le "Vibe-Naming" est au cœur des préoccupations des nouveaux propriétaires de félins.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">Ce que les Chats Entendent Vraiment</h2>
+                            <p>La science montre que les chats sont sensibles aux hautes fréquences. Un nom qui se termine par un son aigu (comme le son "i" dans Mochi ou Ziggy) a beaucoup plus de chances d'attirer leur attention instantanément.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">L'Esthétique Cottagecore vs High-Fashion</h2>
+                            <p>Nous voyons deux clans s'affronter cette année. D'un côté, le style <strong>Cottagecore</strong> avec des noms comme Fougère, Willow, ou Basilic. De l'autre, le style <strong>High-Fashion</strong> avec des noms prestigieux comme Dior, Chanel ou Bentley pour les chats les plus majestueux.</p>
+                            <p>Les chats choisissent souvent leur propre nom par leurs actions loufoques. Un chat qui teste systématiquement la gravité mérite un nom à la hauteur de son audace. Utilisez notre générateur IA pour tester des combinaisons basées sur son comportement unique !</p>
+                            <p>Que votre compagnon soit un grand chasseur de mouches ou un champion du monde de sieste, son nom est le premier cadeau que vous lui faites.</p>
                         </div>
                     )
                 }
@@ -149,44 +148,42 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         } else if (language === 'es') {
             return [
                 {
-                    id: 'dog-names-2025',
+                    id: '1',
                     title: 'Más de 150 Nombres para Perros en 2025: La Guía Definitiva de IA',
-                    excerpt: '¡Encontrar el nombre perfecto para tu perro es una aventura! Descubre las tendencias que están marcando el año en España y Latinoamérica.',
+                    excerpt: '¡Encontrar el nombre perfecto para tu perro es una aventura! Descubre las tendencias que están marcando el año.',
                     pet: 'dog',
                     date: '10 de Enero 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
                             <p>Dar la bienvenida a un perro es un momento transformador. Es el comienzo de un vínculo de por vida, y elegir su nombre es el primer acto oficial de tu nueva vida juntos. En 2025, vemos un cambio masivo hacia nombres con mucha personalidad.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">El Poder de la IA al Elegir</h2>
-                            <p>Con Name My Pet, ya no tienes que desplazarte por listas alfabéticas aburridas. Nuestra IA sugiere nombres que realmente encajan con el "vibe" de tu perro, analizando si es un "Lomito" juguetón o un "Guardián" valiente.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Tendencias Hispanas para 2025</h2>
-                            <ul className="list-disc pl-5 space-y-3">
-                                <li><strong>Clásicos con Giro :</strong> Lola, Bruno, Toby y Kira siguen fuertes pero con un toque moderno.</li>
+                            <h2 className="text-2xl font-black text-[#AA336A]">El Poder de la Inteligencia Artificial</h2>
+                            <p>Con herramientas como Name My Pet, ya no tienes que desplazarte por listas alfabéticas aburridas. La IA sugiere nombres que realmente encajan con el "vibe" de tu perro, analizando si es juguetón, valiente o un poco "grinch".</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">Tendencias en España y Latinoamérica 2025</h2>
+                            <ul className="list-disc pl-5 space-y-4">
+                                <li><strong>Clásicos Modernos :</strong> Nombres como Lola, Bruno, Toby y Kira siguen fuertes pero con un toque renovado.</li>
                                 <li><strong>Inspiración Galáctica :</strong> Marte, Nova, Orión y Caspio son ideales para perros que parecen de otro mundo.</li>
-                                <li><strong>Nombres Cortos :</strong> Max, Sol, Pipo y Miel son tendencia por su facilidad de aprendizaje para el animal.</li>
+                                <li><strong>Nombres Cortos y Directos :</strong> Max, Sol, Pipo y Miel son tendencia por su facilidad de aprendizaje para el animal.</li>
                             </ul>
-                            <p>Recuerda la regla de oro: el nombre debe ser fácil de gritar en el parque. Los perros responden mejor a nombres de dos sílabas. ¡Usa nuestro generador hoy mismo!</p>
+                            <p>Recuerda la regla de oro: el nombre debe ser fácil de gritar en el parque. Si te da vergüenza decir el nombre en voz alta, quizás no sea el indicado. Los perros responden mejor a nombres de dos sílabas.</p>
+                            <p>Tómate unos días para conocer a tu nuevo mejor amigo antes de decidir. A veces, su comportamiento te dará la respuesta más clara de lo que esperabas.</p>
                         </div>
                     )
                 },
                 {
-                    id: 'cat-names-2025',
-                    title: 'Magia para Nombres de Gatos: Tendencias y Psicología Félina 2025',
+                    id: '2',
+                    title: 'Magia para Nombres de Gatos: Tendencias y Psicología 2025',
                     excerpt: 'Los michis merecen nombres tan únicos como sus personalidades. Mira lo que es tendencia absoluta este año.',
                     pet: 'cat',
                     date: '15 de Febrero 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
                             <p>Un gato no es solo una mascota; es el pequeño soberano de tu hogar. Su nombre debe reflejar esa elegancia o su locura característica. En 2025, los nombres de comida y la mitología están dominando las redes sociales.</p>
                             <h2 className="text-2xl font-black text-[#AA336A]">Lo que los Michis Prefieren</h2>
                             <p>Estudios sugieren que los gatos responden mejor a las frecuencias altas. Los nombres que terminan en sonido "i" (como Mochi, Michi, Sushi) captan su atención mucho más rápido que los sonidos graves.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Nombres con Estilo "Aesthetic"</h2>
-                            <p>Este año vemos un auge en los nombres Aesthetic:</p>
-                            <ul className="list-disc pl-5 space-y-3">
-                                <li><strong>Nombres de Diseñador :</strong> Gucci, Chanel, Dior o Bentley para gatos con porte real.</li>
-                                <li><strong>Mitología :</strong> Zeus, Hera, Loki o Freya para esos gatos traviesos que creen ser dioses.</li>
-                            </ul>
-                            <p>Deja que tu gato te inspire. Nuestra IA te permite filtrar por estos rasgos para dar con el nombre perfecto que celebre su energía específica.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">Nombres con Estilo</h2>
+                            <p>Este año vemos un auge en los nombres <strong>Aesthetic</strong>. Desde nombres de diseñadores como Gucci o Chanel, hasta seres mitológicos como Zeus, Hera o Loki para esos gatos traviesos que creen ser dioses.</p>
+                            <p>Deja que tu gato te inspire. Observa sus manías : ¿es un cazador de sombras o un amante de las siestas eternas? Nuestra IA te permite filtrar por estos rasgos para dar con el nombre perfecto.</p>
+                            <p>Recuerda que un gato puede vivir hasta 20 años, ¡así que elige un nombre que te siga gustando en dos décadas!</p>
                         </div>
                     )
                 }
@@ -194,43 +191,42 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         } else {
             return [
                 {
-                    id: 'dog-names-2025',
+                    id: '1',
                     title: '150+ Unique Dog Names for 2025: The Ultimate AI Guide',
-                    excerpt: 'Finding the perfect name for your companion is a journey. Explore the top picks for the year and how AI is changing the naming game.',
+                    excerpt: 'Finding the perfect name for your companion is a journey. Explore the top picks for the year.',
                     pet: 'dog',
                     date: 'Jan 10, 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
-                            <p>Welcoming a dog into your life is a transformative moment. It\'s the beginning of a lifelong bond, and choosing a name is the first official act of pet parenting. In 2025, we\'re seeing a massive shift in how owners approach this task.</p>
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
+                            <p>Welcoming a dog into your life is a transformative moment. It's the beginning of a lifelong bond, and choosing a name is the first official act of pet parenting. In 2025, we're seeing a massive shift in how owners approach this task.</p>
                             <h2 className="text-2xl font-black text-[#AA336A]">The Power of AI in Pet Naming</h2>
                             <p>With tools like the Name My Pet AI generator, you no longer have to scroll through endless alphabetical lists. AI technology analyzes data points like breed traits, personality quirks, and current cultural trends to suggest names that actually "stick".</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">2025 Trend Spotting</h2>
-                            <ul className="list-disc pl-5 space-y-3">
+                            <h2 className="text-2xl font-black text-[#AA336A]">2025 Trends</h2>
+                            <ul className="list-disc pl-5 space-y-4">
                                 <li><strong>Retro-Classic :</strong> Names like Archie, Mabel, Otis, and Hazel are skyrocketing as owners look for timeless charm.</li>
                                 <li><strong>Nature-Inspired :</strong> River, Sage, Willow, and Jasper reflect a growing desire for grounding, earthy vibes.</li>
-                                <li><strong>Cosmic :</strong> Orion, Nova, Zenith, and Lyra are perfect for adventurous spirits.</li>
+                                <li><strong>Cosmic :</strong> Orion, Nova, Zenith, and Lyra are perfect for the adventurous spirits.</li>
                             </ul>
-                            <p>Expert tip: Perform the "shout test." Stand in your backyard and yell the potential name. If it feels natural and clear, it\'s a winner. Avoid names that sound like common commands like "Kit" which sounds like "Sit".</p>
+                            <p>Expert tip: Perform the "shout test." Stand in your backyard and yell the potential name. If it feels natural and clear, it's a winner. Avoid names that sound like common commands (e.g., "Kit" sounds like "Sit").</p>
+                            <p>Naming your dog is the beginning of your shared story. Let it be a name that makes you smile every time you say it across the house.</p>
                         </div>
                     )
                 },
                 {
-                    id: 'cat-names-2025',
-                    title: 'Cat Naming Magic: Aesthetic Trends and Feline Psychology 2025',
-                    excerpt: 'Cats often choose their own names through their quirky actions. Discover what is hot this year and why the sound of the name matters.',
+                    id: '2',
+                    title: 'Cat Naming Magic: Aesthetic Trends and Psychology 2025',
+                    excerpt: 'Cats often choose their own names through their quirky actions. Discover what is hot this year.',
                     pet: 'cat',
                     date: 'Feb 15, 2025',
                     content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed">
-                            <p>A cat is more than a pet—it\'s a tiny, furry overlord. Their name should be just as regal, quirky, or mysterious as they are. In 2025, we focus on "Vibe-Naming" over traditional generic picks.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">What Cats Actually Hear</h2>
+                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
+                            <p>A cat is more than a pet—it's a tiny, furry overlord. Their name should be just as regal, quirky, or mysterious as they are. In 2025, we focus on "Vibe-Naming" over traditional generic picks.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">What Cats Hear</h2>
                             <p>Research suggests that cats respond most consistently to names ending in high-pitched "ee" sounds. Names like Ziggy, Mochi, or Bunny are likely to grab their attention faster than names with flat vowel endings.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Aesthetic Styles for 2025</h2>
-                            <ul className="list-disc pl-5 space-y-3">
-                                <li><strong>Foodie trend :</strong> Noodle, Sushi, Taco, and Olive are top-tier choices for cute cats.</li>
-                                <li><strong>Gothic-Mystic :</strong> Rising for black and grey cats, with names like Salem, Raven, and Onyx leading the pack.</li>
-                            </ul>
-                            <p>Let your cat\'s attitude lead the way. Is your cat a brave explorer or a shy shadow? Use our AI tool to narrow down names that celebrate their specific energy.</p>
+                            <h2 className="text-2xl font-black text-[#AA336A]">Aesthetic Styles</h2>
+                            <p>This year, the <strong>Foodie</strong> trend is king. Noodle, Sushi, Taco, and Olive are top-tier choices for cute cats. Meanwhile, the <strong>Gothic-Mystic</strong> trend is rising for black and grey cats, with names like Salem, Raven, and Onyx leading the pack.</p>
+                            <p>Let your cat's attitude lead the way. Is your cat a brave explorer or a shy shadow? Use our personality tool to narrow down names that celebrate their specific feline energy.</p>
+                            <p>Remember: a cat's name is the sound of affection. Pick something that rolls off the tongue and feels right in your heart.</p>
                         </div>
                     )
                 }
@@ -252,7 +248,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         {t.blog.back_to_blog}
                     </button>
                 </div>
-                <Card className="p-8 md:p-12 max-w-4xl w-full border-4 border-white/20 shadow-2xl mb-24 rounded-[3rem] bg-white/95 backdrop-blur-sm">
+                <Card className="p-8 md:p-12 max-w-4xl w-full border-4 border-white/20 shadow-2xl mb-24 rounded-[3rem] bg-white/95">
                     <div className="flex justify-center mb-8">
                         <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
                     </div>
@@ -282,7 +278,7 @@ const BlogScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <Card 
                         key={post.id} 
                         onClick={() => setSelectedPostId(post.id)} 
-                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group shadow-md hover:shadow-xl flex flex-col h-full rounded-[2.5rem] bg-white/90 backdrop-blur-sm"
+                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all hover:shadow-2xl border-2 border-white/10 group shadow-md hover:shadow-xl flex flex-col h-full rounded-[2.5rem] bg-white/90"
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
@@ -422,15 +418,7 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
         if (!bioCardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-            const filter = (node: any) => {
-                if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
-                return true;
-            };
-            const dataUrl = await toPng(bioCardRef.current, { 
-                pixelRatio: 3, 
-                cacheBust: true, 
-                filter: filter
-            });
+            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, cacheBust: true });
             const link = document.createElement('a'); 
             link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
             link.click();
@@ -514,7 +502,7 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
                         <div className="w-full max-w-sm space-y-4">
                             <input type="range" min="0.5" max="8" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full accent-[#AA336A]" />
                             <div className="grid grid-cols-1 gap-4">
-                                <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl">
+                                <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl font-bold">
                                     {isDownloading ? '...' : t.bio.btn_download}
                                 </Button>
                                 <Button onClick={handleShare} disabled={isSharing || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl font-bold">

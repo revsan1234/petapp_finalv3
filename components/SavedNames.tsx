@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, MouseEvent } from 'react';
 import type { GeneratedName, PetGender } from '../types';
 import { Card } from './ui/Card';
@@ -293,11 +294,10 @@ const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedName, pe
                                         <div className="pt-6 border-t border-[var(--text-main)]/10">
                                             <h4 className="font-bold text-[var(--text-main)] mb-4 text-2xl">{t.saved_names.card_step2}</h4>
                                             <div className="flex flex-col gap-4">
-                                                <Button onClick={handleDownloadImage} disabled={isDownloading} variant="primary" className="!py-4 !text-lg btn-surprise">
+                                                <Button onClick={handleDownloadImage} disabled={isDownloading} variant="primary" className="!py-4 !text-lg btn-surprise font-bold">
                                                     <DownloadIcon className="w-6 h-6 mr-2" />
                                                     {isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}
                                                 </Button>
-                                                {/* Added colorful Share Now button */}
                                                 <Button onClick={handleShare} disabled={isSharing} variant="primary" className="!py-4 !text-lg btn-surprise font-black">
                                                     <ShareIcon className="w-6 h-6 mr-2" />
                                                     {isSharing ? "Preparing..." : "Share Now"}
