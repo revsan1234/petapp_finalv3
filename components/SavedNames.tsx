@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, MouseEvent } from 'react';
 import type { GeneratedName, PetGender } from '../types';
 import { Card } from './ui/Card';
@@ -115,20 +114,14 @@ const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedName, pe
         if (!cardRef.current) return null;
         let bgColor = petGender === 'Male' ? '#aab2a1' : petGender === 'Any' ? '#d4c4e0' : '#e889b5';
 
-        const filter = (node: HTMLElement) => {
-            if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
-            return true;
-        };
-
         try {
             return await toPng(cardRef.current, {
                 quality: 1.0,
-                pixelRatio: 3, 
+                pixelRatio: 2, 
                 fontEmbedCSS: fontEmbedCss,
                 backgroundColor: bgColor,
                 cacheBust: true,
-                filter: filter,
-                style: { transform: 'none', margin: '0', padding: '32px', left: '0', top: '0' }
+                filter: (el: any) => !['LINK', 'SCRIPT', 'STYLE'].includes(el.tagName?.toUpperCase() || '')
             });
         } catch (err) {
             console.error("Capture Error:", err);
@@ -142,14 +135,16 @@ const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedName, pe
         setActionError(null);
         try {
              const dataUrl = await captureImage();
-             if (!dataUrl) throw new Error("Failed to generate image");
+             if (!dataUrl) throw new Error("Failed");
              const link = document.createElement('a');
              link.href = dataUrl;
              link.download = 'MyPetCard.png';
+             document.body.appendChild(link);
              link.click();
+             document.body.removeChild(link);
         } catch (error) {
             console.error(error);
-            setActionError("Failed to download image.");
+            setActionError("Download failed. Please try again.");
         } finally {
             setIsDownloading(false);
         }
@@ -237,7 +232,7 @@ const SavedNames: React.FC<SavedNamesProps> = ({ savedNames, removeSavedName, pe
                                 <span className="hidden sm:inline">Save List</span>
                             </Button>
                          </div>
-                        <Button onClick={() => setShowImageCreator(true)} variant="primary" className="btn-surprise w-full sm:w-auto text-lg py-4">
+                        <Button onClick={() => setShowImageCreator(true)} variant="primary" className="btn-surprise w-full sm:w-auto text-lg py-4 font-black">
                              <ImageIcon className="w-6 h-6 mr-2" />
                              {t.saved_names.btn_create_card}
                         </Button>

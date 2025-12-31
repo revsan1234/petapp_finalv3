@@ -92,22 +92,23 @@ const BioGeneratorInternal: React.FC<{
         if (!bioCardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-            const filter = (node: any) => {
-                if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
-                return true;
-            };
-
-            const dataUrl = await toPng(bioCardRef.current, { 
-                pixelRatio: 3, 
+            const node = bioCardRef.current;
+            const dataUrl = await toPng(node, { 
+                pixelRatio: 2, 
                 cacheBust: true,
                 fontEmbedCSS: FONT_EMBED_CSS,
-                filter: filter
+                backgroundColor: gender === 'Male' ? '#aab2a1' : gender === 'Any' ? '#d4c4e0' : '#e889b5',
+                filter: (el: any) => !['LINK', 'SCRIPT', 'STYLE'].includes(el.tagName?.toUpperCase() || '')
             });
             const link = document.createElement('a'); 
-            link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
+            link.href = dataUrl; 
+            link.download = `${petName || 'MyPet'}_Bio.png`;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         } catch (error: any) { 
             console.error("Export Error:", error);
+            alert("Download failed. Try a different browser or take a screenshot.");
         } finally { setIsDownloading(false); }
     };
 

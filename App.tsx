@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';
@@ -23,6 +22,29 @@ import { generatePetBio } from './services/geminiService';
 import { PET_PERSONALITIES, PET_GENDERS, PET_TYPES } from './constants';
 import { Header } from './components/Header';
 
+// --- CONSTANTS ---
+
+const FONT_EMBED_CSS = `
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 300 700;
+  src: url(https://fonts.gstatic.com/s/fredoka/v12/6N097E9Ax05WnLtmWTMAdU6p.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJbecmNE.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2) format('woff2');
+}
+`;
+
 // --- SHARED UI COMPONENTS ---
 
 export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
@@ -37,189 +59,6 @@ export const BackToHomeButton: React.FC<{ onClick: () => void }> = ({ onClick })
             </svg>
             {t.common.back_home}
         </button>
-    );
-};
-
-// --- BLOG SCREEN COMPONENT (Internal for SEO & Reliability) ---
-
-interface BlogPost {
-    id: string;
-    title: string;
-    excerpt: string;
-    content: React.ReactNode;
-    pet: 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster';
-    date: string;
-}
-
-const BlogLocal: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const { language, t } = useLanguage();
-    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-
-    const posts = useMemo<BlogPost[]>(() => {
-        if (language === 'fr') {
-            return [
-                {
-                    id: 'dog-trends-2025-fr',
-                    title: 'L\'Art de Nommer son Chien en 2025 : Guide IA et Tendances',
-                    excerpt: 'Comment l\'IA transforme le choix du nom de votre compagnon à quatre pattes cette année.',
-                    pet: 'dog',
-                    date: '10 Janvier 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>Accueillir un chien est un acte d'amour profond. En 2025, nous observons une mutation : nous cherchons une identité qui résonne avec la personnalité unique de l'animal.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">L'IA : Votre Nouvel Allié</h2>
-                            <p>Grâce à Name My Pet, l'IA analyse des traits comportementaux pour suggérer des noms qui ont du sens.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Les Tendances</h2>
-                            <ul className="list-disc pl-5 space-y-4">
-                                <li><strong>Vintage :</strong> Le retour des prénoms "de grands-parents" comme Marcel ou Marguerite.</li>
-                                <li><strong>Cosmique :</strong> Orion, Nova ou Galaxie pour les animaux mystérieux.</li>
-                            </ul>
-                        </div>
-                    )
-                },
-                {
-                    id: 'cat-sounds-2025-fr',
-                    title: 'Psychologie Félines : Pourquoi le Son du Nom Importe ?',
-                    excerpt: 'Saviez-vous que les chats réagissent mieux à certaines fréquences ? Apprenez à capter leur attention.',
-                    pet: 'cat',
-                    date: '15 Février 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>Un chat règne sur son territoire. Son nom doit refléter son élégance innée.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">La Science des Sons</h2>
-                            <p>Les chats sont sensibles aux sons aigus. Un nom finissant en "i" (comme Mochi) attire leur attention plus vite.</p>
-                        </div>
-                    )
-                }
-            ];
-        } else if (language === 'es') {
-            return [
-                {
-                    id: 'dog-trends-2025-es',
-                    title: 'Nombres para Perros en 2025: Guía IA y Tendencias Hispanas',
-                    excerpt: 'Descubre los nombres que están marcando tendencia en España y Latinoamérica este año.',
-                    pet: 'dog',
-                    date: '10 de Enero 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>Elegir el nombre de tu perro es el primer paso de una vida juntos. En 2025, los nombres con mucha personalidad dominan el parque.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">El Poder de la IA</h2>
-                            <p>Nuestra IA sugiere nombres basados en el "vibe" de tu mascota, ya sea un "lomito" juguetón o un guardián valiente.</p>
-                        </div>
-                    )
-                },
-                {
-                    id: 'cat-sounds-2025-es',
-                    title: 'Magia para Michis: La Psicología de los Nombres Aesthetic',
-                    excerpt: 'Los gatos merecen nombres únicos. Mira lo que es tendencia absoluta para tu pequeño soberano.',
-                    pet: 'cat',
-                    date: '15 de Febrero 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>Un michi no es solo una mascota; es el rey de la casa.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">Frecuencias Altas</h2>
-                            <p>Los nombres que terminan en "i" (Mochi, Michi, Sushi) captan su atención mucho más rápido.</p>
-                        </div>
-                    )
-                }
-            ];
-        } else {
-            return [
-                {
-                    id: 'dog-trends-2025-en',
-                    title: 'Unique Dog Names for 2025: The Ultimate AI-Powered Guide',
-                    excerpt: 'Explore top picks for the year and learn how AI is changing the naming game for pet parents.',
-                    pet: 'dog',
-                    date: 'Jan 10, 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>Welcoming a dog is a transformative moment. In 2025, we see a shift toward high-concept naming that tells a story.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">The Power of AI</h2>
-                            <p>With Name My Pet, you no longer scroll lists. AI analyzes breed traits and personality to find the perfect fit.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">2025 Trends</h2>
-                            <ul className="list-disc pl-5 space-y-4">
-                                <li><strong>Retro-Classic:</strong> Names like Archie and Hazel are skyrocketing.</li>
-                                <li><strong>Nature-Inspired:</strong> Sage and Willow reflect a desire for grounding.</li>
-                            </ul>
-                        </div>
-                    )
-                },
-                {
-                    id: 'cat-sounds-2025-en',
-                    title: 'Cat Naming Magic: Aesthetic Trends and Feline Psychology',
-                    excerpt: 'Discover what is hot this year and why the sound of your cat\'s name matters more than you think.',
-                    pet: 'cat',
-                    date: 'Feb 15, 2025',
-                    content: (
-                        <div className="space-y-6 text-left text-[#333333] text-lg leading-relaxed font-medium">
-                            <p>A cat is a tiny, furry overlord. Their name should be just as regal or quirky as they are.</p>
-                            <h2 className="text-2xl font-black text-[#AA336A]">What Cats Hear</h2>
-                            <p>Research suggests cats respond best to names ending in high-pitched "ee" sounds like Ziggy or Mochi.</p>
-                        </div>
-                    )
-                }
-            ];
-        }
-    }, [language]);
-
-    const selectedPost = useMemo(() => posts.find(p => p.id === selectedPostId), [posts, selectedPostId]);
-
-    if (selectedPost) {
-        return (
-            <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-                <div className="w-full max-w-3xl mb-8 flex justify-start">
-                     <button 
-                        onClick={() => setSelectedPostId(null)} 
-                        className="flex items-center gap-2 text-white bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm hover:bg-white/30 transition-all shadow-sm"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-                        {t.blog.back_to_blog}
-                    </button>
-                </div>
-                <Card className="p-8 md:p-12 max-w-4xl w-full border-4 border-white/20 shadow-2xl mb-24 rounded-[3rem] bg-white/95">
-                    <div className="flex justify-center mb-8">
-                        <PetCharacter pet={selectedPost.pet} className="w-24 h-24 drop-shadow-lg" />
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-4 text-center text-[#5D4037] leading-tight">{selectedPost.title}</h1>
-                    <div className="text-sm font-black opacity-30 text-center uppercase tracking-widest mb-10 border-b border-black/5 pb-6">
-                        {selectedPost.date}
-                    </div>
-                    {selectedPost.content}
-                </Card>
-            </div>
-        );
-    }
-
-    return (
-        <div className="min-h-screen p-4 flex flex-col items-center animate-fade-in relative z-10">
-            <div className="w-full max-w-5xl mb-8 flex justify-start"><BackToHomeButton onClick={onBack} /></div>
-            <div className="text-center mb-12">
-                <h1 className="text-5xl md:text-7xl font-black text-white mb-4 uppercase drop-shadow-md">{t.blog.title}</h1>
-                <p className="text-white text-xl md:text-2xl font-bold opacity-90">{t.blog.subtitle}</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full pb-24">
-                {posts.map(post => (
-                    <Card 
-                        key={post.id} 
-                        onClick={() => setSelectedPostId(post.id)} 
-                        className="p-8 cursor-pointer transform hover:scale-[1.03] transition-all border-2 border-white/10 group shadow-md bg-white/90"
-                    >
-                        <div className="flex items-center gap-4 mb-6">
-                            <PetCharacter pet={post.pet} className="w-16 h-16 group-hover:rotate-6 transition-transform" />
-                            <div className="text-left">
-                                <span className="text-xs font-black opacity-40 uppercase tracking-widest">{post.date}</span>
-                                <h2 className="text-2xl font-black group-hover:text-[#AA336A] transition-colors leading-tight text-[#5D4037]">{post.title}</h2>
-                            </div>
-                        </div>
-                        <p className="opacity-80 text-left text-lg font-bold line-clamp-3 mb-6 flex-grow text-[#666666]">{post.excerpt}</p>
-                        <div className="mt-auto pt-4 border-t border-black/5 text-[#AA336A] font-black text-sm uppercase flex items-center gap-2 group-hover:gap-4 transition-all">
-                            {t.blog.read_more}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                        </div>
-                    </Card>
-                ))}
-            </div>
-        </div>
     );
 };
 
@@ -383,12 +222,29 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
         if (!bioCardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, cacheBust: true });
+            const node = bioCardRef.current;
+            
+            // Robust download settings
+            const dataUrl = await toPng(node, { 
+                pixelRatio: 2, 
+                cacheBust: true,
+                fontEmbedCSS: FONT_EMBED_CSS,
+                backgroundColor: gender === 'Male' ? '#aab2a1' : gender === 'Any' ? '#d4c4e0' : '#e889b5',
+                filter: (el: any) => {
+                    const tag = el.tagName ? el.tagName.toUpperCase() : '';
+                    return !['LINK', 'SCRIPT', 'STYLE'].includes(tag);
+                }
+            });
+            
             const link = document.createElement('a'); 
-            link.href = dataUrl; link.download = `${petName || 'MyPet'}_Bio.png`;
+            link.href = dataUrl; 
+            link.download = `${petName || 'MyPet'}_Bio.png`;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         } catch (error: any) { 
-            console.error("Download failed", error);
+            console.error("Export Error:", error);
+            alert("Download failed. Please try again or take a screenshot.");
         } finally { setIsDownloading(false); }
     };
 
@@ -396,7 +252,13 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
         if (!bioCardRef.current || isSharing) return;
         setIsSharing(true);
         try {
-            const dataUrl = await toPng(bioCardRef.current, { pixelRatio: 3, cacheBust: true });
+            const node = bioCardRef.current;
+            const dataUrl = await toPng(node, { 
+                pixelRatio: 2, 
+                cacheBust: true, 
+                fontEmbedCSS: FONT_EMBED_CSS,
+                filter: (el: any) => !['LINK', 'SCRIPT', 'STYLE'].includes(el.tagName?.toUpperCase() || '')
+            });
             const response = await fetch(dataUrl);
             const blob = await response.blob();
             const file = new File([blob], `${petName || 'MyPet'}_Bio.png`, { type: 'image/png' });
@@ -465,7 +327,10 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
                             </div>
                         </div>
                         <div className="w-full max-w-sm space-y-4">
-                            <input type="range" min="0.5" max="8" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full accent-[#AA336A]" />
+                            <div className="bg-white/20 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
+                                <label className="block text-center text-white font-bold mb-2">Adjust Photo Zoom</label>
+                                <input type="range" min="0.5" max="8" step="0.1" value={imageZoom} onChange={(e) => setImageZoom(Number(e.target.value))} className="w-full accent-[#AA336A]" />
+                            </div>
                             <div className="grid grid-cols-1 gap-4">
                                 <Button onClick={handleDownload} disabled={isDownloading || !imagePreview} variant="primary" className="w-full btn-surprise !py-5 text-xl font-bold">
                                     {isDownloading ? '...' : t.bio.btn_download}
@@ -484,7 +349,7 @@ const BioScreenLocal: React.FC<{ petInfo: PetInfo; imageForBio: string | null; s
 
 // --- MAIN APP CONTENT ---
 
-type View = 'app' | 'privacy' | 'terms' | 'contact' | 'blog';
+type View = 'app' | 'privacy' | 'terms' | 'contact';
 
 const AppContent: React.FC = () => {
     const [view, setView] = useState<View>('app');
@@ -527,7 +392,6 @@ const AppContent: React.FC = () => {
         if (view === 'privacy') return <PrivacyPolicy onBack={() => setView('app')} />;
         if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
         if (view === 'contact') return <ContactUsLocal onBack={() => setView('app')} />;
-        if (view === 'blog') return <BlogLocal onBack={() => setView('app')} />;
         return renderActiveTab();
     };
 
@@ -561,7 +425,6 @@ const AppContent: React.FC = () => {
                     </div>
                     <div className="flex justify-center flex-wrap gap-x-8 gap-y-4 text-base items-center text-white font-bold tracking-tight">
                         <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="underline underline-offset-8 decoration-2">namemypet.org</a>
-                        <button onClick={() => { setView('blog'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">Blog</button>
                         <button onClick={() => { setView('privacy'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.privacy}</button>
                         <button onClick={() => { setView('terms'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.terms}</button>
                         <button onClick={() => { setView('contact'); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="underline underline-offset-8 decoration-2 hover:text-pink-200">{t.common.contact}</button>
