@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, forwardRef, MouseEvent, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { Partnerships } from './components/Partnerships';

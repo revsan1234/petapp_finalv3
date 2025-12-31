@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
@@ -348,9 +349,13 @@ const QuickFireDiscovery: React.FC<{
 
 // --- 6. PET CONSULTANT COMPONENT ---
 
+interface ExtendedChatMessage extends ChatMessage {
+    sources?: { uri: string; title: string }[];
+}
+
 const Consultant: React.FC = () => {
     const { t, language } = useLanguage();
-    const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    const [messages, setMessages] = useState<ExtendedChatMessage[]>(() => {
         const saved = localStorage.getItem('pet_chat_history');
         return saved ? JSON.parse(saved) : [];
     });
@@ -366,13 +371,13 @@ const Consultant: React.FC = () => {
     const handleSendMessage = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!inputValue.trim() || isTyping) return;
-        const userMsg: ChatMessage = { role: 'user', text: inputValue, timestamp: Date.now() };
+        const userMsg: ExtendedChatMessage = { role: 'user', text: inputValue, timestamp: Date.now() };
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
         setIsTyping(true);
         try {
             const resp = await getPetConsultantResponse(messages, inputValue, language, t.expert.system_instruction);
-            setMessages(prev => [...prev, { role: 'model', text: resp, timestamp: Date.now() }]);
+            setMessages(prev => [...prev, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }]);
         } catch (error) { console.error(error); } finally { setIsTyping(false); }
     };
 
@@ -389,23 +394,26 @@ const Consultant: React.FC = () => {
                 {messages.length === 0 && <p className="text-center opacity-60 p-8 font-medium">{t.expert.welcome}</p>}
                 {messages.map((m, i) => (
                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[85%] p-3 rounded-2xl text-lg ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/40 border border-white/20 rounded-tl-none'}`}>{m.text}</div>
+                        <div className={`max-w-[85%] p-3 rounded-2xl text-lg ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/40 border border-white/20 rounded-tl-none'}`}>
+                            {m.text}
+                            {m.sources && m.sources.length > 0 && (
+                                <div className="mt-2 pt-2 border-t border-black/5 flex flex-wrap gap-2">
+                                    {m.sources.map((s, si) => (
+                                        <a key={si} href={s.uri} target="_blank" rel="noopener noreferrer" className="text-[10px] bg-[#AA336A]/10 text-[#AA336A] font-bold px-2 py-1 rounded hover:bg-[#AA336A]/20 transition-colors truncate max-w-[150px]">
+                                            {s.title}
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ))}
                 {isTyping && <div className="text-sm italic opacity-50 px-2 animate-pulse">{t.expert.typing}</div>}
                 <div ref={messagesEndRef} />
             </div>
-            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 w-full px-2">
-                <input 
-                    type="text" 
-                    value={inputValue} 
-                    onChange={e => setInputValue(e.target.value)} 
-                    placeholder={t.expert.placeholder} 
-                    className="flex-grow min-w-0 bg-white/40 border border-white/30 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#AA336A]" 
-                />
-                <div className="shrink-0 pr-1">
-                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-3 !px-4 sm:!px-6"> {t.expert.btn_send} </Button>
-                </div>
+            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2">
+                <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={t.expert.placeholder} className="flex-grow min-w-0 bg-white/40 border border-white/30 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#AA336A]" />
+                <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-3 !px-6"> {t.expert.btn_send} </Button>
             </form>
         </Card>
     );

@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, PetPersonalityResult, PetPersonality, NameStyle, PetType, PetGender, AdoptionCenter, Language, ChatMessage } from '../types';
 
@@ -299,7 +300,7 @@ export const findAdoptionCenters = async (location: string, language: Language =
     }
 };
 
-export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en', systemInstruction: string): Promise<string> => {
+export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en', systemInstruction: string): Promise<{ text: string; sources?: {uri: string, title: string}[] }> => {
     try {
         const contents = history.map(msg => ({
             role: msg.role,
@@ -308,15 +309,32 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
         
         contents.push({ role: 'user', parts: [{ text: message }] });
 
+        // Add directive for brevity and sources
+        const briefInstruction = systemInstruction + " IMPORTANT: Keep your response extremely brief and concise (maximum 2 sentences). Focus on answering the user directly. Use the Google Search tool to verify details if needed.";
+
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: contents,
             config: {
-                systemInstruction: systemInstruction,
+                systemInstruction: briefInstruction,
+                tools: [{ googleSearch: {} }]
             }
         });
         
-        return response.text || "";
+        const sources: {uri: string, title: string}[] = [];
+        const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+        if (groundingChunks) {
+            for (const chunk of groundingChunks) {
+                if (chunk.web) {
+                    sources.push({ uri: chunk.web.uri, title: chunk.web.title });
+                }
+            }
+        }
+
+        return {
+            text: response.text || "",
+            sources: sources.length > 0 ? sources : undefined
+        };
     } catch (error: any) {
         console.error("Consultant Error:", error);
         throw new Error("Expert is currently busy. Please try again later.");
