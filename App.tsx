@@ -7,8 +7,7 @@ import { PhotoScreen } from './components/screens/PhotoScreen';
 import { PlayScreen } from './components/screens/PlayScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { Partnerships } from './components/Partnerships';
-import { ConsultantScreen } from './components/screens/ConsultantScreen';
-import { ContactUs } from './components/screens/ContactUs';
+import { ContactUs } from './components/ContactUs';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsAndConditions } from './components/TermsAndConditions';
 import { TabNavigator, Tab } from './components/layout/TabNavigator';
@@ -174,4 +173,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
