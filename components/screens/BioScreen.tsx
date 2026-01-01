@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, MouseEvent, useEffect } from 'react';
 import { Header } from '../Header';
-import type { PetPersonality, PetKind, PetInfo, PetGender, PetType } from '../../types';
+import type { PetPersonality, PetInfo, PetGender, PetType } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { toPng } from 'html-to-image';
 import { Card } from '../ui/Card';
@@ -108,7 +108,7 @@ const BioGeneratorInternal: React.FC<{
             document.body.removeChild(link);
         } catch (error: any) { 
             console.error("Export Error:", error);
-            alert("Download failed. Try a different browser or take a screenshot.");
+            alert("Download failed. Try a different browser.");
         } finally { setIsDownloading(false); }
     };
 
