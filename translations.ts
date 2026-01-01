@@ -145,7 +145,7 @@ export const translations = {
       btn_saving: "Saving...",
       btn_download: "Download Image",
       btn_preparing: "Preparing...",
-      btn_share_card: "Share with your Friends!",
+      btn_share_card: "Share Now",
       cancel: "Cancel",
       shareable_title: "Help Me Choose!",
       shareable_picks: "My Top Picks",
@@ -255,7 +255,7 @@ export const translations = {
       result_suffix: "Years Old"
     },
     expert: {
-      system_instruction: "You are a friendly pet naming expert. Help users find names and answer questions about pet types.",
+      system_instruction: "You are a professional pet consultant. ALWAYS provide extremely short, 1-2 sentence answers. ALWAYS provide links for the user to learn more using the Google Search tool.",
       title: "Pet Consultant",
       subtitle: "Ask our AI expert anything about pet names!",
       btn_clear: "Clear Chat",
@@ -338,6 +338,28 @@ export const translations = {
       personalities: { Playful: "Juguetón", Calm: "Tranquilo", Mischievous: "Travieso", Elegant: "Elegante", Goofy: "Gracioso", Brave: "Valiente" },
       styles: { Trending: "Tendencia", Unique: "Único", Classic: "Clásico", Mythological: "Mitológico", "Nature-inspired": "Naturaleza", Funny: "Divertido" },
       image_styles: { Photorealistic: "Fotorealista", Anime: "Anime", Cartoon: "Caricatura" }
+    },
+    quiz: {
+      title: "Quiz de Personalidad",
+      subtitle: "¡Descubre la vibra de tu mascota y obtén ideas!",
+      q1: "¡Hora de jugar! Tu mascota suele...",
+      a1_1: "Correr con mucha energía",
+      a1_2: "Relajarse en su lugar favorito",
+      a1_3: "Pedir comida o premios",
+      q2: "Aparece alguien nuevo. Tu mascota:",
+      a2_1: "Se esconde de inmediato",
+      a2_2: "Se emociona y tiene curiosidad",
+      a2_3: "Observa desde lejos",
+      q3: "Introduces un objeto nuevo. Tu mascota...",
+      a3_1: "Lo investiga con fuerza o lo tira",
+      a3_2: "Lo ignora por completo",
+      a3_3: "Lo huele con precaución",
+      result_title: "La personalidad es...",
+      loading: "Analizando...",
+      try_again: "Reintentar",
+      play_again: "Jugar de nuevo",
+      pick_name: "¡Elige un nombre! Dale al ❤️ para guardarlo.",
+      intro_title: "Primero, sobre tu amigo:",
     },
     bio: {
       title: "Crear Tarjeta Bio",
@@ -478,7 +500,7 @@ export const translations = {
       result_suffix: "Años"
     },
     expert: {
-      system_instruction: "Eres un experto en nombres de mascotas amigable.",
+      system_instruction: "Eres un consultor profesional de mascotas. SIEMPRE da respuestas extremadamente cortas de 1 o 2 frases. SIEMPRE incluye enlaces para aprender más usando la herramienta de Google Search.",
       title: "Consultor de Mascotas",
       subtitle: "¡Pregunta lo que quieras sobre nombres!",
       btn_clear: "Limpiar Chat",
@@ -561,6 +583,28 @@ export const translations = {
       personalities: { Playful: "Joueur", Calm: "Calme", Mischievous: "Espiègle", Elegant: "Élégant", Goofy: "Rigolo", Brave: "Courageux" },
       styles: { Trending: "Tendance", Unique: "Unique", Classic: "Classique", Mythological: "Mythologique", "Nature-inspired": "Nature", Funny: "Drôle" },
       image_styles: { Photorealistic: "Photoréaliste", Anime: "Anime", Cartoon: "Dessin animé" }
+    },
+    quiz: {
+      title: "Quiz de Caractère",
+      subtitle: "Découvrez son style et trouvez son nom !",
+      q1: "C'est l'heure du jeu ! Votre animal...",
+      a1_1: "Court partout avec énergie",
+      a1_2: "Se repose tranquillement",
+      a1_3: "Réclame des friandises",
+      q2: "Un inconnu arrive. Votre animal:",
+      a2_1: "Se cache tout de suite",
+      a2_2: "Est curieux et s'excite",
+      a2_3: "Observe à distance",
+      q3: "Un nouvel objet arrive. Votre animal...",
+      a3_1: "L'attaque ou le renverse",
+      a3_2: "L'ignore totalement",
+      a3_3: "Le renifle prudemment",
+      result_title: "Le caractère est...",
+      loading: "Analyse en cours...",
+      try_again: "Réessayer",
+      play_again: "Rejouer",
+      pick_name: "Choisissez un nom ! Cliquez sur ❤️ pour sauver.",
+      intro_title: "D'abord, sur votre ami:",
     },
     bio: {
       title: "Carte de Profil",
@@ -701,7 +745,7 @@ export const translations = {
       result_suffix: "Ans"
     },
     expert: {
-      system_instruction: "Tu es un expert en noms d'animaux.",
+      system_instruction: "Tu es un consultant professionnel pour animaux. Donne TOUJOURS des réponses très courtes (1-2 phrases). Donne TOUJOURS des liens pour en savoir plus via Google Search.",
       title: "Consultant Animalier",
       subtitle: "Posez vos questions sur les noms !",
       btn_clear: "Effacer Chat",

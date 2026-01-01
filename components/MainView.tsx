@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, MouseEvent } from 'react';
 import { Header } from './Header';
 import { NameGenerator } from './NameGenerator';
@@ -36,6 +37,14 @@ const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
 );
 
+const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186a2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.186 a2.25 2.25 0 0 0-3.933 2.186Z" /></svg>
+);
+
+const DownloadIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+);
+
 const SavedNamesInternal: React.FC<{ 
     savedNames: GeneratedName[]; 
     removeSavedName: (id: string) => void; 
@@ -45,6 +54,7 @@ const SavedNamesInternal: React.FC<{
     const [showImageCreator, setShowImageCreator] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [isSharing, setIsSharing] = useState(false);
     const [imageZoom, setImageZoom] = useState(1);
     const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
@@ -66,25 +76,50 @@ const SavedNamesInternal: React.FC<{
         if (!cardRef.current || isDownloading) return;
         setIsDownloading(true);
         try {
-             // SECURITY FIX: skip scanner external link/style nodes that block rule access
-             const filter = (node: any) => {
-                 if (node.tagName === 'LINK' || node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return false;
-                 return true;
-             };
-
+             await new Promise(r => setTimeout(r, 100));
              const dataUrl = await toPng(cardRef.current, { 
-                pixelRatio: 3, 
+                pixelRatio: 2, 
                 cacheBust: true,
-                fontEmbedCSS: FONT_EMBED_CSS,
-                filter: filter
+                fontEmbedCSS: FONT_EMBED_CSS
              });
              const link = document.createElement('a');
              link.href = dataUrl;
              link.download = 'MyPetPicks.png';
+             document.body.appendChild(link);
              link.click();
+             document.body.removeChild(link);
         } catch (error: any) { 
             console.error(error); 
+            alert("Sorry, capture failed. Please try again or take a screenshot.");
         } finally { setIsDownloading(false); }
+    };
+
+    const handleShare = async () => {
+        if (!cardRef.current || isSharing) return;
+        setIsSharing(true);
+        try {
+            const dataUrl = await toPng(cardRef.current, { 
+                pixelRatio: 2, 
+                cacheBust: true, 
+                fontEmbedCSS: FONT_EMBED_CSS 
+            });
+            const response = await fetch(dataUrl);
+            const blob = await response.blob();
+            const file = new File([blob], 'HelpMePick.png', { type: 'image/png' });
+            if (navigator.share && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: t.share_texts.card_title,
+                    text: t.share_texts.card_body
+                });
+            } else {
+                alert("Sharing is not supported on this browser.");
+            }
+        } catch (error) {
+            console.error("Share failed", error);
+        } finally {
+            setIsSharing(false);
+        }
     };
 
     const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
@@ -140,7 +175,16 @@ const SavedNamesInternal: React.FC<{
                                         <p className="text-xs opacity-60">{t.saved_names.zoom_hint_drag}</p>
                                     </div>
                                 )}
-                                <Button onClick={handleDownloadImage} disabled={isDownloading || !imagePreview}>{isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}</Button>
+                                <div className="space-y-4 pt-4">
+                                    <Button onClick={handleDownloadImage} disabled={isDownloading || !imagePreview} variant="secondary">
+                                        <DownloadIcon className="w-5 h-5 mr-2" />
+                                        {isDownloading ? t.saved_names.btn_saving : t.saved_names.btn_download}
+                                    </Button>
+                                    <Button onClick={handleShare} disabled={isSharing || !imagePreview} variant="primary" className="btn-surprise">
+                                        <ShareIcon className="w-5 h-5 mr-2" />
+                                        {isSharing ? t.saved_names.btn_preparing : t.saved_names.btn_share_card}
+                                    </Button>
+                                </div>
                             </div>
                             <div onMouseMove={handleMouseMove} onMouseUp={handleMouseUpOrLeave} onMouseLeave={handleMouseUpOrLeave} className="flex justify-center">
                                 <div className="transform scale-[0.7] origin-top">

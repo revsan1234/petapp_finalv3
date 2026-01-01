@@ -309,8 +309,8 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
         
         contents.push({ role: 'user', parts: [{ text: message }] });
 
-        // Add directive for brevity and sources
-        const briefInstruction = systemInstruction + " IMPORTANT: Keep your response extremely brief and concise (maximum 2 sentences). Focus on answering the user directly. Use the Google Search tool to verify details if needed.";
+        // Force brevity and usage of search links
+        const briefInstruction = systemInstruction + " IMPORTANT: Your response MUST be 1 or 2 sentences ONLY. Do not ramble. Use the Google Search tool to find relevant external resources and provide them as sources so the user can read more details elsewhere.";
 
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
