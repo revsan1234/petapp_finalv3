@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import type { PetInfo, GeneratedName } from '../types';
 import { PET_TYPES, PET_GENDERS, PET_PERSONALITIES, NAME_STYLES } from '../constants';
@@ -18,6 +19,12 @@ interface NameGeneratorProps {
 const SparkleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+    </svg>
+);
+
+const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.186 a2.25 2.25 0 0 0-3.933 2.186Z" />
     </svg>
 );
 
@@ -69,6 +76,27 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
     };
     
     const isSaved = useCallback((nameId: string) => { return savedNames.some(saved => saved.id === nameId); }, [savedNames]);
+
+    const handleShareList = async () => {
+        if (generatedNames.length === 0) return;
+        const listText = generatedNames.map(n => `• ${n.name}: ${n.meaning}`).join('\n');
+        const shareData = {
+            title: `Pet Name Ideas for my ${petInfo.type}!`,
+            text: `Check out these names I found on NameMyPet.org:\n\n${listText}\n\nWhich one is your favorite?`,
+            url: 'https://namemypet.org'
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+                alert("List copied to clipboard!");
+            }
+        } catch (err) {
+            console.error("Share failed", err);
+        }
+    };
 
     const renderNameList = (list: GeneratedName[]) => (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -131,7 +159,18 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
             </div>
             {error && <p className="mt-4 text-center text-red-500 bg-red-200/50 p-3 rounded-lg">{t.generator.error}</p>}
             {isLoading && (<div className="mt-6 text-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current mx-auto"></div><p className="mt-4 opacity-80 text-lg">{t.generator.loading_text}</p></div>)}
-            {generatedNames.length > 0 && !isLoading && (<div className="mt-8"><h3 className="text-2xl font-bold text-center mb-4">{t.generator.results_title}</h3>{renderNameList(generatedNames)}</div>)}
+            {generatedNames.length > 0 && !isLoading && (
+                <div className="mt-8 animate-fade-in">
+                    <h3 className="text-2xl font-bold text-center mb-4">{t.generator.results_title}</h3>
+                    {renderNameList(generatedNames)}
+                    <div className="mt-8 flex justify-center">
+                        <Button onClick={handleShareList} variant="secondary" className="!w-auto !px-8 shadow-md">
+                            <ShareIcon className="w-5 h-5 mr-2" />
+                            {t.saved_names.btn_share_text}
+                        </Button>
+                    </div>
+                </div>
+            )}
         </Card>
     );
 };

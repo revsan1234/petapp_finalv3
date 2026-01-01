@@ -12,7 +12,7 @@ import { CustomCursor } from './components/ui/CustomCursor';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { Card } from './components/ui/Card';
-import type { GeneratedName, PetInfo, PetPersonalityResult } from './types';
+import type { GeneratedName, PetInfo, PetPersonalityResult, Language } from './types';
 
 // --- Sub-components moved into App.tsx to avoid file resolution issues ---
 
@@ -178,10 +178,6 @@ const AppContent: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (footerView === 'contact') return <ContactUs onBack={() => setFooterView('none')} />;
-  if (footerView === 'privacy') return <PrivacyPolicy onBack={() => setFooterView('none')} />;
-  if (footerView === 'terms') return <TermsAndConditions onBack={() => setFooterView('none')} />;
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'home':
@@ -240,20 +236,45 @@ const AppContent: React.FC = () => {
       <BackgroundPattern />
       
       <div className="flex-grow pb-32">
-        {renderTabContent()}
+        {footerView === 'contact' ? <ContactUs onBack={() => setFooterView('none')} /> :
+         footerView === 'privacy' ? <PrivacyPolicy onBack={() => setFooterView('none')} /> :
+         footerView === 'terms' ? <TermsAndConditions onBack={() => setFooterView('none')} /> :
+         renderTabContent()}
       </div>
 
       <TabNavigator activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <footer className="py-12 px-6 bg-black/10 backdrop-blur-md border-t border-white/10 mt-auto">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
-            <button onClick={() => setIsChillMode(!isChillMode)} className="text-white font-bold hover:scale-105 transition-transform bg-white/20 px-4 py-2 rounded-full">
+          <div className="flex flex-col items-center gap-6">
+            {/* Chill Mode Switcher */}
+            <button 
+              onClick={() => setIsChillMode(!isChillMode)} 
+              className="text-white font-bold hover:scale-105 transition-all bg-white/20 px-6 py-2 rounded-full shadow-md active:scale-95"
+            >
               {isChillMode ? t.common.chill_mode_off : t.common.chill_mode_on}
             </button>
-            <button onClick={() => setLanguage(language === 'en' ? 'es' : language === 'es' ? 'fr' : 'en')} className="text-white font-bold hover:scale-105 transition-transform bg-white/20 px-4 py-2 rounded-full">
-              {language === 'en' ? t.common.switch_language_es : language === 'es' ? t.common.switch_language_fr : t.common.switch_language_en}
-            </button>
+            
+            {/* Multi-Language Switcher Group */}
+            <div className="flex flex-wrap justify-center gap-3">
+              {(['en', 'es', 'fr'] as Language[]).map((langCode) => {
+                const label = t.common[`switch_language_${langCode}`];
+                const isActive = language === langCode;
+                return (
+                  <button
+                    key={langCode}
+                    onClick={() => setLanguage(langCode)}
+                    className={`text-white font-bold hover:scale-105 transition-all px-5 py-2 rounded-full shadow-sm active:scale-95 ${
+                      isActive 
+                        ? 'bg-[#AA336A] ring-2 ring-white/50 scale-110 z-10' 
+                        : 'bg-white/10 hover:bg-white/30 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
           
           <div className="flex flex-wrap justify-center gap-6 text-white/60 text-sm font-bold uppercase tracking-widest">
