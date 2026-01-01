@@ -265,35 +265,33 @@ export const translations = {
       placeholder: "Ask about names, meanings, or breeds...",
       btn_send: "Send"
     },
-    business_card: {
-      title: "Pet Business Cards",
-      subtitle: "Create a professional card for your VIP (Very Important Pet)!",
-      front_label: "Card Front",
-      back_label: "Card Back",
-      download_front: "Download Front",
-      download_back: "Download Back"
-    },
-    errors: {
-      no_share: "Sharing is not supported on this browser."
-    },
+    // Added missing share_texts, placeholders, blog, and business_card
     share_texts: {
-      card_title: "My Pet Names",
-      card_body: "Check out the names I picked for my new pet on Name My Pet!",
-      scene_title: "My Pet's Portrait",
-      scene_body: "Look at this cool portrait of my pet generated with Name My Pet!",
-      bio_title: "My Pet's Bio Card",
-      bio_body: "I created a fun bio for my pet. Meet them here!"
+      card_title: "Help Me Pick a Name!",
+      card_body: "Check out these potential names for my new pet! Which one is your favorite?",
+      scene_title: "Check out my pet's new look!",
+      scene_body: "I just generated this cool portrait of my pet using AI!",
+      bio_title: "Meet my pet!",
+      bio_body: "Here is the official bio card for my new best friend!"
     },
     placeholders: {
-      pet_name: "e.g. Luna",
-      location: "Area code, City or Zip"
+      pet_name: "e.g., Luna, Milo, Bear",
+      location: "e.g., New York, 90210"
     },
     blog: {
-      title: "Pet Blog & Trends",
-      subtitle: "Expert tips and naming ideas for 2025!",
-      back_to_blog: "Back to Articles",
-      read_more: "Read Full Article",
-      footer_note: "Find more tips and names on NameMyPet.org!"
+      title: "Pet Life Blog",
+      subtitle: "Tips, tricks, and stories for happy pet owners.",
+      read_more: "Read Full Story",
+      back_to_blog: "Back to Blog",
+      footer_note: "THANK YOU FOR READING!"
+    },
+    business_card: {
+      title: "Pet Business Card Studio",
+      subtitle: "Create a professional card for your pet's social media!",
+      front_label: "FRONT PREVIEW",
+      back_label: "BACK PREVIEW",
+      download_front: "Download Front",
+      download_back: "Download Back"
     }
   },
   es: {
@@ -510,35 +508,32 @@ export const translations = {
       placeholder: "Pregunta sobre nombres, razas...",
       btn_send: "Enviar"
     },
-    business_card: {
-      title: "Tarjetas de Visita",
-      subtitle: "¡Crea una tarjeta profesional para tu mascota!",
-      front_label: "Frente",
-      back_label: "Dorso",
-      download_front: "Descargar Frente",
-      download_back: "Descargar Dorso"
-    },
-    errors: {
-      no_share: "Tu navegador no soporta la función de compartir."
-    },
     share_texts: {
-      card_title: "Nombres para mi mascota",
-      card_body: "¡Mira los nombres que elegí para mi nueva mascota en Name My Pet!",
-      scene_title: "Retrato de mi mascota",
-      scene_body: "¡Mira este retrato genial de mi mascota generado en Name My Pet!",
-      bio_title: "Tarjeta Bio de mi mascota",
-      bio_body: "He creado una bio divertida para mi mascota. ¡Conócela aquí!"
+      card_title: "¡Ayúdame a elegir un nombre!",
+      card_body: "¡Mira estos nombres para mi mascota! ¿Cuál te gusta más?",
+      scene_title: "¡Mira el nuevo look de mi mascota!",
+      scene_body: "¡Acabo de generar este retrato con IA!",
+      bio_title: "¡Te presento a mi mascota!",
+      bio_body: "¡Esta es la tarjeta oficial de mi nuevo mejor amigo!"
     },
     placeholders: {
-      pet_name: "ej. Luna",
-      location: "Código postal, Ciudad o CP"
+      pet_name: "ej. Luna, Milo, Bear",
+      location: "ej. Madrid, 28001"
     },
     blog: {
-      title: "Blog y Tendencias",
-      subtitle: "Consejos de expertos para nombrar a tu amigo.",
-      back_to_blog: "Volver a Artículos",
-      read_more: "Leer Artículo Completo",
-      footer_note: "¡Encuentra más en NameMyPet.org!"
+      title: "Blog de Mascotas",
+      subtitle: "Consejos e historias para dueños felices.",
+      read_more: "Leer más",
+      back_to_blog: "Volver al Blog",
+      footer_note: "¡GRACIAS POR LEER!"
+    },
+    business_card: {
+      title: "Estudio de Tarjetas",
+      subtitle: "¡Crea una tarjeta profesional para tu mascota!",
+      front_label: "VISTA FRONTAL",
+      back_label: "VISTA TRASERA",
+      download_front: "Descargar Frente",
+      download_back: "Descargar Dorso"
     }
   },
   fr: {
@@ -755,35 +750,32 @@ export const translations = {
       placeholder: "Questions sur les noms, races...",
       btn_send: "Envoyer"
     },
-    business_card: {
-      title: "Cartes de Visite",
-      subtitle: "Créez une carte pro pour votre animal !",
-      front_label: "Recto",
-      back_label: "Verso",
-      download_front: "Télécharger Recto",
-      download_back: "Télécharger Verso"
-    },
-    errors: {
-      no_share: "Le partage n'est pas supporté par votre navigateur."
-    },
     share_texts: {
-      card_title: "Les noms de mon animal",
-      card_body: "Regardez les noms que j'ai choisis pour mon nouvel animal sur Name My Pet !",
-      scene_title: "Portrait de mon animal",
-      scene_body: "Regardez ce super portrait de mon animal généré avec Name My Pet !",
-      bio_title: "Carte Bio de mon animal",
-      bio_body: "J'ai créé une bio sympa pour mon animal. Venez le rencontrer !"
+      card_title: "Aidez-moi à choisir un prénom !",
+      card_body: "Regardez ces prénoms pour mon animal ! Lequel préférez-vous ?",
+      scene_title: "Regardez le nouveau look de mon animal !",
+      scene_body: "Je viens de générer ce portrait avec l'IA !",
+      bio_title: "Découvrez mon animal !",
+      bio_body: "Voici la carte officielle de mon nouveau meilleur ami !"
     },
     placeholders: {
-      pet_name: "ex. Pixel",
-      location: "Code postal, Ville ou CP"
+      pet_name: "ex. Luna, Milo, Bear",
+      location: "ex. Paris, 75001"
     },
     blog: {
-      title: "Blog et Tendances",
-      subtitle: "Conseils d'experts et idées pour 2025.",
-      back_to_blog: "Retour aux Articles",
-      read_more: "Lire l'Article Complet",
-      footer_note: "Plus sur NameMyPet.org !"
+      title: "Blog Animalier",
+      subtitle: "Conseils et histoires pour propriétaires heureux.",
+      read_more: "Lire plus",
+      back_to_blog: "Retour au Blog",
+      footer_note: "MERCI DE VOTRE LECTURE !"
+    },
+    business_card: {
+      title: "Studio de Cartes",
+      subtitle: "Créez une carte professionnelle pour votre animal !",
+      front_label: "APERÇU RECTO",
+      back_label: "APERÇU VERSO",
+      download_front: "Télécharger Recto",
+      download_back: "Télécharger Verso"
     }
   }
 };

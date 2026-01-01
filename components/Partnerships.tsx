@@ -1,15 +1,9 @@
+
 import React from 'react';
-import { Button } from './ui/Button';
+import { Button, BackToHomeButton } from './ui/Button';
 import { PetCharacter } from './assets/pets/PetCharacter';
 import { Header } from './Header';
 import { useLanguage } from '../contexts/LanguageContext';
-import { BackToHomeButton } from '../App';
-
-const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-    </svg>
-);
 
 const DogMascot = () => <PetCharacter pet="dog" className="w-32 h-32 drop-shadow-md" />;
 const CatMascot = () => <PetCharacter pet="cat" className="w-32 h-32 drop-shadow-md" />;
@@ -166,3 +160,4 @@ export const Partnerships: React.FC<PartnershipsProps> = ({ goHome }) => {
         </div>
     );
 };
+

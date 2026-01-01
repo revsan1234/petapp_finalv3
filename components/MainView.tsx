@@ -56,7 +56,7 @@ const SavedNamesInternal: React.FC<{
     const [isDownloading, setIsDownloading] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
     const [imageZoom, setImageZoom] = useState(1);
-    const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+    const [imagePosition, setImagePosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 

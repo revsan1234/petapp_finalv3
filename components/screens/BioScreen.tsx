@@ -1,11 +1,11 @@
+
 import React, { useState, useRef, MouseEvent, useEffect } from 'react';
 import { Header } from '../Header';
 import type { PetPersonality, PetKind, PetInfo, PetGender, PetType } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BackToHomeButton } from '../../App';
 import { toPng } from 'html-to-image';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Button, BackToHomeButton } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { BioCard } from '../ui/BioCard';
@@ -55,7 +55,7 @@ const BioGeneratorInternal: React.FC<{
     const [isLoading, setIsLoading] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [imageZoom, setImageZoom] = useState(1);
-    const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+    const [imagePosition, setImagePosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     

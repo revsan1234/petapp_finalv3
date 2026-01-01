@@ -1,13 +1,13 @@
+
 import React, { useState } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Button, BackToHomeButton } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { findAdoptionCenters } from '../../services/geminiService';
 import type { AdoptionCenter } from '../../types';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BackToHomeButton } from '../../App';
 
 const PawIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>

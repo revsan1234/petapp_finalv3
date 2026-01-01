@@ -1,13 +1,13 @@
+
 import React, { useState } from 'react';
 import { Header } from '../Header';
 import { ImageEditor } from '../ImageEditor';
 import { VideoGenerator } from '../VideoGenerator';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Button, BackToHomeButton } from '../ui/Button';
 import { Tab } from '../layout/TabNavigator';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BackToHomeButton } from '../../App';
 
 const BioIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
