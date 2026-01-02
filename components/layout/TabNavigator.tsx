@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import type { PetKind } from '../../types';
@@ -10,7 +11,7 @@ interface TabNavigatorProps {
   setActiveTab: (tab: Tab) => void;
 }
 
-// Helper config to map IDs to their mascots, independent of language
+// Helper config to map IDs to their mascots
 const TAB_CONFIG: { id: Tab; pet: PetKind }[] = [
   { id: 'generate', pet: 'dog' },
   { id: 'bio', pet: 'cat' },
@@ -26,17 +27,11 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   const timerRef = useRef<any>(null);
   const isLongPress = useRef(false);
 
-  // If we are on the landing page ('home'), we can either hide the bottom bar or show it.
-  // Usually, a "dashboard" might not need the nav bar, but for quick access let's keep it 
-  // or hide it to focus on the cards. Let's hide it on 'home' to match the "Landing Page" feel 
-  // and give full screen space to the cards.
   if (activeTab === 'home') return null;
 
-  // Dynamically build the tabs list using translations
   const tabs = TAB_CONFIG.map(config => {
-      // Map 'partnerships' tab ID to 'shop' key in translations
       const transKey = config.id === 'partnerships' ? 'partnerships' : config.id;
-      // @ts-ignore - We know the keys exist in the translation object
+      // @ts-ignore
       const textData = t.navigation[transKey];
       
       return {
@@ -63,8 +58,6 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
       timerRef.current = null;
     }
     setActiveDescription(null);
-    // Reset long press flag slightly after to ensure click handler sees it was a long press
-    // if touch ended.
   };
 
   const handleInteractionEnd = () => {
@@ -91,7 +84,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
         )}
 
         <div className="fixed bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-black/10 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
-        <div className="flex justify-around items-end h-full max-w-4xl mx-auto px-1 w-full">
+        <div className="flex justify-around items-end h-full max-w-5xl mx-auto px-1 w-full">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
 
@@ -106,22 +99,20 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                 onTouchCancel={handleInteractionEnd}
                 onClick={() => handleClick(tab.id)}
                 onContextMenu={(e) => e.preventDefault()}
-                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[60px] w-full ${
+                className={`group flex flex-col items-center justify-end pb-4 gap-0.5 transition-all duration-300 min-w-[50px] sm:min-w-[80px] w-full ${
                     isActive ? '-translate-y-2' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
                 }`}
                 >
-                {/* Character Container */}
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] scale-110' : 'scale-95 opacity-80'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] scale-115' : 'scale-100 opacity-80'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-14 h-14' : 'w-12 h-12'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-10 h-10' : 'w-8 h-8'}`}
                     />
                 </div>
                 
-                {/* Label */}
                 <span 
-                    className={`text-base sm:text-lg font-black tracking-wide transition-all duration-200 uppercase drop-shadow-lg ${
-                    isActive ? 'text-white scale-105' : 'text-white/90'
+                    className={`text-[9px] sm:text-lg md:text-xl font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-lg leading-none truncate w-full ${
+                    isActive ? 'text-white scale-110' : 'text-white/90'
                 }`}>
                     {tab.label}
                 </span>
