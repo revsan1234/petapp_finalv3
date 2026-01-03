@@ -12,12 +12,12 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ leftPet, rightPet, onLogoClick }) => {
   return (
-    <header className="p-0 pt-6 pb-4 flex justify-center items-center gap-2 sm:gap-10 md:gap-16 lg:gap-20 relative z-20 w-full overflow-hidden">
+    <header className="p-0 pt-6 pb-4 flex justify-center items-center gap-4 sm:gap-10 md:gap-16 lg:gap-20 relative z-20 w-full overflow-hidden">
       {leftPet && (
           <div className="flex-shrink-0">
             <PetCharacter 
               pet={leftPet} 
-              className="w-20 h-20 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 drop-shadow-2xl transform -rotate-6 hover:scale-110 hover:rotate-0 transition-all duration-300" 
+              className="w-24 h-24 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 drop-shadow-2xl transform -rotate-6 hover:scale-110 hover:rotate-0 transition-all duration-300" 
             />
           </div>
       )}
@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ leftPet, rightPet, onLogoClick }
           <div className="flex-shrink-0">
             <PetCharacter 
               pet={rightPet} 
-              className="w-20 h-20 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-56 lg:h-56 drop-shadow-2xl transform rotate-6 hover:scale-110 hover:rotate-0 transition-all duration-300" 
+              className="w-24 h-24 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 drop-shadow-2xl transform rotate-6 hover:scale-110 hover:rotate-0 transition-all duration-300" 
             />
           </div>
       )}

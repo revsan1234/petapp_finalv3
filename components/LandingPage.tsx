@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Header } from './Header';
 import { Tab } from './layout/TabNavigator';
@@ -75,7 +76,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ setTab }) => {
             title: t.landing.feature6_title,
             description: t.landing.feature6_desc,
             icon: <PetCharacter pet="bird" className="w-24 h-24 sm:w-28 sm:h-28 filter drop-shadow-md" />,
-            target: 'partnerships' as Tab
+            target: 'hotels' as Tab
         }
     ];
 

@@ -4,7 +4,7 @@ import { PetCharacter } from '../assets/pets/PetCharacter';
 import type { PetKind } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'partnerships';
+export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotels';
 
 interface TabNavigatorProps {
   activeTab: Tab;
@@ -18,7 +18,7 @@ const TAB_CONFIG: { id: Tab; pet: PetKind }[] = [
   { id: 'play', pet: 'hamster' },
   { id: 'photo', pet: 'lizard' },
   { id: 'adopt', pet: 'rabbit' },
-  { id: 'partnerships', pet: 'bird' },
+  { id: 'hotels', pet: 'bird' },
 ];
 
 export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActiveTab }) => {
@@ -30,9 +30,8 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   if (activeTab === 'home') return null;
 
   const tabs = TAB_CONFIG.map(config => {
-      const transKey = config.id === 'partnerships' ? 'partnerships' : config.id;
       // @ts-ignore
-      const textData = t.navigation[transKey];
+      const textData = t.navigation[config.id];
       
       return {
           ...config,
@@ -75,7 +74,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   return (
     <>
         {activeDescription && (
-            <div className="fixed bottom-32 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
+            <div className="fixed bottom-40 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
                 <div className="bg-black/80 text-white p-4 rounded-xl backdrop-blur-md border border-white/20 shadow-2xl max-w-sm text-center animate-fade-in">
                     <p className="font-bold text-lg mb-1 text-[#e889b5]">{activeDescription.title}</p>
                     <p className="text-sm leading-relaxed">{activeDescription.desc}</p>
@@ -83,7 +82,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
             </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-32 bg-gradient-to-t from-black/70 to-black/10 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
+        <div className="fixed bottom-0 left-0 right-0 h-36 sm:h-44 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
         <div className="flex justify-around items-end h-full max-w-6xl mx-auto px-1 w-full">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -99,20 +98,20 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                 onTouchCancel={handleInteractionEnd}
                 onClick={() => handleClick(tab.id)}
                 onContextMenu={(e) => e.preventDefault()}
-                className={`group flex flex-col items-center justify-end pb-5 gap-1 transition-all duration-300 min-w-[55px] sm:min-w-[90px] w-full ${
-                    isActive ? '-translate-y-3' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
+                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[55px] sm:min-w-[100px] w-full ${
+                    isActive ? '-translate-y-5' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
                 }`}
                 >
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] scale-125' : 'scale-100 opacity-80'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_25px_rgba(255,255,255,0.9)] scale-150' : 'scale-110 opacity-80'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-14 h-14 sm:w-16 sm:h-16' : 'w-10 h-10 sm:w-12 sm:h-12'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-24 h-24 sm:w-32 sm:h-32' : 'w-16 h-16 sm:w-24 sm:h-24'}`}
                     />
                 </div>
                 
                 <span 
-                    className={`text-[10px] sm:text-lg md:text-xl font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-lg leading-none truncate w-full ${
-                    isActive ? 'text-white scale-110' : 'text-white/90'
+                    className={`text-[9px] sm:text-lg md:text-xl font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
+                    isActive ? 'text-white scale-125' : 'text-white/80'
                 }`}>
                     {tab.label}
                 </span>
@@ -124,3 +123,4 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
     </>
   );
 };
+

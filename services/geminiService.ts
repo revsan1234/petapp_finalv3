@@ -286,17 +286,40 @@ export const generatePetHoroscope = async (sign: string, petType: string, name: 
 };
 
 export const findAdoptionCenters = async (location: string, language: Language = 'en'): Promise<AdoptionCenter[]> => {
-    const prompt = `Find 3 adoption centers near ${location}. Mission in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
+    const prompt = `Find 3 real-world active pet adoption or rescue centers near ${location}. Mission in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}.`;
     const schema = { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, mission: { type: Type.STRING }, address: { type: Type.STRING }, phone: { type: Type.STRING }, website: { type: Type.STRING } }, required: ["name", "mission", "address", "phone", "website"] } };
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: prompt,
-            config: { responseMimeType: 'application/json', responseSchema: schema }
+            config: { 
+                responseMimeType: 'application/json', 
+                responseSchema: schema,
+                tools: [{ googleSearch: {} }] 
+            }
         });
         return JSON.parse(response.text || '[]');
     } catch (error: any) {
         throw new Error("Could not find centers.");
+    }
+};
+
+export const findPetHotels = async (location: string, language: Language = 'en'): Promise<AdoptionCenter[]> => {
+    const prompt = `Find 3 real-world high-quality pet hotels, pet boarding facilities, or pet daycare centers near ${location}. Provide details in ${language === 'es' ? 'Spanish' : language === 'fr' ? 'French' : 'English'}. Focus on places that specifically offer short-term care and professional boarding.`;
+    const schema = { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, mission: { type: Type.STRING }, address: { type: Type.STRING }, phone: { type: Type.STRING }, website: { type: Type.STRING } }, required: ["name", "mission", "address", "phone", "website"] } };
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: prompt,
+            config: { 
+                responseMimeType: 'application/json', 
+                responseSchema: schema,
+                tools: [{ googleSearch: {} }]
+            }
+        });
+        return JSON.parse(response.text || '[]');
+    } catch (error: any) {
+        throw new Error("Could not find pet hotels. Please try a larger city name.");
     }
 };
 
@@ -307,23 +330,16 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
             parts: [{ text: msg.text }]
         }));
         
-        // Append a special directive to the last message to ensure search is used in this turn
         contents.push({ 
             role: 'user', 
-            parts: [{ text: message + "\n(Search Tool Requirement: You must perform a search to provide verified information and links for this specific query.)" }] 
+            parts: [{ text: message + "\n(Requirement: Use the search tool for verified info and links.)" }] 
         });
-
-        // Stronger instruction to FORCE the model to use the search tool and provide citations
-        const forceSearchInstruction = systemInstruction + 
-            " MANDATORY: You MUST use the Google Search tool for EVERY single turn in this conversation. " +
-            "Provide exactly 1 or 2 clear, short sentences. DO NOT use Markdown link syntax [text](url) or [text]. " +
-            "I only want plain text in your 'text' response. The links will be handled separately via the grounding metadata.";
 
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: contents,
             config: {
-                systemInstruction: forceSearchInstruction,
+                systemInstruction: systemInstruction,
                 tools: [{ googleSearch: {} }]
             }
         });

@@ -7,7 +7,7 @@ export const translations = {
       play: { label: "Play", desc: "Answer fun questions about your new pet to find their personality to get the perfect name." },
       photo: { label: "Photo", desc: "Generate cute AI powered portraits to share with your friends!" },
       adopt: { label: "Adopt", desc: "Find local shelters in your area to find your new best friend." },
-      partnerships: { label: "Shop", desc: "Get personalized things for your new pet using their new name!" }
+      hotels: { label: "Hotels", desc: "Find a local pet hotel and/or pet care center near you!" }
     },
     landing: {
       feature1_title: "Find The Perfect Name!",
@@ -20,8 +20,8 @@ export const translations = {
       feature4_desc: "Generate cute AI powered portraits of your pet in costume and get links to create videos of your pet doing funny things!",
       feature5_title: "Adopt a Pet",
       feature5_desc: "Find local shelters in your area to find your new best friend.",
-      feature6_title: "Cool Stuff to Buy",
-      feature6_desc: "Get personalized things for your new pet using their new name!"
+      feature6_title: "Pet Hotels",
+      feature6_desc: "Find a local pet hotel and/or pet care center near you for short term boarding and care!"
     },
     generator: {
       title: "Find the perfect name",
@@ -91,15 +91,13 @@ export const translations = {
       fallback_bio: "Your pet's fun bio will show up here!",
       card_pet_name_placeholder: "Pet Name"
     },
-    shop: {
-      back: "Back to Home",
-      subtitle: "Cool custom stuff for your new friend!",
-      puppy_kit: "Puppy Starter Kit",
-      kitten_pack: "Kitten Welcome Pack",
-      more_goodies: "More Pet Goodies",
-      shop_amazon: "Shop on Amazon",
-      product_titles: { id_tags: "Engraved Pet ID Tags", dog_collar: "Personalized Dog Collar", glitter_tags: "Glitter Paw Tags", pet_bowls: "Personalized Pet Bowls", pet_blanket: "Personalized Pet Blanket", cat_collars: "Reflective Cat Collars", airtag_holder: "Engraved Airtag Holder", bone_tags: "Custom Bone Tags", pet_leash: "Premium Pet Leash" },
-      product_desc: { tags: "These aluminum pet ID tags are available in 8 shapes and 9 colors.", collar: "Made with high quality nylon. Reflective stitching for safety.", bowls: "High quality stainless steel personalized pet bowl.", blanket: "High quality flannel blanket with custom patterns.", airtag: "Secure Airtag holder for collars.", leash: "Durable, comfortable leashes that match your pet's collar." }
+    hotels: {
+      title: "Pet Hotels & Care",
+      subtitle: "Find a local pet hotel and/or pet care center near you! Specifically searching for short-term care and boarding facilities.",
+      label_location: "Enter your Location",
+      btn_search: "Find Hotels",
+      visit_website: "Visit Website",
+      no_results: "No results found. Try searching for a larger nearby city."
     },
     adopt: {
       title: "Adopt Me!",
@@ -255,9 +253,9 @@ export const translations = {
       result_suffix: "Years Old"
     },
     expert: {
-      system_instruction: "You are a professional pet consultant. ALWAYS provide extremely short, 1-2 sentence answers. ALWAYS provide links for the user to learn more using the Google Search tool.",
+      system_instruction: "You are a professional pet consultant. MANDATORY: You MUST use the Google Search tool for EVERY single turn in this conversation. Provide exactly 1 or 2 clear, short sentences. DO NOT use Markdown link syntax [text](url) or [text]. I only want plain text in your 'text' response. The links will be handled separately via the grounding metadata.",
       title: "Pet Consultant",
-      subtitle: "Ask our AI expert anything about pet names!",
+      subtitle: "Ask our AI expert anything about your pet!",
       btn_clear: "Clear Chat",
       clear_confirm: "Are you sure you want to clear your chat history?",
       welcome: "Hi! I'm your pet naming expert. How can I help you today?",
@@ -291,6 +289,33 @@ export const translations = {
       back_label: "BACK PREVIEW",
       download_front: "Download Front",
       download_back: "Download Back"
+    },
+    // Added shop property for en
+    shop: {
+      subtitle: "Custom Essentials for Your Best Friend",
+      puppy_kit: "Puppy Welcome Kit",
+      kitten_pack: "Kitten Essentials Pack",
+      more_goodies: "More Fun Goodies",
+      shop_amazon: "Shop on Amazon",
+      product_titles: {
+        id_tags: "Engraved ID Tags",
+        dog_collar: "Embroidered Dog Collar",
+        glitter_tags: "Glitter Pet ID Tags",
+        pet_bowls: "Personalized Pet Bowls",
+        pet_blanket: "Custom Pet Blanket",
+        cat_collars: "Reflective Cat Collars",
+        airtag_holder: "Pet AirTag Holder",
+        bone_tags: "Bone Shaped Tags",
+        pet_leash: "Custom Pet Leash"
+      },
+      product_desc: {
+        tags: "Keep your pet safe with style! High-quality engraved tags with their new name.",
+        collar: "A comfy, durable collar featuring their name. Perfect for every walk.",
+        bowls: "Mealtime just got personal! Custom stainless steel non-slip bowls.",
+        blanket: "Ultra-soft flannel blankets to keep your little friend cozy and warm.",
+        airtag: "Never lose track of your explorer. Durable and lightweight AirTag protection.",
+        leash: "Strong and stylish personalized leashes for your daily adventures."
+      }
     }
   },
   es: {
@@ -300,7 +325,7 @@ export const translations = {
       play: { label: "Jugar", desc: "Responde preguntas divertidas sobre tu mascota." },
       photo: { label: "Foto", desc: "¡Genera lindos retratos con IA!" },
       adopt: { label: "Adoptar", desc: "Encuentra refugios locales en tu área." },
-      partnerships: { label: "Tienda", desc: "¡Consigue cosas personalizadas!" }
+      hotels: { label: "Hoteles", desc: "¡Encuentra un hotel o centro de cuidado para mascotas!" }
     },
     landing: {
       feature1_title: "¡El Nombre Perfecto!",
@@ -311,10 +336,10 @@ export const translations = {
       feature3_desc: "¡Encuentra su personalidad con divertidos juegos!",
       feature4_title: "Fotos y Videos IA",
       feature4_desc: "¡Générala con trajes y escenas mágicas!",
-      feature5_title: "Adopta una Mascota",
+      feature5_title: "Adoptar una Mascota",
       feature5_desc: "Encuentra refugios locales en tu área.",
-      feature6_title: "Cosas Geniales",
-      feature6_desc: "¡Consigue regalos personalizados para tu amigo!"
+      feature6_title: "Hoteles para Mascotas",
+      feature6_desc: "¡Encuentra hoteles y centros de cuidado a corto plazo cerca de ti!"
     },
     generator: {
       title: "Busca el nombre ideal",
@@ -384,15 +409,13 @@ export const translations = {
       fallback_bio: "¡La bio de tu mascota aparecerá aquí!",
       card_pet_name_placeholder: "Nombre"
     },
-    shop: {
-      back: "Volver",
-      subtitle: "¡Cosas personalizadas para tu amigo!",
-      puppy_kit: "Kit de Cachorro",
-      kitten_pack: "Kit de Gatito",
-      more_goodies: "Más Regalos",
-      shop_amazon: "Ver en Amazon",
-      product_titles: { id_tags: "Placas Grabadas", dog_collar: "Collar Perro", glitter_tags: "Placas Huella", pet_bowls: "Cuencos Mascotas", pet_blanket: "Manta Mascota", cat_collars: "Collares Gato", airtag_holder: "Soporte Airtag", bone_tags: "Placas Hueso", pet_leash: "Correa Premium" },
-      product_desc: { tags: "Placas de aluminio grabadas.", collar: "Nylon de alta calidad.", bowls: "Acero inoxidable.", blanket: "Franela suave.", airtag: "Soporte seguro.", leash: "Correa cómoda." }
+    hotels: {
+      title: "Hoteles y Cuidado",
+      subtitle: "¡Encuentra un hotel o centro de cuidado para mascotas cerca de ti! Buscando específicamente instalaciones de hospedaje a corto plazo.",
+      label_location: "Ubicación",
+      btn_search: "Buscar Hoteles",
+      visit_website: "Visitar Sitio",
+      no_results: "No se encontraron resultados."
     },
     adopt: { title: "¡Adóptame!", subtitle: "¿Listo para dar un hogar?", label_location: "Ubicación", btn_search: "Buscar", visit_website: "Visitar", no_results: "Sin resultados." },
     common: {
@@ -497,9 +520,9 @@ export const translations = {
       result_suffix: "Años"
     },
     expert: {
-      system_instruction: "Eres un consultor profesional de mascotas. SIEMPRE da respuestas extremadamente cortas de 1 o 2 frases. SIEMPRE incluye enlaces para aprender más usando la herramienta de Google Search.",
+      system_instruction: "Eres un consultor profesional de mascotas. MANDATORY: You MUST use the Google Search tool for EVERY single turn in this conversation. Provide exactly 1 or 2 clear, short sentences. DO NOT use Markdown link syntax [text](url) or [text]. I only want plain text in your 'text' response. The links will be handled separately via the grounding metadata.",
       title: "Consultor de Mascotas",
-      subtitle: "¡Pregunta lo que quieras sobre nombres!",
+      subtitle: "¡Pregunta lo que quieras sobre tu mascota!",
       btn_clear: "Limpiar Chat",
       clear_confirm: "¿Limpiar historial?",
       welcome: "¡Hola! Soy tu experto. ¿En qué te ayudo?",
@@ -533,6 +556,33 @@ export const translations = {
       back_label: "VISTA TRASERA",
       download_front: "Descargar Frente",
       download_back: "Descargar Dorso"
+    },
+    // Added shop property for es
+    shop: {
+      subtitle: "Accesorios personalizados para tu mejor amigo",
+      puppy_kit: "Kit de Bienvenida para Cachorros",
+      kitten_pack: "Paquete Esencial para Gatitos",
+      more_goodies: "Más Regalos Divertidos",
+      shop_amazon: "Comprar en Amazon",
+      product_titles: {
+        id_tags: "Placas de Identificación",
+        dog_collar: "Collar Bordado para Perro",
+        glitter_tags: "Placas con Brillo",
+        pet_bowls: "Platos Personalizados",
+        pet_blanket: "Manta Personalizada",
+        cat_collars: "Collares Reflectantes",
+        airtag_holder: "Soporte AirTag",
+        bone_tags: "Placas con forma de Hueso",
+        pet_leash: "Correa Personalizada"
+      },
+      product_desc: {
+        tags: "¡Mantén a tu mascota segura con estilo! Placas grabadas de alta calidad.",
+        collar: "Un collar cómodo y duradero con su nombre. Perfecto para cada paseo.",
+        bowls: "¡La hora de comer ahora es personal! Platos de acero inoxidable antideslizantes.",
+        blanket: "Mantas de franela ultra suaves para mantener a tu pequeño amigo cómodo.",
+        airtag: "No pierdas nunca el rastro de tu explorador. Protección duradera y ligera.",
+        leash: "Correas personalizadas fuertes y elegantes para vuestras aventuras diarias."
+      }
     }
   },
   fr: {
@@ -542,7 +592,7 @@ export const translations = {
       play: { label: "Jouer", desc: "Trouvez son caractère et son nom idéal." },
       photo: { label: "Photo", desc: "Portraits par IA adorables." },
       adopt: { label: "Adopter", desc: "Trouvez votre futur meilleur ami." },
-      partnerships: { label: "Boutique", desc: "Accessoires personnalisés." }
+      hotels: { label: "Hôtels", desc: "Trouvez un hôtel ou un centre de soin pour animaux !" }
     },
     landing: {
       feature1_title: "Le Nom Parfait !",
@@ -555,8 +605,8 @@ export const translations = {
       feature4_desc: "Portraits IA costumés !",
       feature5_title: "Adoption",
       feature5_desc: "Trouvez des refuges proches.",
-      feature6_title: "Boutique",
-      feature6_desc: "Accessoires personnalisés !"
+      feature6_title: "Hôtels Animaux",
+      feature6_desc: "Trouvez des hôtels et des pensions de courte durée près de chez vous !"
     },
     generator: {
       title: "Le nom idéal",
@@ -626,15 +676,13 @@ export const translations = {
       fallback_bio: "La bio apparaîtra ici !",
       card_pet_name_placeholder: "Nom"
     },
-    shop: {
-      back: "Accueil",
-      subtitle: "Accessoires personnalisés !",
-      puppy_kit: "Kit Chiot",
-      kitten_pack: "Kit Chaton",
-      more_goodies: "Plus de cadeaux",
-      shop_amazon: "Sur Amazon",
-      product_titles: { id_tags: "Médailles Gravées", dog_collar: "Collier Chien", glitter_tags: "Médailles Paillettes", pet_bowls: "Gamelles", pet_blanket: "Couverture", cat_collars: "Colliers Chat", airtag_holder: "Support Airtag", bone_tags: "Médailles Os", pet_leash: "Laisse Premium" },
-      product_desc: { tags: "Médailles en aluminium.", collar: "Nylon haute qualité.", bowls: "Acier inoxydable.", blanket: "Flanelle douce.", airtag: "Support sécurisé.", leash: "Laisse solide." }
+    hotels: {
+      title: "Hôtels & Soins",
+      subtitle: "Trouvez un hôtel ou un centre de soin pour animaux près de chez vous ! Recherche spécifique de pensions et de garderies.",
+      label_location: "Emplacement",
+      btn_search: "Trouver Hôtels",
+      visit_website: "Visiter le Site",
+      no_results: "Aucun résultat trouvé."
     },
     adopt: { title: "Adopte-moi !", subtitle: "Prêt pour une rencontre ?", label_location: "Localisation", btn_search: "Chercher", visit_website: "Voir Site", no_results: "Aucun résultat." },
     common: {
@@ -716,7 +764,7 @@ export const translations = {
       label_lang: "Langue Cible",
       btn_translating: "Traduction...",
       btn_translate: "Explorer le Nom",
-      pronunciation: "Prononciation"
+      pronunciation: "Pronunciations"
     },
     horoscope: {
       title: "Horoscope Animal",
@@ -739,9 +787,9 @@ export const translations = {
       result_suffix: "Ans"
     },
     expert: {
-      system_instruction: "Tu es un consultant professionnel pour animaux. Donne TOUJOURS des réponses très courtes (1-2 phrases). Donne TOUJOURS des liens pour en savoir plus via Google Search.",
+      system_instruction: "Tu es un consultant professionnel pour animaux. MANDATORY: You MUST use the Google Search tool for EVERY single turn in this conversation. Provide exactly 1 or 2 clear, short sentences. DO NOT use Markdown link syntax [text](url) or [text]. I only want plain text in your 'text' response. The links will be handled separately via the grounding metadata.",
       title: "Consultant Animalier",
-      subtitle: "Posez vos questions sur les noms !",
+      subtitle: "Posez vos questions sur votre animal !",
       btn_clear: "Effacer Chat",
       clear_confirm: "Effacer l'historique ?",
       welcome: "Bonjour ! Je suis votre expert. Comment aider ?",
@@ -775,6 +823,33 @@ export const translations = {
       back_label: "APERÇU VERSO",
       download_front: "Télécharger Recto",
       download_back: "Télécharger Verso"
+    },
+    // Added shop property for fr
+    shop: {
+      subtitle: "Essentiels personnalisés pour votre meilleur ami",
+      puppy_kit: "Kit de Bienvenue pour Chiot",
+      kitten_pack: "Pack Essentiels pour Chaton",
+      more_goodies: "Plus de Cadeaux Fun",
+      shop_amazon: "Acheter sur Amazon",
+      product_titles: {
+        id_tags: "Médailles Gravées",
+        dog_collar: "Collier Brodé pour Chien",
+        glitter_tags: "Médailles Pailletées",
+        pet_bowls: "Gamelles Personnalisées",
+        pet_blanket: "Couverture Personnalisée",
+        cat_collars: "Colliers Réfléchissants",
+        airtag_holder: "Support AirTag",
+        bone_tags: "Médailles en Forme d'Os",
+        pet_leash: "Laisse Personnalisée"
+      },
+      product_desc: {
+        tags: "Sécurité et style ! Médailles gravées de haute qualité avec leur nouveau nom.",
+        collar: "Un collier confortable et durable avec leur nom. Parfait pour chaque promenade.",
+        bowls: "Le repas devient personnel ! Gamelles en acier inoxydable antidérapantes.",
+        blanket: "Couvertures en flanelle ultra-douces pour garder votre petit ami au chaud.",
+        airtag: "Ne perdez jamais votre explorateur. Protection AirTag durable et légère.",
+        leash: "Laisses personnalisées solides et élégantes pour vos aventures quotidiennes."
+      }
     }
   }
 };

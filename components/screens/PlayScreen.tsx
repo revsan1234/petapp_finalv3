@@ -42,7 +42,7 @@ const NameTranslator: React.FC = () => {
     const handleTranslate = async (e: React.FormEvent) => { e.preventDefault(); if (!petName.trim()) return; setIsLoading(true); try { const data = await translatePetName(petName, targetLang); setResult(data); } catch (err) { console.error(err); } finally { setIsLoading(false); } };
     return (
         <Card className="animate-fade-in">
-            <div className="flex flex-col items-center text-center mb-6"><PetCharacter pet="bird" className="w-24 h-24 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.translator.title}</h2><p className="opacity-80 text-lg font-bold">{t.translator.subtitle}</p></div>
+            <div className="flex flex-col items-center text-center mb-6"><PetCharacter pet="bird" className="w-32 h-32 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.translator.title}</h2><p className="opacity-80 text-lg font-bold">{t.translator.subtitle}</p></div>
             <form onSubmit={handleTranslate} className="max-w-md mx-auto space-y-4"><Input id="trans-name" label={t.translator.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" /><Select id="trans-lang" label={t.translator.label_lang} value={targetLang} onChange={e => setTargetLang(e.target.value)}>{languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}</Select><div className="flex justify-center pt-2"><Button type="submit" disabled={isLoading || !petName.trim()}>{isLoading ? t.translator.btn_translating : t.translator.btn_translate}</Button></div></form>
             {result && !isLoading && <div className="mt-8 p-6 bg-white/40 rounded-2xl text-center animate-fade-in border border-white/40 shadow-inner"><p className="text-5xl font-black text-[#5D4037] mb-2">{result.translation}</p><p className="text-lg font-bold text-[#AA336A] italic">{t.translator.pronunciation}: {result.pronunciation}</p></div>}
         </Card>
@@ -60,7 +60,7 @@ const PetHoroscope: React.FC = () => {
     const signs = ["Aries (Mar 21 - Apr 19)", "Taurus (Apr 20 - May 20)", "Gemini (May 21 - Jun 20)", "Cancer (Jun 21 - Jul 22)", "Leo (Jul 23 - Aug 22)", "Virgo (Aug 23 - Sep 22)", "Libra (Sep 23 - Oct 22)", "Scorpio (Oct 23 - Nov 21)", "Sagittarius (Nov 22 - Dec 21)", "Capricorn (Dec 22 - Jan 19)", "Aquarius (Jan 20 - Feb 18)", "Pisces (Feb 19 - Mar 20)"];
     const handleGetReading = async () => { if (!petName.trim()) return; setIsLoading(true); try { const res = await generatePetHoroscope(sign, `${petGender} ${petType}`, petName, language); setReading(res); } catch (err) { console.error(err); } finally { setIsLoading(false); } };
     return (
-        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="lizard" className="w-24 h-24 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.horoscope.title}</h2><p className="opacity-80 text-lg font-bold">{t.horoscope.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="horo-name" label={t.horoscope.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" /><div className="grid grid-cols-2 gap-4"><Select id="horo-type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>{PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}</Select><Select id="horo-gender" label={t.generator.label_gender} value={petGender} onChange={e => setPetGender(e.target.value as PetGender)}>{PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}</Select></div><Select id="horo-sign" label={t.horoscope.label_zodiac} value={sign} onChange={e => setSign(e.target.value)}>{signs.map(s => <option key={s} value={s}>{s}</option>)}</Select><div className="flex justify-center pt-2"><Button onClick={handleGetReading} disabled={isLoading || !petName.trim()}>{isLoading ? t.horoscope.btn_reading : t.horoscope.btn_read}</Button></div></div>{reading && <div className="mt-8 p-6 bg-purple-500/10 rounded-2xl animate-fade-in border border-white/20"><h3 className="text-xl font-bold text-[#AA336A] mb-2">{petName}: {t.horoscope.result_title}</h3><p className="text-lg font-medium italic mb-4">"{reading.prediction}"</p><div className="bg-white/30 rounded-lg p-3 inline-block"><span className="text-xs uppercase tracking-widest opacity-70 font-bold block">{t.horoscope.lucky_item}</span><span className="font-bold text-[#5D4037]">{reading.luckyItem}</span></div></div>}</Card>
+        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="lizard" className="w-32 h-32 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.horoscope.title}</h2><p className="opacity-80 text-lg font-bold">{t.horoscope.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="horo-name" label={t.horoscope.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" /><div className="grid grid-cols-2 gap-4"><Select id="horo-type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>{PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}</Select><Select id="horo-gender" label={t.generator.label_gender} value={petGender} onChange={e => setPetGender(e.target.value as PetGender)}>{PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}</Select></div><Select id="horo-sign" label={t.horoscope.label_zodiac} value={sign} onChange={e => setSign(e.target.value)}>{signs.map(s => <option key={s} value={s}>{s}</option>)}</Select><div className="flex justify-center pt-2"><Button onClick={handleGetReading} disabled={isLoading || !petName.trim()}>{isLoading ? t.horoscope.btn_reading : t.horoscope.btn_read}</Button></div></div>{reading && <div className="mt-8 p-6 bg-purple-500/10 rounded-2xl animate-fade-in border border-white/20"><h3 className="text-xl font-bold text-[#AA336A] mb-2">{petName}: {t.horoscope.result_title}</h3><p className="text-lg font-medium italic mb-4">"{reading.prediction}"</p><div className="bg-white/30 rounded-lg p-3 inline-block"><span className="text-xs uppercase tracking-widest opacity-70 font-bold block">{t.horoscope.lucky_item}</span><span className="font-bold text-[#5D4037]">{reading.luckyItem}</span></div></div>}</Card>
     );
 };
 
@@ -70,7 +70,7 @@ const PetAgeCalculator: React.FC = () => {
     const [humanAge, setHumanAge] = useState<number | null>(null);
     const calculate = () => { const years = parseFloat(age); if (!isNaN(years)) setHumanAge(Math.floor(years * 7)); };
     return (
-        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="rabbit" className="w-24 h-24 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.age_calc.title}</h2><p className="opacity-80 text-lg font-bold">{t.age_calc.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="age-input" label={t.age_calc.label_age} type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="e.g. 2" /><div className="flex justify-center pt-2"><Button onClick={calculate}>{t.age_calc.btn_calculate}</Button></div></div>{humanAge !== null && <div className="mt-8 text-center animate-fade-in bg-white/30 p-6 rounded-2xl border border-white/40"><p className="text-lg font-bold opacity-80 mb-1">{t.age_calc.result_prefix}</p><p className="text-6xl font-black text-[#AA336A]">{humanAge}</p><p className="text-sm font-bold uppercase tracking-widest mt-2 opacity-60">{t.age_calc.result_suffix}</p></div>}</Card>
+        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="rabbit" className="w-32 h-32 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.age_calc.title}</h2><p className="opacity-80 text-lg font-bold">{t.age_calc.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="age-input" label={t.age_calc.label_age} type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="e.g. 2" /><div className="flex justify-center pt-2"><Button onClick={calculate}>{t.age_calc.btn_calculate}</Button></div></div>{humanAge !== null && <div className="mt-8 text-center animate-fade-in bg-white/30 p-6 rounded-2xl border border-white/40"><p className="text-lg font-bold opacity-80 mb-1">{t.age_calc.result_prefix}</p><p className="text-6xl font-black text-[#AA336A]">{humanAge}</p><p className="text-sm font-bold uppercase tracking-wider mt-2 opacity-60">{t.age_calc.result_suffix}</p></div>}</Card>
     );
 };
 
@@ -86,7 +86,7 @@ const PersonalityQuiz: React.FC<{ onQuizComplete: (res: PetPersonalityResult) =>
     if (isLoading) return <Card className="flex flex-col items-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#AA336A] mb-4"></div><p className="text-xl font-bold">{t.quiz.loading}</p></Card>;
     if (result) return (<Card className="text-center"><h3 className="text-xl font-bold mb-2">{t.quiz.result_title}</h3><p className="text-4xl font-black text-[#AA336A] mb-2">{result.title}</p><p className="italic mb-8 opacity-80 text-xl">"{result.description}"</p><div className="grid grid-cols-2 gap-3 mb-8">{names.map(n => <div key={n.id} className="bg-white/20 p-3 rounded-xl flex justify-between items-center"><span className="font-bold">{n.name}</span><button onClick={() => addSavedName(n)} className="text-[#AA336A] p-1">{savedNames.some(s => s.id === n.id) ? <HeartIconFilled className="w-6 h-6" /> : <HeartIconOutline className="w-6 h-6" />}</button></div>)}</div><Button onClick={() => { setStep(0); setAnswers([]); setResult(null); }} variant="secondary">{t.quiz.play_again}</Button></Card>);
     const current = questions[step];
-    return (<Card><div className="text-center mb-8"><PetCharacter pet="hamster" className="w-24 h-24 mx-auto mb-4" /><h2 className="text-3xl font-black">{t.quiz.title}</h2><div className="w-full bg-white/20 h-2 rounded-full mt-4 overflow-hidden shadow-inner"><div className="bg-[#AA336A] h-full transition-all duration-300" style={{ width: `${(step/questions.length)*100}%` }}></div></div></div><p className="text-xl font-bold text-center mb-6">{current.q}</p><div className="space-y-3 max-w-md mx-auto">{current.a.map((a, i) => <Button key={i} onClick={() => handleAnswer(a.v)} variant="secondary" className="!w-full !justify-start !text-left">{a.t}</Button>)}</div></Card>);
+    return (<Card><div className="text-center mb-8"><PetCharacter pet="hamster" className="w-32 h-32 mx-auto mb-4" /><h2 className="text-3xl font-black">{t.quiz.title}</h2><div className="w-full bg-white/20 h-2 rounded-full mt-4 overflow-hidden shadow-inner"><div className="bg-[#AA336A] h-full transition-all duration-300" style={{ width: `${(step/questions.length)*100}%` }}></div></div></div><p className="text-xl font-bold text-center mb-6">{current.q}</p><div className="space-y-3 max-w-md mx-auto">{current.a.map((a, i) => <Button key={i} onClick={() => handleAnswer(a.v)} variant="secondary" className="!w-full !justify-start !text-left">{a.t}</Button>)}</div></Card>);
 };
 
 const QuickFireDiscovery: React.FC<{ addSavedName: (n: GeneratedName) => void, savedNames: GeneratedName[], petInfo: PetInfo, setPetInfo: (info: any) => void }> = ({ addSavedName, savedNames, petInfo, setPetInfo }) => {
@@ -99,8 +99,8 @@ const QuickFireDiscovery: React.FC<{ addSavedName: (n: GeneratedName) => void, s
     const start = async () => { setIsLoading(true); try { const list = await generateQuickFireList(petInfo.style, petInfo.type, petInfo.gender, language); setPool(list); setWinners([]); setRound(1); setState('playing'); } catch (err) { console.error(err); } finally { setIsLoading(false); } };
     const vote = (name: string) => { const nextWinners = [...winners, name]; setWinners(nextWinners); if (round < 10) setRound(round + 1); else setState('results'); };
     const handleSaveSingleName = (name: string) => { const isAlreadySaved = savedNames.some(s => s.name === name); if (isAlreadySaved) return; const generatedName: GeneratedName = { id: `${Date.now()}-${name}-${Math.random()}`, name: name, meaning: `${t.quick_fire.generated_meaning_prefix} ${t.options.styles[petInfo.style] || petInfo.style} ${t.quick_fire.generated_meaning_suffix}`, style: petInfo.style }; addSavedName(generatedName); };
-    if (state === 'idle') return (<Card className="text-center"><PetCharacter pet="cat" className="w-24 h-24 mx-auto mb-4" /><h2 className="text-3xl font-black mb-2">{t.quick_fire.title}</h2><p className="mb-8 opacity-80 text-lg font-bold">{t.quick_fire.subtitle}</p><div className="max-w-xs mx-auto space-y-4 mb-6"><Select id="qf-style" label={t.generator.label_style} value={petInfo.style} onChange={e => setPetInfo({...petInfo, style: e.target.value})}>{NAME_STYLES.map(s => <option key={s} value={s}>{s}</option>)}</Select></div><Button onClick={start} disabled={isLoading}>{isLoading ? t.quick_fire.btn_preparing : t.quick_fire.btn_start}</Button></Card>);
-    if (state === 'playing') { const p1 = pool[(round - 1) * 2]; const p2 = pool[(round - 1) * 2 + 1]; return (<Card className="text-center"><div className="flex justify-between items-center mb-8 px-4"><span className="font-bold opacity-60 uppercase tracking-widest text-sm">{t.quick_fire.mode}</span><span className="bg-[#AA336A] text-white px-3 py-1 rounded-full text-sm font-bold">{round}/10</span></div><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><button onClick={() => vote(p1)} className="h-32 bg-gradient-to-br from-[#aab2a1] to-[#8da38d] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p1}</button><button onClick={() => vote(p2)} className="h-32 bg-gradient-to-bl from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button></div></Card>); }
+    if (state === 'idle') return (<Card className="text-center"><PetCharacter pet="cat" className="w-32 h-32 mx-auto mb-4" /><h2 className="text-3xl font-black mb-2">{t.quick_fire.title}</h2><p className="mb-8 opacity-80 text-lg font-bold">{t.quick_fire.subtitle}</p><div className="max-w-xs mx-auto space-y-4 mb-6"><Select id="qf-style" label={t.generator.label_style} value={petInfo.style} onChange={e => setPetInfo({...petInfo, style: e.target.value})}>{NAME_STYLES.map(s => <option key={s} value={s}>{s}</option>)}</Select></div><Button onClick={start} disabled={isLoading}>{isLoading ? t.quick_fire.btn_preparing : t.quick_fire.btn_start}</Button></Card>);
+    if (state === 'playing') { const p1 = pool[(round - 1) * 2]; const p2 = pool[(round - 1) * 2 + 1]; return (<Card className="text-center"><div className="flex justify-between items-center mb-8 px-4"><span className="font-bold text-[#666666] opacity-60 uppercase tracking-widest text-sm">{t.quick_fire.mode}</span><span className="bg-[#AA336A] text-white px-3 py-1 rounded-full text-sm font-bold">{round}/10</span></div><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><button onClick={() => vote(p1)} className="h-32 bg-gradient-to-br from-[#aab2a1] to-[#8da38d] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p1}</button><button onClick={() => vote(p2)} className="h-32 bg-gradient-to-bl from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button></div></Card>); }
     return (<Card className="text-center"><h3 className="text-3xl font-black text-[#AA336A] mb-4">{t.quick_fire.winner_title}</h3><div className="grid grid-cols-2 gap-2 mb-8 max-w-md mx-auto">{winners.map((w, i) => <div key={i} className="bg-white/20 p-2 rounded-lg font-bold flex justify-between items-center"><span>{w}</span><button onClick={() => handleSaveSingleName(w)} className="text-[#AA336A]">{savedNames.some(s => s.name === w) ? <HeartIconFilled className="w-5 h-5" /> : <HeartIconOutline className="w-5 h-5" />}</button></div>)}</div><Button onClick={() => setState('idle')} variant="secondary">{t.quick_fire.btn_play_again}</Button></Card>);
 };
 
@@ -110,24 +110,26 @@ interface ExtendedChatMessage extends ChatMessage {
 
 const Consultant: React.FC = () => {
     const { t, language } = useLanguage();
-    const [messages, setMessages] = useState<ExtendedChatMessage[]>([]);
+    
+    // Persistent Initializer: ensures we always sync from storage on load
+    const [messages, setMessages] = useState<ExtendedChatMessage[]>(() => {
+        try {
+            const saved = localStorage.getItem('pet_chat_history');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return Array.isArray(parsed) ? parsed : [];
+            }
+        } catch (e) { console.error("Consultant load error", e); }
+        return [];
+    });
+
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // One-time initial load
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem('pet_chat_history');
-            if (saved && saved !== '[]') {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) setMessages(parsed);
-            }
-        } catch (e) { console.error("Consultant load error", e); }
-    }, []);
     
-    // Auto-scroll logic
+    // Reactive sync effect: updates storage whenever messages state changes (including empty array)
     useEffect(() => { 
+        localStorage.setItem('pet_chat_history', JSON.stringify(messages));
         if (messages.length > 0) {
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); 
         }
@@ -135,13 +137,9 @@ const Consultant: React.FC = () => {
     
     const cleanMessageText = (text: string) => {
         let clean = text;
-        // Robust markdown link stripping: keeps label, removes (url)
         clean = clean.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
-        // Handle cases where only brackets were provided or model hallucinated labels
         clean = clean.replace(/\[([^\]]+)\]/g, '$1');
-        // Remove raw URLs that might clutter the message
         clean = clean.replace(/(https?:\/\/[^\s]+)/g, '');
-        // Trim trailing punctuation like dots/asterisks at the very end
         clean = clean.replace(/[*()\s]+$/, '');
         return clean.trim() || text;
     };
@@ -150,16 +148,12 @@ const Consultant: React.FC = () => {
         if (e) e.preventDefault(); 
         if (!inputValue.trim() || isTyping) return; 
         const userMsg: ExtendedChatMessage = { role: 'user', text: inputValue, timestamp: Date.now() }; 
-        const updatedMessages = [...messages, userMsg];
-        setMessages(updatedMessages); 
-        localStorage.setItem('pet_chat_history', JSON.stringify(updatedMessages));
+        setMessages(prev => [...prev, userMsg]); 
         setInputValue(''); 
         setIsTyping(true); 
         try { 
-            const resp = await getPetConsultantResponse(updatedMessages, inputValue, language, t.expert.system_instruction); 
-            const finalMsgs: ExtendedChatMessage[] = [...updatedMessages, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }];
-            setMessages(finalMsgs); 
-            localStorage.setItem('pet_chat_history', JSON.stringify(finalMsgs));
+            const resp = await getPetConsultantResponse([...messages, userMsg], inputValue, language, t.expert.system_instruction); 
+            setMessages(prev => [...prev, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }]); 
         } catch (error) { console.error(error); } finally { setIsTyping(false); } 
     };
 
@@ -167,13 +161,7 @@ const Consultant: React.FC = () => {
         e.preventDefault();
         e.stopPropagation();
         if (window.confirm(t.expert.clear_confirm || "Clear chat history?")) {
-            setMessages([]);
-            localStorage.setItem('pet_chat_history', '[]');
-            // Force a state cleanup in case of any lag
-            setTimeout(() => {
-                setMessages([]);
-                localStorage.removeItem('pet_chat_history');
-            }, 50);
+            setMessages([]); // This triggers the persistence effect and wipes storage
         }
     };
 
@@ -181,7 +169,7 @@ const Consultant: React.FC = () => {
         <Card className="flex flex-col h-[650px] max-w-full overflow-hidden shadow-2xl border-2 border-white/50">
             <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4 shrink-0">
                 <div className="flex items-center gap-3">
-                    <PetCharacter pet="dog" className="w-10 h-10" />
+                    <PetCharacter pet="dog" className="w-12 h-12" />
                     <h2 className="text-xl font-bold">{t.expert.title}</h2>
                 </div>
                 <button 
@@ -228,7 +216,7 @@ const Consultant: React.FC = () => {
                 {isTyping && (
                     <div className="flex justify-start">
                         <div className="bg-white/40 px-4 py-2 rounded-2xl text-sm italic opacity-50 animate-pulse">
-                            Expert is typing...
+                            {t.expert.typing}
                         </div>
                     </div>
                 )}
@@ -239,7 +227,7 @@ const Consultant: React.FC = () => {
                     type="text" 
                     value={inputValue} 
                     onChange={e => setInputValue(e.target.value)} 
-                    placeholder="ask anything about your pet!" 
+                    placeholder={t.expert.placeholder} 
                     className="flex-grow min-w-0 bg-white/50 border border-white/60 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#AA336A] text-lg font-medium shadow-inner" 
                 />
                 <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-4 !px-8 shadow-lg uppercase tracking-wider">{t.expert.btn_send}</Button>
@@ -265,7 +253,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, savedNam
   if (mode === 'menu') {
     const menuItems: { id: PlayMode, title: string, desc: string, pet: PetKind }[] = [ { id: 'quiz', title: t.quiz.title, desc: t.quiz.subtitle, pet: 'hamster' }, { id: 'battle', title: t.quick_fire.title, desc: t.quick_fire.subtitle, pet: 'cat' }, { id: 'expert', title: t.expert.title, desc: t.expert.subtitle, pet: 'dog' }, { id: 'translator', title: t.translator.title, desc: t.translator.subtitle, pet: 'bird' }, { id: 'horoscope', title: t.horoscope.title, desc: t.horoscope.subtitle, pet: 'lizard' }, { id: 'calculator', title: t.age_calc.title, desc: t.age_calc.subtitle, pet: 'rabbit' }, ];
     return (
-      <div className="relative min-h-screen"><Header leftPet="hamster" rightPet="bird" onLogoClick={goHome} /><main className="px-4 pb-32 max-w-4xl mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2"><div className="-mt-4"><BackToHomeButton onClick={goHome} /></div><div className="grid grid-cols-1 sm:grid-cols-2 gap-6">{menuItems.map(item => <button key={item.id} onClick={() => setMode(item.id)} className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-6 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group"><PetCharacter pet={item.pet} className="w-20 h-20 mb-2 transform group-hover:-translate-y-1 transition-transform" /><h3 className="text-2xl font-black text-[var(--text-main)] group-hover:text-[#AA336A]">{item.title}</h3><p className="text-sm font-bold opacity-80 line-clamp-2">{item.desc}</p></button>)}</div></main></div>
+      <div className="relative min-h-screen"><Header leftPet="hamster" rightPet="bird" onLogoClick={goHome} /><main className="px-4 pb-32 max-w-4xl mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2"><div className="-mt-4"><BackToHomeButton onClick={goHome} /></div><div className="grid grid-cols-1 sm:grid-cols-2 gap-6">{menuItems.map(item => <button key={item.id} onClick={() => setMode(item.id)} className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-6 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group"><PetCharacter pet={item.pet} className="w-24 h-24 mb-2 transform group-hover:-translate-y-1 transition-transform" /><h3 className="text-2xl font-black text-[var(--text-main)] group-hover:text-[#AA336A]">{item.title}</h3><p className="text-sm font-bold opacity-80 line-clamp-2">{item.desc}</p></button>)}</div></main></div>
     );
   }
   return (
