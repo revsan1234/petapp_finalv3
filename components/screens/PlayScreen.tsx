@@ -60,7 +60,7 @@ const PetHoroscope: React.FC = () => {
     const signs = ["Aries (Mar 21 - Apr 19)", "Taurus (Apr 20 - May 20)", "Gemini (May 21 - Jun 20)", "Cancer (Jun 21 - Jul 22)", "Leo (Jul 23 - Aug 22)", "Virgo (Aug 23 - Sep 22)", "Libra (Sep 23 - Oct 22)", "Scorpio (Oct 23 - Nov 21)", "Sagittarius (Nov 22 - Dec 21)", "Capricorn (Dec 22 - Jan 19)", "Aquarius (Jan 20 - Feb 18)", "Pisces (Feb 19 - Mar 20)"];
     const handleGetReading = async () => { if (!petName.trim()) return; setIsLoading(true); try { const res = await generatePetHoroscope(sign, `${petGender} ${petType}`, petName, language); setReading(res); } catch (err) { console.error(err); } finally { setIsLoading(false); } };
     return (
-        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="lizard" className="w-24 h-24 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.horoscope.title}</h2><p className="opacity-80 text-lg font-bold">{t.horoscope.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="horo-name" label={t.horoscope.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" /><div className="grid grid-cols-2 gap-4"><Select id="horo-type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>{PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}</Select><Select id="horo-gender" label={t.generator.label_gender} value={petGender} onChange={e => setPetGender(e.target.value as PetGender)}>{PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}</Select></div><Select id="horo-sign" label={t.horoscope.label_zodiac} value={sign} onChange={e => setSign(e.target.value)}>{signs.map(s => <option key={s} value={s}>{s}</option>)}</Select><div className="flex justify-center pt-2"><Button onClick={handleGetReading} disabled={isLoading || !petName.trim()}>{isLoading ? t.horoscope.btn_reading : t.horoscope.btn_read}</Button></div></div>{reading && <div className="mt-8 p-6 bg-purple-500/10 rounded-2xl animate-fade-in border border-white/20"><h3 className="text-xl font-bold text-[#AA336A] mb-2">{petName}: {t.horoscope.result_title}</h3><p className="text-lg font-medium italic mb-4">"{reading.prediction}"</p><div className="bg-white/30 rounded-lg p-3 inline-block"><span className="text-xs uppercase font-bold block opacity-60">{t.horoscope.lucky_item}</span><span className="font-bold text-[#5D4037]">{reading.luckyItem}</span></div></div>}</Card>
+        <Card><div className="text-center mb-6 flex flex-col items-center"><PetCharacter pet="lizard" className="w-24 h-24 mb-4 drop-shadow-md" /><h2 className="text-3xl font-black text-[#5D4037]">{t.horoscope.title}</h2><p className="opacity-80 text-lg font-bold">{t.horoscope.subtitle}</p></div><div className="max-w-md mx-auto space-y-4"><Input id="horo-name" label={t.horoscope.label_name} value={petName} onChange={e => setPetName(e.target.value)} placeholder="e.g. Luna" /><div className="grid grid-cols-2 gap-4"><Select id="horo-type" label={t.generator.label_type} value={petType} onChange={e => setPetType(e.target.value as PetType)}>{PET_TYPES.map(type => <option key={type} value={type}>{t.options.types[type] || type}</option>)}</Select><Select id="horo-gender" label={t.generator.label_gender} value={petGender} onChange={e => setPetGender(e.target.value as PetGender)}>{PET_GENDERS.map(g => <option key={g} value={g}>{t.options.genders[g] || g}</option>)}</Select></div><Select id="horo-sign" label={t.horoscope.label_zodiac} value={sign} onChange={e => setSign(e.target.value)}>{signs.map(s => <option key={s} value={s}>{s}</option>)}</Select><div className="flex justify-center pt-2"><Button onClick={handleGetReading} disabled={isLoading || !petName.trim()}>{isLoading ? t.horoscope.btn_reading : t.horoscope.btn_read}</Button></div></div>{reading && <div className="mt-8 p-6 bg-purple-500/10 rounded-2xl animate-fade-in border border-white/20"><h3 className="text-xl font-bold text-[#AA336A] mb-2">{petName}: {t.horoscope.result_title}</h3><p className="text-lg font-medium italic mb-4">"{reading.prediction}"</p><div className="bg-white/30 rounded-lg p-3 inline-block"><span className="text-xs uppercase tracking-widest opacity-70 font-bold block">{t.horoscope.lucky_item}</span><span className="font-bold text-[#5D4037]">{reading.luckyItem}</span></div></div>}</Card>
     );
 };
 
@@ -100,7 +100,7 @@ const QuickFireDiscovery: React.FC<{ addSavedName: (n: GeneratedName) => void, s
     const vote = (name: string) => { const nextWinners = [...winners, name]; setWinners(nextWinners); if (round < 10) setRound(round + 1); else setState('results'); };
     const handleSaveSingleName = (name: string) => { const isAlreadySaved = savedNames.some(s => s.name === name); if (isAlreadySaved) return; const generatedName: GeneratedName = { id: `${Date.now()}-${name}-${Math.random()}`, name: name, meaning: `${t.quick_fire.generated_meaning_prefix} ${t.options.styles[petInfo.style] || petInfo.style} ${t.quick_fire.generated_meaning_suffix}`, style: petInfo.style }; addSavedName(generatedName); };
     if (state === 'idle') return (<Card className="text-center"><PetCharacter pet="cat" className="w-24 h-24 mx-auto mb-4" /><h2 className="text-3xl font-black mb-2">{t.quick_fire.title}</h2><p className="mb-8 opacity-80 text-lg font-bold">{t.quick_fire.subtitle}</p><div className="max-w-xs mx-auto space-y-4 mb-6"><Select id="qf-style" label={t.generator.label_style} value={petInfo.style} onChange={e => setPetInfo({...petInfo, style: e.target.value})}>{NAME_STYLES.map(s => <option key={s} value={s}>{s}</option>)}</Select></div><Button onClick={start} disabled={isLoading}>{isLoading ? t.quick_fire.btn_preparing : t.quick_fire.btn_start}</Button></Card>);
-    if (state === 'playing') { const p1 = pool[(round - 1) * 2]; const p2 = pool[(round - 1) * 2 + 1]; return (<Card className="text-center"><div className="flex justify-between items-center mb-8 px-4"><span className="font-bold opacity-60">{t.quick_fire.mode}</span><span className="bg-[#AA336A] text-white px-3 py-1 rounded-full text-sm font-bold">{round}/10</span></div><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><button onClick={() => vote(p1)} className="h-32 bg-gradient-to-br from-[#aab2a1] to-[#8da38d] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p1}</button><button onClick={() => vote(p2)} className="h-32 bg-gradient-to-bl from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button></div></Card>); }
+    if (state === 'playing') { const p1 = pool[(round - 1) * 2]; const p2 = pool[(round - 1) * 2 + 1]; return (<Card className="text-center"><div className="flex justify-between items-center mb-8 px-4"><span className="font-bold opacity-60 uppercase tracking-widest text-sm">{t.quick_fire.mode}</span><span className="bg-[#AA336A] text-white px-3 py-1 rounded-full text-sm font-bold">{round}/10</span></div><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><button onClick={() => vote(p1)} className="h-32 bg-gradient-to-br from-[#aab2a1] to-[#8da38d] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p1}</button><button onClick={() => vote(p2)} className="h-32 bg-gradient-to-bl from-[#e889b5] to-[#ffc4d6] rounded-2xl text-2xl font-black text-white shadow-lg hover:scale-105 transition-transform">{p2}</button></div></Card>); }
     return (<Card className="text-center"><h3 className="text-3xl font-black text-[#AA336A] mb-4">{t.quick_fire.winner_title}</h3><div className="grid grid-cols-2 gap-2 mb-8 max-w-md mx-auto">{winners.map((w, i) => <div key={i} className="bg-white/20 p-2 rounded-lg font-bold flex justify-between items-center"><span>{w}</span><button onClick={() => handleSaveSingleName(w)} className="text-[#AA336A]">{savedNames.some(s => s.name === w) ? <HeartIconFilled className="w-5 h-5" /> : <HeartIconOutline className="w-5 h-5" />}</button></div>)}</div><Button onClick={() => setState('idle')} variant="secondary">{t.quick_fire.btn_play_again}</Button></Card>);
 };
 
@@ -110,14 +110,141 @@ interface ExtendedChatMessage extends ChatMessage {
 
 const Consultant: React.FC = () => {
     const { t, language } = useLanguage();
-    const [messages, setMessages] = useState<ExtendedChatMessage[]>(() => { const saved = localStorage.getItem('pet_chat_history'); return saved ? JSON.parse(saved) : []; });
+    const [messages, setMessages] = useState<ExtendedChatMessage[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    useEffect(() => { localStorage.setItem('pet_chat_history', JSON.stringify(messages)); messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
-    const handleSendMessage = async (e?: React.FormEvent) => { if (e) e.preventDefault(); if (!inputValue.trim() || isTyping) return; const userMsg: ExtendedChatMessage = { role: 'user', text: inputValue, timestamp: Date.now() }; setMessages(prev => [...prev, userMsg]); setInputValue(''); setIsTyping(true); try { const resp = await getPetConsultantResponse(messages, inputValue, language, t.expert.system_instruction); setMessages(prev => [...prev, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }]); } catch (error) { console.error(error); } finally { setIsTyping(false); } };
+
+    // One-time initial load
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('pet_chat_history');
+            if (saved && saved !== '[]') {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) setMessages(parsed);
+            }
+        } catch (e) { console.error("Consultant load error", e); }
+    }, []);
+    
+    // Auto-scroll logic
+    useEffect(() => { 
+        if (messages.length > 0) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); 
+        }
+    }, [messages]);
+    
+    const cleanMessageText = (text: string) => {
+        let clean = text;
+        // Robust markdown link stripping: keeps label, removes (url)
+        clean = clean.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+        // Handle cases where only brackets were provided or model hallucinated labels
+        clean = clean.replace(/\[([^\]]+)\]/g, '$1');
+        // Remove raw URLs that might clutter the message
+        clean = clean.replace(/(https?:\/\/[^\s]+)/g, '');
+        // Trim trailing punctuation like dots/asterisks at the very end
+        clean = clean.replace(/[*()\s]+$/, '');
+        return clean.trim() || text;
+    };
+
+    const handleSendMessage = async (e?: React.FormEvent) => { 
+        if (e) e.preventDefault(); 
+        if (!inputValue.trim() || isTyping) return; 
+        const userMsg: ExtendedChatMessage = { role: 'user', text: inputValue, timestamp: Date.now() }; 
+        const updatedMessages = [...messages, userMsg];
+        setMessages(updatedMessages); 
+        localStorage.setItem('pet_chat_history', JSON.stringify(updatedMessages));
+        setInputValue(''); 
+        setIsTyping(true); 
+        try { 
+            const resp = await getPetConsultantResponse(updatedMessages, inputValue, language, t.expert.system_instruction); 
+            const finalMsgs: ExtendedChatMessage[] = [...updatedMessages, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }];
+            setMessages(finalMsgs); 
+            localStorage.setItem('pet_chat_history', JSON.stringify(finalMsgs));
+        } catch (error) { console.error(error); } finally { setIsTyping(false); } 
+    };
+
+    const handleClearChat = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (window.confirm(t.expert.clear_confirm || "Clear chat history?")) {
+            setMessages([]);
+            localStorage.setItem('pet_chat_history', '[]');
+            // Force a state cleanup in case of any lag
+            setTimeout(() => {
+                setMessages([]);
+                localStorage.removeItem('pet_chat_history');
+            }, 50);
+        }
+    };
+
     return (
-        <Card className="flex flex-col h-[600px] max-w-full"><div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4"><div className="flex items-center gap-3"><PetCharacter pet="dog" className="w-10 h-10" /><h2 className="text-xl font-bold">{t.expert.title}</h2></div><button onClick={() => { if(window.confirm(t.expert.clear_confirm)) { setMessages([]); localStorage.removeItem('pet_chat_history'); } }} className="text-xs font-bold opacity-40 uppercase">{t.expert.btn_clear}</button></div><div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-4">{messages.length === 0 && <p className="text-center opacity-60 p-8 font-medium">{t.expert.welcome}</p>}{messages.map((m, i) => <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[85%] p-3 rounded-2xl text-lg ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/40 border border-white/20 rounded-tl-none'}`}>{m.text}{m.sources && m.sources.length > 0 && <div className="mt-2 pt-2 border-t border-black/5 flex flex-wrap gap-2">{m.sources.map((s, si) => <a key={si} href={s.uri} target="_blank" rel="noopener noreferrer" className="text-[10px] bg-[#AA336A]/10 text-[#AA336A] font-bold px-2 py-1 rounded hover:bg-[#AA336A]/20 transition-colors truncate max-w-[150px]">{s.title}</a>)}</div>}</div></div>)}{isTyping && <div className="text-sm italic opacity-50 px-2 animate-pulse">{t.expert.typing}</div>}<div ref={messagesEndRef} /></div><form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2"><input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={t.expert.placeholder} className="flex-grow min-w-0 bg-white/40 border border-white/30 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#AA336A]" /><Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-3 !px-6">{t.expert.btn_send}</Button></form></Card>
+        <Card className="flex flex-col h-[650px] max-w-full overflow-hidden shadow-2xl border-2 border-white/50">
+            <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4 shrink-0">
+                <div className="flex items-center gap-3">
+                    <PetCharacter pet="dog" className="w-10 h-10" />
+                    <h2 className="text-xl font-bold">{t.expert.title}</h2>
+                </div>
+                <button 
+                    type="button"
+                    onClick={handleClearChat} 
+                    className="bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-600 transition-all active:scale-95 border border-red-500/20"
+                >
+                    {t.expert.btn_clear}
+                </button>
+            </div>
+            <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-6">
+                {messages.length === 0 && <p className="text-center opacity-60 p-8 font-medium italic">{t.expert.welcome}</p>}
+                {messages.map((m, i) => (
+                    <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                        <div className={`max-w-[85%] p-5 rounded-2xl text-xl leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/80 border border-white/40 rounded-tl-none text-[#333333]'}`}>
+                            <div className="whitespace-pre-wrap">
+                                {m.role === 'user' ? m.text : cleanMessageText(m.text)}
+                            </div>
+                            
+                            {m.sources && m.sources.length > 0 && (
+                                <div className="mt-6 pt-4 border-t border-black/5 flex flex-col gap-3">
+                                    <span className="text-[10px] uppercase tracking-[0.2em] font-black opacity-30">References:</span>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {m.sources.map((s, si) => (
+                                            <a 
+                                                key={si} 
+                                                href={s.uri} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="text-lg bg-white hover:bg-[#f9f9f9] text-[#AA336A] font-black px-4 py-3 rounded-xl transition-all shadow-sm border border-black/5 flex items-center justify-between active:scale-[0.98] group no-underline"
+                                            >
+                                                <span className="truncate pr-4">{s.title}</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+                {isTyping && (
+                    <div className="flex justify-start">
+                        <div className="bg-white/40 px-4 py-2 rounded-2xl text-sm italic opacity-50 animate-pulse">
+                            Expert is typing...
+                        </div>
+                    </div>
+                )}
+                <div ref={messagesEndRef} />
+            </div>
+            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 shrink-0">
+                <input 
+                    type="text" 
+                    value={inputValue} 
+                    onChange={e => setInputValue(e.target.value)} 
+                    placeholder="ask anything about your pet!" 
+                    className="flex-grow min-w-0 bg-white/50 border border-white/60 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#AA336A] text-lg font-medium shadow-inner" 
+                />
+                <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-4 !px-8 shadow-lg uppercase tracking-wider">{t.expert.btn_send}</Button>
+            </form>
+        </Card>
     );
 };
 

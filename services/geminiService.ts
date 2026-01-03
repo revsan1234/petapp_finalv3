@@ -307,16 +307,23 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
             parts: [{ text: msg.text }]
         }));
         
-        contents.push({ role: 'user', parts: [{ text: message }] });
+        // Append a special directive to the last message to ensure search is used in this turn
+        contents.push({ 
+            role: 'user', 
+            parts: [{ text: message + "\n(Search Tool Requirement: You must perform a search to provide verified information and links for this specific query.)" }] 
+        });
 
-        // Force brevity and usage of search links
-        const briefInstruction = systemInstruction + " IMPORTANT: Your response MUST be 1 or 2 sentences ONLY. Do not ramble. Use the Google Search tool to find relevant external resources and provide them as sources so the user can read more details elsewhere.";
+        // Stronger instruction to FORCE the model to use the search tool and provide citations
+        const forceSearchInstruction = systemInstruction + 
+            " MANDATORY: You MUST use the Google Search tool for EVERY single turn in this conversation. " +
+            "Provide exactly 1 or 2 clear, short sentences. DO NOT use Markdown link syntax [text](url) or [text]. " +
+            "I only want plain text in your 'text' response. The links will be handled separately via the grounding metadata.";
 
         const response = await ai.models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: contents,
             config: {
-                systemInstruction: briefInstruction,
+                systemInstruction: forceSearchInstruction,
                 tools: [{ googleSearch: {} }]
             }
         });
@@ -332,7 +339,7 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
         }
 
         return {
-            text: response.text || "",
+            text: response.text || "I found some helpful info for you.",
             sources: sources.length > 0 ? sources : undefined
         };
     } catch (error: any) {
@@ -340,3 +347,4 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
         throw new Error("Expert is currently busy. Please try again later.");
     }
 };
+

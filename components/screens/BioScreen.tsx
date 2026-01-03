@@ -263,3 +263,4 @@ export const BioScreen: React.FC<{
         </main>
     </div>
 );
+

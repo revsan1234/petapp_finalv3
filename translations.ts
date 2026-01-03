@@ -262,7 +262,7 @@ export const translations = {
       clear_confirm: "Are you sure you want to clear your chat history?",
       welcome: "Hi! I'm your pet naming expert. How can I help you today?",
       typing: "Expert is thinking...",
-      placeholder: "Ask about names, meanings, or breeds...",
+      placeholder: "ask anything about your pet!",
       btn_send: "Send"
     },
     share_texts: {
@@ -504,7 +504,7 @@ export const translations = {
       clear_confirm: "¿Limpiar historial?",
       welcome: "¡Hola! Soy tu experto. ¿En qué te ayudo?",
       typing: "El experto está pensando...",
-      placeholder: "Pregunta sobre nombres, razas...",
+      placeholder: "¡pregunta cualquier cosa sobre tu mascota!",
       btn_send: "Enviar"
     },
     share_texts: {
@@ -746,7 +746,7 @@ export const translations = {
       clear_confirm: "Effacer l'historique ?",
       welcome: "Bonjour ! Je suis votre expert. Comment aider ?",
       typing: "L'expert réfléchit...",
-      placeholder: "Questions sur les noms, races...",
+      placeholder: "demande n'importe quoi sur ton animal !",
       btn_send: "Envoyer"
     },
     share_texts: {
