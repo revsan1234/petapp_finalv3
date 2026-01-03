@@ -74,7 +74,7 @@ const HotelScreen: React.FC<{ goHome: () => void }> = ({ goHome }) => {
         <div className="relative min-h-screen overflow-hidden">
             <div className="relative z-10">
                 <Header leftPet="bird" rightPet="hamster" onLogoClick={goHome} />
-                <main className="py-4 md:py-8 px-4 pb-32 max-w-4xl mx-auto w-full">
+                <main className="py-4 md:py-8 px-4 max-w-4xl mx-auto w-full">
                     <div className="-mt-4 mb-8">
                         <BackToHomeButton onClick={goHome} />
                     </div>
@@ -349,7 +349,7 @@ const AppContent: React.FC = () => {
       <CustomCursor />
       <BackgroundPattern />
       
-      <div className="flex-grow pb-32">
+      <div className="flex-grow">
         {footerView === 'contact' ? <ContactUs onBack={() => setFooterView('none')} /> :
          footerView === 'privacy' ? <PrivacyPolicy onBack={() => setFooterView('none')} /> :
          footerView === 'terms' ? <TermsAndConditions onBack={() => setFooterView('none')} /> :
@@ -358,7 +358,8 @@ const AppContent: React.FC = () => {
 
       <TabNavigator activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <footer className="py-12 px-6 bg-black/10 backdrop-blur-md border-t border-white/10 mt-auto">
+      {/* FOOTER: Fixed PB-48 to PB-64 ensures it's never covered by the fixed TabNavigator */}
+      <footer className="py-12 px-6 bg-black/10 backdrop-blur-md border-t border-white/10 mt-auto pb-48 sm:pb-64">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
           <div className="flex flex-col items-center gap-6">
             {/* Chill Mode Switcher */}
@@ -415,4 +416,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

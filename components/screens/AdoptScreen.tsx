@@ -174,3 +174,4 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
         </div>
     );
 };
+
