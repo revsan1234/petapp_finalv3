@@ -6,10 +6,10 @@ export const AppLogo: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center max-w-full">
-      <div className="flex items-center gap-4 max-w-full px-2">
+    <div className="flex flex-col items-center text-center max-w-full">
+      <div className="flex items-center max-w-full">
         <h1 
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white uppercase font-heading leading-tight" 
+          className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-white uppercase font-heading leading-none whitespace-nowrap" 
           style={{ 
             textShadow: '0 4px 12px rgba(0,0,0,0.4)'
           }}
