@@ -82,7 +82,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
             </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 h-36 sm:h-44 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
+        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-32 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
         <div className="flex justify-around items-end h-full max-w-6xl mx-auto px-1 w-full">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -99,19 +99,19 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                 onClick={() => handleClick(tab.id)}
                 onContextMenu={(e) => e.preventDefault()}
                 className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[55px] sm:min-w-[100px] w-full ${
-                    isActive ? '-translate-y-5' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
+                    isActive ? '-translate-y-3' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
                 }`}
                 >
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_25px_rgba(255,255,255,0.9)] scale-150' : 'scale-110 opacity-80'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] scale-110' : 'scale-90 opacity-70'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-24 h-24 sm:w-32 sm:h-32' : 'w-16 h-16 sm:w-24 sm:h-24'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-16 h-16 sm:w-24 sm:h-24' : 'w-14 h-14 sm:w-22 sm:h-22'}`}
                     />
                 </div>
                 
                 <span 
-                    className={`text-[9px] sm:text-lg md:text-xl font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
-                    isActive ? 'text-white scale-125' : 'text-white/80'
+                    className={`text-[8px] sm:text-sm md:text-base font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-1 ${
+                    isActive ? 'text-white scale-105' : 'text-white/60'
                 }`}>
                     {tab.label}
                 </span>
