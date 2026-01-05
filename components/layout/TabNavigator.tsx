@@ -74,7 +74,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   return (
     <>
         {activeDescription && (
-            <div className="fixed bottom-40 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
+            <div className="fixed bottom-44 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
                 <div className="bg-black/80 text-white p-4 rounded-xl backdrop-blur-md border border-white/20 shadow-2xl max-w-sm text-center animate-fade-in">
                     <p className="font-bold text-lg mb-1 text-[#e889b5]">{activeDescription.title}</p>
                     <p className="text-sm leading-relaxed">{activeDescription.desc}</p>
@@ -82,7 +82,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
             </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-36 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
+        <div className="fixed bottom-0 left-0 right-0 h-36 sm:h-40 bg-gradient-to-t from-black/95 to-black/40 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
         <div className="flex justify-around items-end h-full max-w-6xl mx-auto px-1 w-full">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -98,19 +98,19 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                 onTouchCancel={handleInteractionEnd}
                 onClick={() => handleClick(tab.id)}
                 onContextMenu={(e) => e.preventDefault()}
-                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[55px] sm:min-w-[100px] w-full ${
-                    isActive ? '-translate-y-3' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
+                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[60px] sm:min-w-[110px] w-full ${
+                    isActive ? '-translate-y-4' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
                 }`}
                 >
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] scale-110' : 'scale-100 opacity-80'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_20px_rgba(255,255,255,0.75)] scale-110' : 'scale-100 opacity-80'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-18 h-18 sm:w-28 sm:h-28' : 'w-16 h-16 sm:w-24 sm:h-24'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-24 h-24 sm:w-32 sm:h-32' : 'w-20 h-20 sm:w-28 sm:h-28'}`}
                     />
                 </div>
                 
                 <span 
-                    className={`text-[10px] sm:text-sm md:text-base font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
+                    className={`text-[12px] sm:text-base md:text-lg font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
                     isActive ? 'text-white scale-105' : 'text-white/60'
                 }`}>
                     {tab.label}
