@@ -82,7 +82,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
             </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-32 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
+        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-36 bg-gradient-to-t from-black/90 to-black/30 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
         <div className="flex justify-around items-end h-full max-w-6xl mx-auto px-1 w-full">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -102,15 +102,15 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                     isActive ? '-translate-y-3' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
                 }`}
                 >
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] scale-110' : 'scale-90 opacity-70'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] scale-110' : 'scale-100 opacity-80'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-16 h-16 sm:w-24 sm:h-24' : 'w-14 h-14 sm:w-22 sm:h-22'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-18 h-18 sm:w-28 sm:h-28' : 'w-16 h-16 sm:w-24 sm:h-24'}`}
                     />
                 </div>
                 
                 <span 
-                    className={`text-[8px] sm:text-sm md:text-base font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-1 ${
+                    className={`text-[10px] sm:text-sm md:text-base font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
                     isActive ? 'text-white scale-105' : 'text-white/60'
                 }`}>
                     {tab.label}
@@ -123,4 +123,3 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
     </>
   );
 };
-
