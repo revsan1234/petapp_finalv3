@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
@@ -14,9 +13,10 @@ import {
     getPetConsultantResponse
 } from '../../services/geminiService';
 import { PET_TYPES, PET_GENDERS, NAME_STYLES } from '../../constants';
-import { GeneratedName, PetInfo, PetPersonalityResult, PetKind, ChatMessage, PetGender, PetType } from '../../types';
+import { GeneratedName, PetInfo, PetPersonalityResult, PetKind, ChatMessage, PetGender, PetType, QuotaError } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { PetCharacter } from '../assets/pets/PetCharacter';
+import { Modal } from '../ui/Modal';
 
 const HEART_PATH = "M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z";
 const HeartIconFilled = (props: React.SVGProps<SVGSVGElement>) => (
@@ -111,7 +111,6 @@ interface ExtendedChatMessage extends ChatMessage {
 const Consultant: React.FC = () => {
     const { t, language } = useLanguage();
     
-    // Persistent Initializer: ensures we always sync from storage on load
     const [messages, setMessages] = useState<ExtendedChatMessage[]>(() => {
         try {
             const saved = localStorage.getItem('pet_chat_history');
@@ -125,9 +124,14 @@ const Consultant: React.FC = () => {
 
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [quotaModal, setQuotaModal] = useState<{ isOpen: boolean; title: string; desc: string }>({
+        isOpen: false,
+        title: '',
+        desc: ''
+    });
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
     
-    // Reactive sync effect: updates storage whenever messages state changes (including empty array)
     useEffect(() => { 
         localStorage.setItem('pet_chat_history', JSON.stringify(messages));
         if (messages.length > 0) {
@@ -154,85 +158,113 @@ const Consultant: React.FC = () => {
         try { 
             const resp = await getPetConsultantResponse([...messages, userMsg], inputValue, language, t.expert.system_instruction); 
             setMessages(prev => [...prev, { role: 'model', text: resp.text, sources: resp.sources, timestamp: Date.now() }]); 
-        } catch (error) { console.error(error); } finally { setIsTyping(false); } 
+        } catch (error: any) { 
+            console.error(error);
+            if (error instanceof QuotaError) {
+                const mapping = {
+                    'LIMIT_REACHED': { title: t.quota.limit_reached_title, desc: t.quota.limit_reached_desc },
+                    'GLOBAL_CAP_REACHED': { title: t.quota.global_cap_title, desc: t.quota.global_cap_desc },
+                    'BUSY': { title: t.quota.busy_title, desc: t.quota.busy_desc },
+                    'RATE_LIMITED': { title: t.quota.rate_limit_title, desc: t.quota.rate_limit_desc }
+                };
+                setQuotaModal({ isOpen: true, ...mapping[error.code] });
+            }
+        } finally { setIsTyping(false); } 
     };
 
     const handleClearChat = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (window.confirm(t.expert.clear_confirm || "Clear chat history?")) {
-            setMessages([]); // This triggers the persistence effect and wipes storage
+            setMessages([]);
         }
     };
 
     return (
-        <Card className="flex flex-col h-[650px] max-w-full overflow-hidden shadow-2xl border-2 border-white/50">
-            <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4 shrink-0">
-                <div className="flex items-center gap-3">
-                    <PetCharacter pet="dog" className="w-12 h-12" />
-                    <h2 className="text-xl font-bold">{t.expert.title}</h2>
+        <>
+            <Card className="flex flex-col h-[650px] max-w-full overflow-hidden shadow-2xl border-2 border-white/50">
+                <div className="flex items-center justify-between border-b border-black/10 pb-4 mb-4 shrink-0">
+                    <div className="flex items-center gap-3">
+                        <PetCharacter pet="dog" className="w-12 h-12" />
+                        <h2 className="text-xl font-bold">{t.expert.title}</h2>
+                    </div>
+                    <button 
+                        type="button"
+                        onClick={handleClearChat} 
+                        className="bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-600 transition-all active:scale-95 border border-red-500/20"
+                    >
+                        {t.expert.btn_clear}
+                    </button>
                 </div>
-                <button 
-                    type="button"
-                    onClick={handleClearChat} 
-                    className="bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-600 transition-all active:scale-95 border border-red-500/20"
-                >
-                    {t.expert.btn_clear}
-                </button>
-            </div>
-            <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-6">
-                {messages.length === 0 && <p className="text-center opacity-60 p-8 font-medium italic">{t.expert.welcome}</p>}
-                {messages.map((m, i) => (
-                    <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-                        <div className={`max-w-[85%] p-5 rounded-2xl text-xl leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/80 border border-white/40 rounded-tl-none text-[#333333]'}`}>
-                            <div className="whitespace-pre-wrap">
-                                {m.role === 'user' ? m.text : cleanMessageText(m.text)}
-                            </div>
-                            
-                            {m.sources && m.sources.length > 0 && (
-                                <div className="mt-6 pt-4 border-t border-black/5 flex flex-col gap-3">
-                                    <span className="text-[10px] uppercase tracking-[0.2em] font-black opacity-30">References:</span>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {m.sources.map((s, si) => (
-                                            <a 
-                                                key={si} 
-                                                href={s.uri} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                className="text-lg bg-white hover:bg-[#f9f9f9] text-[#AA336A] font-black px-4 py-3 rounded-xl transition-all shadow-sm border border-black/5 flex items-center justify-between active:scale-[0.98] group no-underline"
-                                            >
-                                                <span className="truncate pr-4">{s.title}</span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                                </svg>
-                                            </a>
-                                        ))}
-                                    </div>
+                <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar space-y-6">
+                    {messages.length === 0 && <p className="text-center opacity-60 p-8 font-medium italic">{t.expert.welcome}</p>}
+                    {messages.map((m, i) => (
+                        <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                            <div className={`max-w-[85%] p-5 rounded-2xl text-xl leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-[#AA336A] text-white rounded-tr-none' : 'bg-white/80 border border-white/40 rounded-tl-none text-[#333333]'}`}>
+                                <div className="whitespace-pre-wrap">
+                                    {m.role === 'user' ? m.text : cleanMessageText(m.text)}
                                 </div>
-                            )}
+                                
+                                {m.sources && m.sources.length > 0 && (
+                                    <div className="mt-6 pt-4 border-t border-black/5 flex flex-col gap-3">
+                                        <span className="text-[10px] uppercase tracking-[0.2em] font-black opacity-30">References:</span>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {m.sources.map((s, si) => (
+                                                <a 
+                                                    key={si} 
+                                                    href={s.uri} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer" 
+                                                    className="text-lg bg-white hover:bg-[#f9f9f9] text-[#AA336A] font-black px-4 py-3 rounded-xl transition-all shadow-sm border border-black/5 flex items-center justify-between active:scale-[0.98] group no-underline"
+                                                >
+                                                    <span className="truncate pr-4">{s.title}</span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 opacity-40 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                    </svg>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
-                {isTyping && (
-                    <div className="flex justify-start">
-                        <div className="bg-white/40 px-4 py-2 rounded-2xl text-sm italic opacity-50 animate-pulse">
-                            {t.expert.typing}
+                    ))}
+                    {isTyping && (
+                        <div className="flex justify-start">
+                            <div className="bg-white/40 px-4 py-2 rounded-2xl text-sm italic opacity-50 animate-pulse">
+                                {t.expert.typing}
+                            </div>
                         </div>
-                    </div>
-                )}
-                <div ref={messagesEndRef} />
-            </div>
-            <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 shrink-0">
-                <input 
-                    type="text" 
-                    value={inputValue} 
-                    onChange={e => setInputValue(e.target.value)} 
-                    placeholder={t.expert.placeholder} 
-                    className="flex-grow min-w-0 bg-white/50 border border-white/60 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#AA336A] text-lg font-medium shadow-inner" 
-                />
-                <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-4 !px-8 shadow-lg uppercase tracking-wider">{t.expert.btn_send}</Button>
-            </form>
-        </Card>
+                    )}
+                    <div ref={messagesEndRef} />
+                </div>
+                <form onSubmit={handleSendMessage} className="mt-4 pt-4 border-t border-black/10 flex items-center gap-2 shrink-0">
+                    <input 
+                        type="text" 
+                        value={inputValue} 
+                        onChange={e => setInputValue(e.target.value)} 
+                        placeholder={t.expert.placeholder} 
+                        className="flex-grow min-w-0 bg-white/50 border border-white/60 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-[#AA336A] text-lg font-medium shadow-inner" 
+                    />
+                    <Button type="submit" disabled={!inputValue.trim() || isTyping} className="!w-auto !py-4 !px-8 shadow-lg uppercase tracking-wider">{t.expert.btn_send}</Button>
+                </form>
+            </Card>
+
+            <Modal
+                isOpen={quotaModal.isOpen}
+                onClose={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+                title={quotaModal.title}
+                confirmText={t.quota.btn_dismiss}
+                onConfirm={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+            >
+                <div className="flex flex-col items-center text-center py-4">
+                    <PetCharacter pet="dog" className="w-32 h-32 mb-6" />
+                    <p className="text-lg leading-relaxed font-medium">
+                        {quotaModal.desc}
+                    </p>
+                </div>
+            </Modal>
+        </>
     );
 };
 

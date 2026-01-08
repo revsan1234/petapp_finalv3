@@ -1,6 +1,21 @@
 
 export const translations = {
   en: {
+    quota: {
+        limit_reached_title: "Magic Recharging!",
+        limit_reached_desc: "You've reached today's free portrait. Our AI artist is currently resting to gather more magic. Come back tomorrow!",
+        rate_limit_title: "Slow Down!",
+        rate_limit_desc: "Please wait a moment between requests. Our servers are catching their breath!",
+        global_cap_title: "Artist at Capacity!",
+        global_cap_desc: "Wow, we've had so many creators today that our AI studio has run out of magic ink for the month! We'll be back soon with more creative energy.",
+        bot_fail_title: "Are you a human?",
+        bot_fail_desc: "Our bot-sensor was triggered. Please complete the verification to continue!",
+        busy_title: "AI is Busy!",
+        busy_desc: "We're a bit overwhelmed right now—please try again in a minute.",
+        error_title: "Magic Glitch!",
+        error_desc: "We had a temporary issue. Please try your request again.",
+        btn_dismiss: "Got it!"
+    },
     navigation: {
       generate: { label: "Names", desc: "Super fun ways to find names and share with your friends!" },
       bio: { label: "Bio", desc: "Find or make up your pet's special personality and share this with your friends." },
@@ -32,6 +47,7 @@ export const translations = {
       label_style: "Name Style",
       btn_generate: "Generate Names",
       btn_generating: "Generating...",
+      btn_cooldown: "Wait...",
       error: "Failed to generate names. Please try again!",
       results_title: "Here are some ideas!",
       loading_text: "Generating fresh ideas...",
@@ -173,7 +189,7 @@ export const translations = {
     },
     image_editor: {
       title: "Pet Portrait Studio",
-      subtitle: "Transform your pet into a work of art with AI!",
+      subtitle: "Free users can generate 1 portrait per day!",
       creating_magic: "Creating AI Magic...",
       upload_placeholder: "Upload a photo to get started",
       btn_change: "Change Photo",
@@ -290,7 +306,6 @@ export const translations = {
       download_front: "Download Front",
       download_back: "Download Back"
     },
-    // Added shop property for en
     shop: {
       subtitle: "Custom Essentials for Your Best Friend",
       puppy_kit: "Puppy Welcome Kit",
@@ -319,6 +334,21 @@ export const translations = {
     }
   },
   es: {
+    quota: {
+        limit_reached_title: "¡Recargando Magia!",
+        limit_reached_desc: "Has alcanzado tu retrato gratuito de hoy. Nuestro artista IA está descansando para reunir más magia. ¡Vuelve mañana!",
+        rate_limit_title: "¡Más Despacio!",
+        rate_limit_desc: "Por favor, espera un momento. ¡Nuestros servidores están tomando un respiro!",
+        global_cap_title: "¡Estudio al Límite!",
+        global_cap_desc: "¡Guau! Hemos tenido tantos creadores hoy que nuestro estudio de IA se ha quedado sin tinta mágica por este mes. Volveremos pronto con más energía creativa.",
+        bot_fail_title: "¿Eres humano?",
+        bot_fail_desc: "Nuestro sensor de bots se activó. ¡Por favor completa la verificación para continuar!",
+        busy_title: "¡IA Ocupada!",
+        busy_desc: "Estamos un poco abrumados—por favor inténtalo en un minuto.",
+        error_title: "¡Error Mágico!",
+        error_desc: "Tuvimos un problema temporal. Por favor intenta de nuevo.",
+        btn_dismiss: "¡Entendido!"
+    },
     navigation: {
       generate: { label: "Nombres", desc: "¡Maneras súper divertidas de encontrar nombres!" },
       bio: { label: "Bio", desc: "Crea la personalidad especial de tu mascota." },
@@ -350,6 +380,7 @@ export const translations = {
       label_style: "Estilo",
       btn_generate: "Generar Nombres",
       btn_generating: "Generando...",
+      btn_cooldown: "Espera...",
       error: "Error al generar nombres.",
       results_title: "¡Aquí tienes ideas!",
       loading_text: "Creando ideas frescas...",
@@ -440,7 +471,7 @@ export const translations = {
     contact_us: { title: "Contacto", p1: "Escríbenos a:", email: "revsan12902@gmail.com" },
     image_editor: {
       title: "Pet Portrait Studio",
-      subtitle: "¡Transforma a tu mascota en arte con IA!",
+      subtitle: "¡Usuarios gratuitos pueden generar 1 retrato al día!",
       creating_magic: "Creando magia con IA...",
       upload_placeholder: "Sube una foto para empezar",
       btn_change: "Cambiar Foto",
@@ -557,7 +588,6 @@ export const translations = {
       download_front: "Descargar Frente",
       download_back: "Descargar Dorso"
     },
-    // Added shop property for es
     shop: {
       subtitle: "Accesorios personalizados para tu mejor amigo",
       puppy_kit: "Kit de Bienvenida para Cachorros",
@@ -586,6 +616,21 @@ export const translations = {
     }
   },
   fr: {
+    quota: {
+        limit_reached_title: "Recharge Magique !",
+        limit_reached_desc: "Vous avez utilisé votre portrait gratuit pour aujourd'hui. Notre artiste IA se repose pour rassembler plus de magie. Revenez demain !",
+        rate_limit_title: "Doucement !",
+        rate_limit_desc: "Veuillez patienter un instant. Nos serveurs reprennent leur souffle !",
+        global_cap_title: "Artiste Épuisé !",
+        global_cap_desc: "Wow, nous avons eu tellement de créateurs aujourd'hui que notre studio IA n'a plus d'encre magique pour ce mois ! Nous reviendrons bientôt.",
+        bot_fail_title: "Êtes-vous humain ?",
+        bot_fail_desc: "Notre détecteur de robots s'est activé. Veuillez compléter la vérification pour continuer !",
+        busy_title: "IA Occupée !",
+        busy_desc: "Nous sommes un peu débordés—veuillez réessayer dans une minute.",
+        error_title: "Bug Magique !",
+        error_desc: "Nous avons eu un problème temporaire. Veuillez réessayer.",
+        btn_dismiss: "Compris !"
+    },
     navigation: {
       generate: { label: "Noms", desc: "Des façons fun de trouver un nom !" },
       bio: { label: "Bio", desc: "Créez la personnalité de votre animal." },
@@ -617,6 +662,7 @@ export const translations = {
       label_style: "Style",
       btn_generate: "Générer les Noms",
       btn_generating: "Génération...",
+      btn_cooldown: "Attendez...",
       error: "Erreur lors de la génération.",
       results_title: "Voici des idées !",
       loading_text: "Inspiration en cours...",
@@ -707,7 +753,7 @@ export const translations = {
     contact_us: { title: "Contact", p1: "Écrivez-nous :", email: "revsan12902@gmail.com" },
     image_editor: {
       title: "Pet Portrait Studio",
-      subtitle: "Transformez votre animal en œuvre d'art avec l'IA !",
+      subtitle: "Générez 1 portrait gratuit par jour !",
       creating_magic: "Création de la magie IA...",
       upload_placeholder: "Chargez une photo pour commencer",
       btn_change: "Changer Photo",
@@ -818,13 +864,12 @@ export const translations = {
     },
     business_card: {
       title: "Studio de Cartes",
-      subtitle: "Créez une carte professionnelle pour votre animal !",
+      subtitle: "Creez une carte professionnelle pour votre animal !",
       front_label: "APERÇU RECTO",
       back_label: "APERÇU VERSO",
       download_front: "Télécharger Recto",
       download_back: "Télécharger Verso"
     },
-    // Added shop property for fr
     shop: {
       subtitle: "Essentiels personnalisés pour votre meilleur ami",
       puppy_kit: "Kit de Bienvenue pour Chiot",

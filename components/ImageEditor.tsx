@@ -1,12 +1,21 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
+import { Modal } from './ui/Modal';
 import { editPetImage, fileToBase64 } from '../services/geminiService';
+import { QuotaError } from '../types';
 import type { ImageStyle } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PetCharacter } from './assets/pets/PetCharacter';
+
+// Handle global window object for Turnstile
+declare global {
+  interface Window {
+    turnstile: any;
+  }
+}
 
 const UploadIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -20,21 +29,9 @@ const MagicWandIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const RevertIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-    </svg>
-);
-
 const DownloadIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-    </svg>
-);
-
-const ShareIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.186 2.25 2.25 0 0 0-3.933 2.186Z" />
     </svg>
 );
 
@@ -51,45 +48,61 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
     const [prompt, setPrompt] = useState('');
     const [imageStyle, setImageStyle] = useState<ImageStyle>('Photorealistic');
     const [isLoading, setIsLoading] = useState(false);
-    const [isSharing, setIsSharing] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [actionError, setActionError] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    
+    const [quotaModal, setQuotaModal] = useState<{ isOpen: boolean; title: string; desc: string }>({
+        isOpen: false,
+        title: '',
+        desc: ''
+    });
 
-    // Sync state with parent if sharedImage provided
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const turnstileRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
-        if (sharedImage && sharedImage !== generatedImage && sharedImage !== originalImagePreview) {
-             if (!originalImagePreview && !generatedImage) {
-                 setOriginalImagePreview(sharedImage);
-             }
+        if (sharedImage && !originalImagePreview && !generatedImage) {
+            setOriginalImagePreview(sharedImage);
         }
     }, [sharedImage]);
+
+    // Bot Protection initialization (interactive mode)
+    useEffect(() => {
+        if (turnstileRef.current && !turnstileToken) {
+            window.turnstile.render(turnstileRef.current, {
+                sitekey: '0x4AAAAAAA4I6eA-u6Y-vS9k', // Developer: Insert your real key here
+                callback: (token: string) => {
+                    setTurnstileToken(token);
+                    setError(null);
+                },
+                'error-callback': () => setError("Verification failed. Please refresh the page."),
+            });
+        }
+    }, [turnstileRef, turnstileToken]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             setOriginalImage(file);
             setGeneratedImage(null);
-            
             const reader = new FileReader();
             reader.onloadend = () => {
-                const result = reader.result as string;
-                setOriginalImagePreview(result);
-                setImageForBio(result); // Update parent
+                setOriginalImagePreview(reader.result as string);
+                setImageForBio(reader.result as string);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleGenerate = async () => {
+        if (isLoading) return;
+        if (!turnstileToken) {
+            setError(t.quota.bot_fail_desc);
+            return;
+        }
         if (!originalImage && !originalImagePreview) {
-             // If we have a preview but no file (e.g. shared from elsewhere), we need a file or blob
-             if (sharedImage) {
-                 // Logic to use sharedImage directly
-             } else {
-                setError('Please upload an image and provide a prompt.');
-                return;
-             }
+            setError('Please upload an image first.');
+            return;
         }
         if (!prompt) {
             setError('Please provide a prompt.');
@@ -98,7 +111,6 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
 
         setIsLoading(true);
         setError(null);
-        setGeneratedImage(null);
 
         try {
             let base64Image = '';
@@ -108,17 +120,32 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
                 base64Image = await fileToBase64(originalImage);
                 mimeType = originalImage.type;
             } else if (originalImagePreview) {
-                // Assuming it's a data URL
                 base64Image = originalImagePreview.split(',')[1];
-                const mimeMatch = originalImagePreview.match(/:(.*?);/);
-                if (mimeMatch) mimeType = mimeMatch[1];
+                const match = originalImagePreview.match(/:(.*?);/);
+                if (match) mimeType = match[1];
             }
 
-            const newImage = await editPetImage(base64Image, mimeType, prompt, imageStyle);
+            const newImage = await editPetImage(base64Image, mimeType, prompt, imageStyle, turnstileToken);
             setGeneratedImage(newImage);
-            setImageForBio(newImage); // Update parent with generated image
+            setImageForBio(newImage);
+            
+            // Success: clear token for next session
+            setTurnstileToken(null);
+            if (window.turnstile) window.turnstile.reset();
+
         } catch (err: any) {
-            setError(err.message);
+            if (err instanceof QuotaError) {
+                const mapping = {
+                    'LIMIT_REACHED': { title: t.quota.limit_reached_title, desc: t.quota.limit_reached_desc },
+                    'RATE_LIMITED': { title: t.quota.bot_fail_title, desc: t.quota.bot_fail_desc },
+                    'GLOBAL_CAP_REACHED': { title: t.quota.global_cap_title, desc: t.quota.global_cap_desc },
+                    'BUSY': { title: t.quota.busy_title, desc: t.quota.busy_desc }
+                };
+                const config = mapping[err.code] || { title: t.quota.error_title, desc: t.quota.error_desc };
+                setQuotaModal({ isOpen: true, ...config });
+            } else {
+                setError(err.message);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -126,81 +153,12 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
 
     const handleDownload = () => {
         if (!generatedImage) return;
-
-        try {
-            // Check if it's a data URL (it should be)
-            if (generatedImage.startsWith('data:')) {
-                // Convert Data URL to Blob for reliable download
-                const byteString = atob(generatedImage.split(',')[1]);
-                const mimeString = generatedImage.split(',')[0].split(':')[1].split(';')[0];
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
-                for (let i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-                const blob = new Blob([ab], { type: mimeString });
-                const url = URL.createObjectURL(blob);
-
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'my-pet-scene.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            } else {
-                 // Fallback if not a data URL (unlikely given service logic)
-                const link = document.createElement('a');
-                link.href = generatedImage;
-                link.download = 'my-pet-scene.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        } catch (e) {
-            console.error("Download failed:", e);
-            setActionError("Failed to download image. Please try again.");
-        }
+        const link = document.createElement('a');
+        link.href = generatedImage;
+        link.download = 'pet-art.png';
+        link.click();
     };
 
-    const handleShare = async () => {
-        if (!generatedImage) return;
-        setIsSharing(true);
-        setActionError(null);
-
-        if (!navigator.share) {
-             setActionError("Sharing is not supported on this browser. Please use 'Download'.");
-             setIsSharing(false);
-             return;
-        }
-
-        try {
-            const response = await fetch(generatedImage);
-            const blob = await response.blob();
-            const file = new File([blob], 'my-pet-scene.png', { type: blob.type });
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: t.share_texts.scene_title,
-                    text: t.share_texts.scene_body,
-                });
-            } else {
-                setActionError("This browser doesn't support sharing images.");
-            }
-        } catch (err) {
-            console.error(err);
-            setActionError("Could not share. Please try downloading.");
-        } finally {
-            setIsSharing(false);
-        }
-    };
-
-    const handleRevert = () => {
-        setGeneratedImage(null);
-        setImageForBio(originalImagePreview);
-    };
-    
     return (
         <Card>
             <div className="flex flex-col gap-2 mb-6 text-center">
@@ -209,37 +167,43 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
             </div>
 
             <div className="max-w-5xl mx-auto flex justify-center">
-                <div className="w-full max-w-[450px] h-[450px] sm:h-[600px] bg-black/10 rounded-lg flex items-center justify-center p-4 mb-6 relative border border-white/20">
+                <div className="w-full max-w-[450px] h-[450px] sm:h-[600px] bg-black/10 rounded-2xl flex items-center justify-center p-4 mb-6 relative border-2 border-dashed border-white/20">
                     {isLoading ? (
                         <div className="text-center">
+                             <div className="relative mb-4">
+                                <PetCharacter pet="dog" className="w-24 h-24 mx-auto animate-bounce-wiggle" />
+                                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
+                             </div>
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current mx-auto"></div>
-                            <p className="mt-4 opacity-80 text-xl">{t.image_editor.creating_magic}</p>
+                            <p className="mt-4 opacity-80 text-xl font-bold animate-pulse">{t.image_editor.creating_magic}</p>
                         </div>
                     ) : generatedImage ? (
-                        <img src={generatedImage} alt="Generated pet" className="w-full h-full object-contain rounded-md shadow-lg"/>
+                        <img src={generatedImage} alt="Generated" className="w-full h-full object-contain rounded-xl shadow-2xl animate-fade-in"/>
                     ) : originalImagePreview ? (
-                        <img src={originalImagePreview} alt="Original pet" className="w-full h-full object-contain rounded-md shadow-lg"/>
+                        <img src={originalImagePreview} alt="Original" className="w-full h-full object-contain rounded-xl shadow-lg"/>
                     ) : (
                          <div 
-                            className="w-full h-full flex flex-col items-center justify-center text-center text-[#494d43] cursor-pointer"
+                            className="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white/5 transition-colors group"
                             onClick={() => fileInputRef.current?.click()}
                          >
-                            <UploadIcon className="w-16 h-16 mb-4 opacity-40" />
-                            <p className="text-xl font-medium opacity-60">{t.image_editor.upload_placeholder}</p>
+                            <UploadIcon className="w-20 h-20 mb-4 opacity-30 group-hover:scale-110 transition-transform" />
+                            <p className="text-xl font-black opacity-40 uppercase tracking-tighter">{t.image_editor.upload_placeholder}</p>
                         </div>
                     )}
                 </div>
             </div>
 
             <div className="max-w-2xl mx-auto space-y-4">
-                 {(originalImagePreview || generatedImage) && !generatedImage && (
-                     <Button onClick={() => fileInputRef.current?.click()} variant="secondary" className="mb-4">
-                        <UploadIcon className="w-5 h-5"/> {t.image_editor.btn_change}
-                     </Button>
-                 )}
+                {(originalImagePreview || generatedImage) && !isLoading && (
+                     <div className="flex justify-center">
+                        <button onClick={() => fileInputRef.current?.click()} className="text-xs font-black uppercase tracking-widest text-[#AA336A] hover:underline bg-white/40 px-4 py-2 rounded-full shadow-sm">
+                            {t.image_editor.btn_change}
+                        </button>
+                     </div>
+                )}
 
                 <Input 
-                    id="prompt" 
+                    id="prompt-editor" 
                     label={t.image_editor.prompt_label} 
                     value={prompt} 
                     onChange={e => setPrompt(e.target.value)} 
@@ -247,7 +211,7 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
                 />
                 
                 <Select 
-                    id="image-style" 
+                    id="editor-style" 
                     label={t.image_editor.style_label} 
                     value={imageStyle} 
                     onChange={e => setImageStyle(e.target.value as ImageStyle)}
@@ -257,44 +221,63 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
                     <option value="Cartoon">{t.options.image_styles.Cartoon}</option>
                 </Select>
 
-                {error && <p className="text-red-500 text-center bg-red-100 p-2 rounded">{error}</p>}
+                {/* Turnstile Interaction (Mandatory for Generate) */}
+                <div className="flex justify-center my-4">
+                    <div ref={turnstileRef}></div>
+                </div>
+
+                {error && <p className="text-red-500 text-center font-bold bg-red-100/80 p-3 rounded-xl animate-fade-in">{error}</p>}
                 
-                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
                     {!generatedImage ? (
-                        <Button onClick={handleGenerate} disabled={isLoading || (!originalImage && !originalImagePreview) || !prompt} variant="primary">
-                            {isLoading ? t.image_editor.creating_magic : t.image_editor.btn_generate}
-                            <MagicWandIcon className="w-5 h-5"/>
+                        <Button 
+                            onClick={handleGenerate} 
+                            disabled={isLoading || !prompt || !turnstileToken} 
+                            variant="primary" 
+                            className="shadow-xl"
+                        >
+                            {isLoading ? t.generator.btn_generating : t.image_editor.btn_generate}
+                            <MagicWandIcon className="w-6 h-6"/>
                         </Button>
                     ) : (
                         <>
-                            <Button onClick={handleDownload} variant="secondary">
+                            <Button onClick={handleDownload} variant="secondary" className="shadow-md">
                                 {t.image_editor.download}
-                                <DownloadIcon className="w-5 h-5"/>
+                                <DownloadIcon className="w-6 h-6"/>
                             </Button>
-                            <Button onClick={handleShare} disabled={isSharing} variant="primary" className="btn-surprise">
-                                {isSharing ? t.image_editor.sharing : t.image_editor.share}
-                                <ShareIcon className="w-5 h-5"/>
+                            <Button 
+                                onClick={() => { 
+                                    setGeneratedImage(null); 
+                                    setTurnstileToken(null); 
+                                    if(window.turnstile) window.turnstile.reset(); 
+                                }} 
+                                variant="primary" 
+                                className="btn-surprise"
+                            >
+                                {t.image_editor.create_another}
+                                <MagicWandIcon className="w-6 h-6"/>
                             </Button>
                         </>
                     )}
                 </div>
-                 {generatedImage && (
-                    <div className="flex justify-center mt-4">
-                        <button onClick={handleRevert} className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100">
-                             <RevertIcon className="w-4 h-4"/> {t.image_editor.create_another}
-                        </button>
-                    </div>
-                )}
-                {actionError && <p className="text-red-500 text-center mt-2 text-sm">{actionError}</p>}
             </div>
 
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                className="hidden" 
-                accept="image/*" 
-            />
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+
+            <Modal
+                isOpen={quotaModal.isOpen}
+                onClose={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+                title={quotaModal.title}
+                confirmText={t.quota.btn_dismiss}
+                onConfirm={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+            >
+                <div className="flex flex-col items-center text-center py-4">
+                    <PetCharacter pet="cat" className="w-32 h-32 mb-6" />
+                    <p className="text-lg leading-relaxed font-medium">
+                        {quotaModal.desc}
+                    </p>
+                </div>
+            </Modal>
         </Card>
     );
 };

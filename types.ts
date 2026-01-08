@@ -1,4 +1,3 @@
-
 export type PetType = 'Dog' | 'Cat' | 'Bird' | 'Fish' | 'Rabbit' | 'Hamster' | 'Lizard';
 export type PetKind = 'dog' | 'cat' | 'bird' | 'fish' | 'rabbit' | 'hamster' | 'lizard' | 'ferret' | 'other';
 export type PetGender = 'Male' | 'Female' | 'Any';
@@ -35,7 +34,6 @@ export interface QuizQuestion {
 export interface PetPersonalityResult {
   title: string;
   description: string;
-  // These will map to PetPersonality and NameStyle
   keywords: {
     personality: PetPersonality;
     style: NameStyle;
@@ -50,7 +48,6 @@ export interface AdoptionCenter {
   website: string;
 }
 
-// Added ChatMessage type for the Pet Consultant feature
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
@@ -58,3 +55,11 @@ export interface ChatMessage {
 }
 
 export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotels';
+
+// New specialized error for quota limits
+export class QuotaError extends Error {
+    constructor(public message: string, public code: 'LIMIT_REACHED' | 'RATE_LIMITED' | 'BUSY' | 'GLOBAL_CAP_REACHED') {
+        super(message);
+        this.name = 'QuotaError';
+    }
+}

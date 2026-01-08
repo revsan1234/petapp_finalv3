@@ -6,8 +6,12 @@ import { generatePetNames } from '../services/geminiService';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Select } from './ui/Select';
+import { Modal } from './ui/Modal';
 import { CelebrationEffect } from './ui/CelebrationEffect';
 import { useLanguage } from '../contexts/LanguageContext';
+import { QuotaError } from '../types';
+// Fix: Added missing PetCharacter import
+import { PetCharacter } from './assets/pets/PetCharacter';
 
 interface NameGeneratorProps {
     addSavedName: (name: GeneratedName) => void;
@@ -44,6 +48,11 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
     const [animatingHeartId, setAnimatingHeartId] = useState<string | null>(null);
     const [isButtonAnimating, setIsButtonAnimating] = useState(false);
     const [showCelebration, setShowCelebration] = useState(false);
+    const [quotaModal, setQuotaModal] = useState<{ isOpen: boolean; title: string; desc: string }>({
+        isOpen: false,
+        title: '',
+        desc: ''
+    });
 
     const generateNames = useCallback(async (info: PetInfo) => {
         setIsLoading(true);
@@ -53,8 +62,21 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
             const names = await generatePetNames(info, language);
             setGeneratedNames(names);
             setShowCelebration(true);
-        } catch (err: any) { setError(err.message); } finally { setIsLoading(false); }
-    }, [language]);
+        } catch (err: any) { 
+            // Fix: Comparison with 'BUSY' is now valid as types.ts was updated to include it in QuotaError code union
+            if (err instanceof QuotaError) {
+                setQuotaModal({
+                    isOpen: true,
+                    title: err.code === 'BUSY' ? t.quota.busy_title : t.quota.rate_limit_title,
+                    desc: err.code === 'BUSY' ? t.quota.busy_desc : t.quota.rate_limit_desc
+                });
+            } else {
+                setError(t.generator.error); 
+            }
+        } finally { 
+            setIsLoading(false); 
+        }
+    }, [language, t]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -63,6 +85,7 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
 
     const handleSubmitForm = (e: React.FormEvent) => {
         e.preventDefault();
+        if (isLoading) return;
         setIsButtonAnimating(true);
         generateNames(petInfo);
         setTimeout(() => setIsButtonAnimating(false), 500); 
@@ -153,11 +176,14 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
                         </Select>
                     </div>
                     <div className="flex justify-center pt-2">
-                        <Button type="submit" disabled={isLoading} className={isButtonAnimating ? 'animate-bounce-wiggle' : ''}>{isLoading ? t.generator.btn_generating : t.generator.btn_generate}<SparkleIcon className="w-5 h-5"/></Button>
+                        <Button type="submit" disabled={isLoading} className={isButtonAnimating ? 'animate-bounce-wiggle' : ''}>
+                            {isLoading ? t.generator.btn_generating : t.generator.btn_generate}
+                            <SparkleIcon className="w-5 h-5"/>
+                        </Button>
                     </div>
                 </form>
             </div>
-            {error && <p className="mt-4 text-center text-red-500 bg-red-200/50 p-3 rounded-lg">{t.generator.error}</p>}
+            {error && <p className="mt-4 text-center text-red-500 bg-red-200/50 p-3 rounded-lg">{error}</p>}
             {isLoading && (<div className="mt-6 text-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current mx-auto"></div><p className="mt-4 opacity-80 text-lg">{t.generator.loading_text}</p></div>)}
             {generatedNames.length > 0 && !isLoading && (
                 <div className="mt-8 animate-fade-in">
@@ -171,6 +197,22 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
                     </div>
                 </div>
             )}
+
+            <Modal
+                isOpen={quotaModal.isOpen}
+                onClose={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+                title={quotaModal.title}
+                confirmText={t.quota.btn_dismiss}
+                onConfirm={() => setQuotaModal({ ...quotaModal, isOpen: false })}
+            >
+                <div className="flex flex-col items-center text-center py-4">
+                    {/* Fix: PetCharacter is now correctly available */}
+                    <PetCharacter pet="dog" className="w-32 h-32 mb-6" />
+                    <p className="text-lg leading-relaxed font-medium">
+                        {quotaModal.desc}
+                    </p>
+                </div>
+            </Modal>
         </Card>
     );
 };
