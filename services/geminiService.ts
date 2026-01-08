@@ -5,7 +5,10 @@ import type { PetInfo, ImageStyle, PetType, PetGender, Language, ChatMessage, Na
 // Detect if we have a direct API key (standard for the Preview tool)
 const isPreviewEnv = !!process.env.API_KEY;
 
-// Simple Anonymous Tracking ID for Device Limits
+/**
+ * Generates or retrieves a unique ID for this specific phone/browser.
+ * This is used for tracking the 24-hour limit on the server.
+ */
 const getDeviceId = () => {
     if (typeof window === 'undefined') return 'server';
     let id = localStorage.getItem('nmp_device_id');
@@ -22,17 +25,23 @@ async function handleApiResponse(response: Response) {
     try {
         data = JSON.parse(text);
     } catch (e) {
-        console.error("Critical: API response was not JSON:", text);
+        console.error("API Response was not JSON:", text);
         throw new Error("Invalid response from server. Please try again.");
     }
 
     if (!response.ok) {
-        if (response.status === 429) throw new QuotaError(data.message || "Limit reached", 'LIMIT_REACHED');
+        // Specifically handle the 429 Status code (Limit Reached)
+        if (response.status === 429) {
+            throw new QuotaError(data.message || "Limit reached", 'LIMIT_REACHED');
+        }
         throw new Error(data.message || "Request failed.");
     }
     return data;
 }
 
+/**
+ * Handles calls when running in the AI Studio Preview environment.
+ */
 const directGeminiCall = async (action: string, body: any) => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
     
@@ -81,10 +90,13 @@ const directGeminiCall = async (action: string, body: any) => {
             return { text: res.text, sources: [] };
         }
         default:
-            return { message: "Action limited in preview mode", names: [], results: [] };
+            return { message: "Limited in preview", names: [], results: [] };
     }
 };
 
+/**
+ * The primary API caller that ships the Device ID to the server.
+ */
 const callApi = async (action: string, body: any) => {
     if (isPreviewEnv) {
         return await directGeminiCall(action, body);
@@ -94,7 +106,7 @@ const callApi = async (action: string, body: any) => {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'X-Device-Id': getDeviceId() // Crucial for tracking the 1-per-day limit
+            'X-Device-Id': getDeviceId() // The backend uses this to block users over the limit
         },
         body: JSON.stringify(body)
     });
