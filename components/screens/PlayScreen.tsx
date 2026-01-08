@@ -139,9 +139,10 @@ const Consultant: React.FC = () => {
         }
     }, [messages]);
     
-    const cleanMessageText = (text: string) => {
+    const cleanMessageText = (text: any) => {
         if (!text || typeof text !== 'string') return "";
         let clean = text;
+        // Basic cleaning of common markdown from LLM output
         clean = clean.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
         clean = clean.replace(/\[([^\]]+)\]/g, '$1');
         clean = clean.replace(/(https?:\/\/[^\s]+)/g, '');
