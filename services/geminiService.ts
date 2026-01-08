@@ -2,7 +2,10 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { QuotaError } from "../types";
 import type { PetInfo, ImageStyle, PetType, PetGender, Language, ChatMessage, NameStyle, PetPersonality } from '../types';
 
-// Simple Anonymous Tracking ID
+// Detect if we are in the Preview environment (where we have a direct API Key)
+const isPreviewEnv = !!process.env.API_KEY;
+
+// Generate or retrieve a persistent anonymous ID for this device
 const getDeviceId = () => {
     if (typeof window === 'undefined') return 'server';
     let id = localStorage.getItem('nmp_device_id');
@@ -13,28 +16,28 @@ const getDeviceId = () => {
     return id;
 };
 
-// Detect if we have a client-side API key (standard for the Preview tool)
-const isPreviewEnv = !!process.env.API_KEY;
-
 async function handleApiResponse(response: Response) {
     const text = await response.text();
     let data;
     try {
         data = JSON.parse(text);
     } catch (e) {
-        console.error("Critical: API response was not JSON:", text);
+        console.error("API Response was not JSON:", text);
         throw new Error("Invalid response from server. Please try again.");
     }
 
     if (!response.ok) {
-        console.error("API Error Response:", response.status, data);
-        // Explicitly handle the 429 Limit reached error for the UI
+        // If server returns 429, it means the Device ID has reached its daily limit
         if (response.status === 429) throw new QuotaError(data.message || "Limit reached", 'LIMIT_REACHED');
         throw new Error(data.message || "Request failed.");
     }
     return data;
 }
 
+/**
+ * Direct Gemini SDK logic for the PREVIEW environment on this platform.
+ * This allows you to test the app right here before pushing to Vercel.
+ */
 const directGeminiCall = async (action: string, body: any) => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
     
@@ -66,7 +69,7 @@ const directGeminiCall = async (action: string, body: any) => {
         case 'name-of-the-day': {
             const res = await ai.models.generateContent({
                 model: 'gemini-3-flash-preview',
-                contents: `Suggest one random unique pet name and its meaning.`,
+                contents: `Suggest a random unique pet name and its meaning.`,
                 config: {
                     responseMimeType: "application/json",
                     responseSchema: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, meaning: { type: Type.STRING } } }
@@ -83,20 +86,22 @@ const directGeminiCall = async (action: string, body: any) => {
             return { text: res.text, sources: [] };
         }
         default:
-            return { message: "Action limited in preview mode", names: [], results: [] };
+            return { message: "Limited preview", names: [], results: [] };
     }
 };
 
 const callApi = async (action: string, body: any) => {
+    // If we have an API key in the browser, we are in Preview mode. Use direct AI calls.
     if (isPreviewEnv) {
         return await directGeminiCall(action, body);
     }
 
+    // Otherwise, we are on Vercel. Call the secure backend API and include the Device ID.
     const res = await fetch(`/api?action=${action}`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'X-Device-Id': getDeviceId() // Crucial for limit tracking
+            'X-Device-Id': getDeviceId() // Identifying the user's phone
         },
         body: JSON.stringify(body)
     });
@@ -121,8 +126,8 @@ export const generateNameOfTheDay = async (language: Language = 'en') => {
 
 export const getPetNameMeaning = async (name: string, language: Language = 'en') => {
     const data = await callApi('expert-consultant', { 
-        message: `Meaning and origin of "${name}" for a pet in ${language}. Short.`, 
-        systemInstruction: "Be concise." 
+        message: `Meaning of pet name "${name}" in ${language}. 1 sentence.`, 
+        systemInstruction: "Be brief." 
     });
     return data.text;
 };
@@ -155,7 +160,7 @@ export const findAdoptionCenters = async (location: string, language: Language =
 };
 
 export const findPetHotels = async (location: string, language: Language = 'en') => {
-    const data = await callApi('search-grounding', { query: `pet hotels near ${location}`, language });
+    const data = await callApi('search-grounding', { query: `pet boarding near ${location}`, language });
     return data.results || [];
 };
 
