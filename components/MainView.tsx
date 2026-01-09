@@ -260,3 +260,4 @@ export const MainView: React.FC<MainViewProps> = ({ savedNames, addSavedName, re
       </main>
     </>
   );
+};
