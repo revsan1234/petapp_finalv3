@@ -1,15 +1,14 @@
-
 import React, { useState, useRef, MouseEvent } from 'react';
-import { Header } from './Header';
-import { NameGenerator } from './NameGenerator';
-import type { GeneratedName, PetInfo, PetGender } from '../types';
-import { NameOfTheDay } from './NameOfTheDay';
-import { NameMeaningFinder } from './NameMeaningFinder';
-import { TrendingTicker } from './TrendingTicker';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Card } from './ui/Card';
-import { Button } from './ui/Button';
-import { ShareableListCard } from './ui/ShareableListCard';
+import { Header } from '../Header';
+import { NameGenerator } from '../NameGenerator';
+import type { GeneratedName, PetInfo, PetGender } from '../../types';
+import { NameOfTheDay } from '../NameOfTheDay';
+import { NameMeaningFinder } from '../NameMeaningFinder';
+import { TrendingTicker } from '../TrendingTicker';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { Card } from './Card';
+import { Button } from './Button';
+import { ShareableListCard } from './ShareableListCard';
 import { toPng } from 'html-to-image';
 
 const FONT_EMBED_CSS = `
@@ -261,4 +260,3 @@ export const MainView: React.FC<MainViewProps> = ({ savedNames, addSavedName, re
       </main>
     </>
   );
-};
