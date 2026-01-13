@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           contents: { 
             parts: [
               { inlineData: { data: base64Image, mimeType } }, 
-              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. Wholesome only.` }
+              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. Wholesome content only.` }
             ] 
           }
         });

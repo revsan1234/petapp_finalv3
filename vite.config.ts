@@ -7,6 +7,7 @@ export default defineConfig({
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY),
   },
   root: './',
+  appType: 'spa',
   build: {
     outDir: 'dist',
     emptyOutDir: true
