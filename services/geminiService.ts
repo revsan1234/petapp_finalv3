@@ -1,176 +1,106 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { QuotaError } from "../types";
-import type { PetInfo, ImageStyle, PetType, PetGender, Language, ChatMessage, NameStyle, PetPersonality } from '../types';
+import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
-// Detect if we have a direct API key (standard for the Preview tool)
-const isPreviewEnv = !!process.env.API_KEY;
-
-/**
- * Generates or retrieves a unique ID for this specific phone/browser.
- * This is used for tracking the 24-hour limit on the server.
- */
-const getDeviceId = () => {
-    if (typeof window === 'undefined') return 'server';
-    let id = localStorage.getItem('nmp_device_id');
-    if (!id) {
-        id = 'nmp_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        localStorage.setItem('nmp_device_id', id);
-    }
-    return id;
-};
-
-async function handleApiResponse(response: Response) {
-    const text = await response.text();
-    let data;
-    try {
-        data = JSON.parse(text);
-    } catch (e) {
-        console.error("API Response was not JSON:", text);
-        throw new Error("Invalid response from server. Please try again.");
-    }
-
-    if (!response.ok) {
-        // Specifically handle the 429 Status code (Limit Reached)
-        if (response.status === 429) {
-            throw new QuotaError(data.message || "Limit reached", 'LIMIT_REACHED');
-        }
-        throw new Error(data.message || "Request failed.");
-    }
-    return data;
-}
-
-/**
- * Handles calls when running in the AI Studio Preview environment.
- */
-const directGeminiCall = async (action: string, body: any) => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-    
-    switch (action) {
-        case 'generate-names': {
-            const { petInfo, language } = body;
-            const res = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
-                contents: `Suggest exactly 6 unique names for a ${petInfo.gender} ${petInfo.type} (${petInfo.personality}) in ${language}. Style: ${petInfo.style}.`,
-                config: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: Type.OBJECT,
-                        properties: {
-                            names: {
-                                type: Type.ARRAY,
-                                items: {
-                                    type: Type.OBJECT,
-                                    properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING } },
-                                    required: ["id", "name", "meaning"]
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            return JSON.parse(res.text);
-        }
-        case 'name-of-the-day': {
-            const res = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
-                contents: `Suggest one random unique pet name and its meaning.`,
-                config: {
-                    responseMimeType: "application/json",
-                    responseSchema: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, meaning: { type: Type.STRING } } }
-                }
-            });
-            return JSON.parse(res.text);
-        }
-        case 'expert-consultant': {
-            const res = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview',
-                contents: body.message,
-                config: { systemInstruction: body.systemInstruction, tools: [{ googleSearch: {} }] }
-            });
-            return { text: res.text, sources: [] };
-        }
-        default:
-            return { message: "Limited in preview", names: [], results: [] };
-    }
-};
-
-/**
- * The primary API caller that ships the Device ID to the server.
- */
-const callApi = async (action: string, body: any) => {
-    if (isPreviewEnv) {
-        return await directGeminiCall(action, body);
-    }
-
-    const res = await fetch(`/api?action=${action}`, {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'X-Device-Id': getDeviceId() // The backend uses this to block users over the limit
+const nameGenerationSchema = {
+    type: Type.ARRAY,
+    items: {
+        type: Type.OBJECT,
+        properties: {
+            name: { type: Type.STRING },
+            meaning: { type: Type.STRING },
+            style: { type: Type.STRING }
         },
-        body: JSON.stringify(body)
-    });
-    return await handleApiResponse(res);
+        required: ["name", "meaning", "style"],
+    }
 };
 
-export const hasValidApiKey = () => true;
-
-export const generatePetNames = async (petInfo: PetInfo, language: Language = 'en') => {
-    const data = await callApi('generate-names', { petInfo, language });
-    return data.names || [];
+const consultantSchema = {
+    type: Type.OBJECT,
+    properties: {
+        text: { type: Type.STRING, description: "2-3 sentence advice response" },
+        url: { type: Type.STRING, description: "A valid, relevant URL for more information" }
+    },
+    required: ["text", "url"]
 };
 
-export const generatePetBio = async (name: string, petType: PetType, personality: PetPersonality, language: Language = 'en') => {
-    const data = await callApi('generate-bio', { name, petType, personality, language });
-    return data.bios || [];
+const cleanJsonString = (str: string): string => {
+    if (!str) return "[]";
+    return str.replace(/```json\n?|```/g, '').trim();
 };
 
-export const generateNameOfTheDay = async (language: Language = 'en') => {
-    return await callApi('name-of-the-day', { language });
+export const generatePetNames = async (petInfo: PetInfo, language: Language = 'en'): Promise<GeneratedName[]> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const { type, gender, personality, style } = petInfo;
+    const prompt = `Generate 10 creative pet names for a ${gender} ${type}. Vibe: ${personality}. Style: ${style}. Respond in ${language}.`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: prompt,
+            config: {
+                systemInstruction: "You are a professional pet naming expert. You always return strictly valid JSON data as an array of objects.",
+                responseMimeType: 'application/json',
+                responseSchema: nameGenerationSchema,
+            }
+        });
+
+        const jsonStr = cleanJsonString(response.text || "[]");
+        const names = JSON.parse(jsonStr);
+        return Array.isArray(names) ? names.map((n: any, i: number) => ({
+            id: `gen-${Date.now()}-${i}`,
+            name: n.name || "Unknown",
+            meaning: n.meaning || "A beautiful name for your pet.",
+            style: n.style || style
+        })) : [];
+    } catch (error) {
+        console.error("Name generation failed:", error);
+        throw new Error("Failed to generate names.");
+    }
 };
 
-export const getPetNameMeaning = async (name: string, language: Language = 'en') => {
-    const data = await callApi('expert-consultant', { 
-        message: `Meaning and origin of "${name}" for a pet in ${language}. Short.`, 
-        systemInstruction: "Be concise." 
-    });
-    return data.text;
+export const editPetImage = async (base64Image: string, mimeType: string, prompt: string, style: ImageStyle): Promise<string> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: {
+                parts: [
+                    { inlineData: { data: base64Image, mimeType: mimeType } },
+                    { text: `Edit this pet image: ${prompt}. Style: ${style}. GUIDELINES: 1. Ensure the scene is G-rated and wholesome for children. 2. No violence, maturity, or inappropriate costumes. 3. If the request is inappropriate, transform it into something cute and innocent instead.` }
+                ]
+            },
+        });
+        for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData) return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+        }
+        throw new Error("No image generated.");
+    } catch (error: any) {
+        throw new Error("Failed to generate image.");
+    }
 };
 
-export const generatePetPersonality = async (quizAnswers: string[], language: Language = 'en') => {
-    return await callApi('analyze-personality', { quizAnswers, language });
-};
+export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en'): Promise<{text: string, url: string}> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const contents = history.map(msg => ({
+        role: msg.role,
+        parts: [{ text: msg.text }]
+    }));
+    contents.push({ role: 'user', parts: [{ text: message }] });
 
-export const generateQuickFireList = async (style: NameStyle, petType: PetType, petGender: PetGender, language: Language = 'en') => {
-    const data = await callApi('quick-fire-names', { style, petType, petGender, language });
-    return data.names || [];
-};
-
-export const editPetImage = async (base64Image: string, mimeType: string, prompt: string, style: ImageStyle) => {
-    const data = await callApi('generate-image', { base64Image, mimeType, prompt, style });
-    return data.imageUrl;
-};
-
-export const translatePetName = async (name: string, targetLanguage: string) => {
-    return await callApi('translate-name', { name, targetLanguage });
-};
-
-export const generatePetHoroscope = async (sign: string, petType: string, name: string, language: Language = 'en') => {
-    return await callApi('pet-horoscope', { sign, petType, name, language });
-};
-
-export const findAdoptionCenters = async (location: string, language: Language = 'en') => {
-    const data = await callApi('search-grounding', { query: `pet adoption near ${location}`, language });
-    return data.results || [];
-};
-
-export const findPetHotels = async (location: string, language: Language = 'en') => {
-    const data = await callApi('search-grounding', { query: `pet hotels near ${location}`, language });
-    return data.results || [];
-};
-
-export const getPetConsultantResponse = async (history: ChatMessage[], message: string, language: Language = 'en', systemInstruction: string) => {
-    return await callApi('expert-consultant', { history, message, language, systemInstruction });
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: contents,
+            config: { 
+                systemInstruction: "You are a world-class pet consultant for a family-friendly app. GUIDELINES: 1. You only talk about pets. 2. POLITELY REFUSE any inappropriate, harmful, mature, or offensive topics. 3. Keep 'text' under 3 SHORT sentences. 4. 'url' MUST be a valid relevant link for pet care. 5. Respond in JSON. 6. Be friendly and child-friendly.",
+                responseMimeType: "application/json",
+                responseSchema: consultantSchema
+            }
+        });
+        return JSON.parse(cleanJsonString(response.text || '{"text":"I can only help with pet-related questions in a friendly way.","url":""}'));
+    } catch (error) {
+        throw new Error("Chat failed.");
+    }
 };
 
 export const fileToBase64 = (file: File): Promise<string> => {
@@ -180,4 +110,94 @@ export const fileToBase64 = (file: File): Promise<string> => {
         reader.onload = () => resolve((reader.result as string).split(',')[1]);
         reader.onerror = error => reject(error);
     });
+};
+
+export const translatePetName = async (name: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Provide a JSON array of objects representing the name "${name}" translated into 10 languages. Each object: "language", "spelling", "meaning", and "flag" (emoji).`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "[]"));
+};
+
+export const generatePetBio = async (name: string, petType: string, personality: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Generate exactly 4 fun social media bios for a pet. Name: ${name || "Your Pet"}. Type: ${petType}. Vibe: ${personality}. Strictly JSON array of strings. Language: ${language}.`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "[]"));
+};
+
+export const findPetHotels = async (location: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Top rated pet hotels in ${location}. Return JSON array of objects with name, summary, address, phone, website.`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "[]"));
+};
+
+export const generateNameOfTheDay = async (language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `One trending pet name. Return JSON: {"name": "...", "meaning": "..."}`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "{}"));
+};
+
+export const getPetNameMeaning = async (name: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Meaning of pet name "${name}". Return JSON: {"meaning": "..."}`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "{}")).meaning;
+};
+
+export const generatePetPersonality = async (answers: string[], language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Analyze behavior: ${answers.join(',')}. Return JSON object with title, description, and keywords (personality and style).`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "{}"));
+};
+
+export const generateQuickFireList = async (style: string, type: string, gender: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `20 ${style} names for ${gender} ${type}. Return JSON array of strings.`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "[]"));
+};
+
+export const findAdoptionCenters = async (location: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Shelters in ${location}. Return JSON array with name, mission, address, phone, website.`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "[]"));
+};
+
+export const generatePetHoroscope = async (sign: string, type: string, name: string, language: Language = 'en') => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Horoscope for ${name} (${sign}). Return JSON: {"prediction": "...", "luckyItem": "..."}`,
+        config: { responseMimeType: 'application/json' }
+    });
+    return JSON.parse(cleanJsonString(response.text || "{}"));
 };

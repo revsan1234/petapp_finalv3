@@ -3,19 +3,9 @@ import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
-import { Modal } from './ui/Modal';
 import { editPetImage, fileToBase64 } from '../services/geminiService';
-import { QuotaError } from '../types';
-import type { ImageStyle } from '../types';
+import type { ImageStyle, Tab } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { PetCharacter } from './assets/pets/PetCharacter';
-
-// Handle global window object for Turnstile
-declare global {
-  interface Window {
-    turnstile: any;
-  }
-}
 
 const UploadIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -38,9 +28,10 @@ const DownloadIcon = (props: React.SVGProps<SVGSVGElement>) => (
 interface ImageEditorProps {
     setImageForBio: (image: string | null) => void;
     sharedImage: string | null;
+    setActiveTab?: (tab: Tab) => void;
 }
 
-export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, sharedImage }) => {
+export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, sharedImage, setActiveTab }) => {
     const { t } = useLanguage();
     const [originalImage, setOriginalImage] = useState<File | null>(null);
     const [originalImagePreview, setOriginalImagePreview] = useState<string | null>(null);
@@ -48,37 +39,20 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
     const [prompt, setPrompt] = useState('');
     const [imageStyle, setImageStyle] = useState<ImageStyle>('Photorealistic');
     const [isLoading, setIsLoading] = useState(false);
+    const [isLimitReached, setIsLimitReached] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-    
-    const [quotaModal, setQuotaModal] = useState<{ isOpen: boolean; title: string; desc: string }>({
-        isOpen: false,
-        title: '',
-        desc: ''
-    });
-
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const turnstileRef = useRef<HTMLDivElement>(null);
+
+    // DAILY LIMIT CHECK
+    useEffect(() => {
+        const lastGen = localStorage.getItem('petapp_last_image_gen');
+        const today = new Date().toDateString();
+        if (lastGen === today) setIsLimitReached(true);
+    }, []);
 
     useEffect(() => {
-        if (sharedImage && !originalImagePreview && !generatedImage) {
-            setOriginalImagePreview(sharedImage);
-        }
+        if (sharedImage && !originalImagePreview && !generatedImage) setOriginalImagePreview(sharedImage);
     }, [sharedImage]);
-
-    // Bot Protection initialization (interactive mode)
-    useEffect(() => {
-        if (turnstileRef.current && !turnstileToken) {
-            window.turnstile.render(turnstileRef.current, {
-                sitekey: '0x4AAAAAAA4I6eA-u6Y-vS9k', // Developer: Insert your real key here
-                callback: (token: string) => {
-                    setTurnstileToken(token);
-                    setError(null);
-                },
-                'error-callback': () => setError("Verification failed. Please refresh the page."),
-            });
-        }
-    }, [turnstileRef, turnstileToken]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -87,75 +61,41 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
             setGeneratedImage(null);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setOriginalImagePreview(reader.result as string);
-                setImageForBio(reader.result as string);
+                const result = reader.result as string;
+                setOriginalImagePreview(result);
+                setImageForBio(result);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleGenerate = async () => {
-        if (isLoading) return;
-        if (!turnstileToken) {
-            setError(t.quota.bot_fail_desc);
-            return;
-        }
-        if (!originalImage && !originalImagePreview) {
-            setError('Please upload an image first.');
-            return;
-        }
-        if (!prompt) {
-            setError('Please provide a prompt.');
-            return;
-        }
+        if (isLimitReached) return;
+        if (!originalImage && !originalImagePreview) { setError('Upload photo first.'); return; }
+        if (!prompt) { setError('Provide a prompt.'); return; }
 
-        setIsLoading(true);
-        setError(null);
-
+        setIsLoading(true); setError(null); setGeneratedImage(null);
         try {
-            let base64Image = '';
-            let mimeType = 'image/jpeg';
+            let base64Image = ''; let mimeType = 'image/jpeg';
+            if (originalImage) { base64Image = await fileToBase64(originalImage); mimeType = originalImage.type; }
+            else if (originalImagePreview) { base64Image = originalImagePreview.split(',')[1]; }
 
-            if (originalImage) {
-                base64Image = await fileToBase64(originalImage);
-                mimeType = originalImage.type;
-            } else if (originalImagePreview) {
-                base64Image = originalImagePreview.split(',')[1];
-                const match = originalImagePreview.match(/:(.*?);/);
-                if (match) mimeType = match[1];
-            }
-
-            const newImage = await editPetImage(base64Image, mimeType, prompt, imageStyle, turnstileToken);
+            const newImage = await editPetImage(base64Image, mimeType, prompt, imageStyle);
             setGeneratedImage(newImage);
             setImageForBio(newImage);
             
-            // Success: clear token for next session
-            setTurnstileToken(null);
-            if (window.turnstile) window.turnstile.reset();
-
-        } catch (err: any) {
-            if (err instanceof QuotaError) {
-                const mapping = {
-                    'LIMIT_REACHED': { title: t.quota.limit_reached_title, desc: t.quota.limit_reached_desc },
-                    'RATE_LIMITED': { title: t.quota.bot_fail_title, desc: t.quota.bot_fail_desc },
-                    'GLOBAL_CAP_REACHED': { title: t.quota.global_cap_title, desc: t.quota.global_cap_desc },
-                    'BUSY': { title: t.quota.busy_title, desc: t.quota.busy_desc }
-                };
-                const config = mapping[err.code] || { title: t.quota.error_title, desc: t.quota.error_desc };
-                setQuotaModal({ isOpen: true, ...config });
-            } else {
-                setError(err.message);
-            }
-        } finally {
-            setIsLoading(false);
-        }
+            // SAVE LIMIT: Mark today's generation as used
+            const today = new Date().toDateString();
+            localStorage.setItem('petapp_last_image_gen', today);
+            setIsLimitReached(true);
+        } catch (err: any) { setError(err.message); } finally { setIsLoading(false); }
     };
 
     const handleDownload = () => {
         if (!generatedImage) return;
-        const link = document.createElement('a');
-        link.href = generatedImage;
-        link.download = 'pet-art.png';
+        const link = document.createElement('a'); 
+        link.href = generatedImage; 
+        link.download = 'my-pet-scene.png'; 
         link.click();
     };
 
@@ -167,117 +107,64 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ setImageForBio, shared
             </div>
 
             <div className="max-w-5xl mx-auto flex justify-center">
-                <div className="w-full max-w-[450px] h-[450px] sm:h-[600px] bg-black/10 rounded-2xl flex items-center justify-center p-4 mb-6 relative border-2 border-dashed border-white/20">
+                <div className="w-full max-w-[450px] h-[450px] bg-black/10 rounded-lg flex items-center justify-center p-4 mb-6 relative border border-white/20 overflow-hidden">
                     {isLoading ? (
                         <div className="text-center">
-                             <div className="relative mb-4">
-                                <PetCharacter pet="dog" className="w-24 h-24 mx-auto animate-bounce-wiggle" />
-                                <div className="absolute inset-0 bg-white/20 blur-xl rounded-full"></div>
-                             </div>
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current mx-auto"></div>
-                            <p className="mt-4 opacity-80 text-xl font-bold animate-pulse">{t.image_editor.creating_magic}</p>
+                            <p className="mt-4 opacity-80 text-xl">{t.image_editor.creating_magic}</p>
                         </div>
                     ) : generatedImage ? (
-                        <img src={generatedImage} alt="Generated" className="w-full h-full object-contain rounded-xl shadow-2xl animate-fade-in"/>
+                        <img src={generatedImage} alt="Generated" className="w-full h-full object-contain rounded-md shadow-lg"/>
                     ) : originalImagePreview ? (
-                        <img src={originalImagePreview} alt="Original" className="w-full h-full object-contain rounded-xl shadow-lg"/>
+                        <img src={originalImagePreview} alt="Original" className="w-full h-full object-contain rounded-md shadow-lg"/>
                     ) : (
-                         <div 
-                            className="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white/5 transition-colors group"
-                            onClick={() => fileInputRef.current?.click()}
-                         >
-                            <UploadIcon className="w-20 h-20 mb-4 opacity-30 group-hover:scale-110 transition-transform" />
-                            <p className="text-xl font-black opacity-40 uppercase tracking-tighter">{t.image_editor.upload_placeholder}</p>
+                         <div className="w-full h-full flex flex-col items-center justify-center text-center cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                            <UploadIcon className="w-16 h-16 mb-4 opacity-40" />
+                            <p className="text-xl font-medium opacity-60">{t.image_editor.upload_placeholder}</p>
                         </div>
                     )}
                 </div>
             </div>
 
             <div className="max-w-2xl mx-auto space-y-4">
-                {(originalImagePreview || generatedImage) && !isLoading && (
-                     <div className="flex justify-center">
-                        <button onClick={() => fileInputRef.current?.click()} className="text-xs font-black uppercase tracking-widest text-[#AA336A] hover:underline bg-white/40 px-4 py-2 rounded-full shadow-sm">
-                            {t.image_editor.btn_change}
-                        </button>
-                     </div>
-                )}
-
-                <Input 
-                    id="prompt-editor" 
-                    label={t.image_editor.prompt_label} 
-                    value={prompt} 
-                    onChange={e => setPrompt(e.target.value)} 
-                    placeholder={t.image_editor.prompt_placeholder} 
-                />
-                
-                <Select 
-                    id="editor-style" 
-                    label={t.image_editor.style_label} 
-                    value={imageStyle} 
-                    onChange={e => setImageStyle(e.target.value as ImageStyle)}
-                >
+                <Input id="prompt" label={t.image_editor.prompt_label} value={prompt} onChange={e => setPrompt(e.target.value)} placeholder={t.image_editor.prompt_placeholder} />
+                <Select id="image-style" label={t.image_editor.style_label} value={imageStyle} onChange={e => setImageStyle(e.target.value as ImageStyle)}>
                     <option value="Photorealistic">{t.options.image_styles.Photorealistic}</option>
                     <option value="Anime">{t.options.image_styles.Anime}</option>
                     <option value="Cartoon">{t.options.image_styles.Cartoon}</option>
                 </Select>
 
-                {/* Turnstile Interaction (Mandatory for Generate) */}
-                <div className="flex justify-center my-4">
-                    <div ref={turnstileRef}></div>
-                </div>
+                {isLimitReached && !generatedImage && (
+                    <div className="text-center animate-fade-in bg-[#FFF8E7] p-8 rounded-[2rem] border-2 border-[#AA336A]/20 shadow-lg relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#AA336A]/40 to-transparent"></div>
+                        <p className="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-500">✨</p>
+                        <h4 className="text-[#AA336A] font-black text-xl uppercase tracking-wider mb-2">{t.image_editor.limit_title}</h4>
+                        <p className="text-[#5D4037] font-medium leading-relaxed text-lg italic">
+                            {t.image_editor.limit_reached}
+                        </p>
+                    </div>
+                )}
 
-                {error && <p className="text-red-500 text-center font-bold bg-red-100/80 p-3 rounded-xl animate-fade-in">{error}</p>}
-                
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <div className="flex flex-col gap-3 pt-4">
                     {!generatedImage ? (
                         <Button 
                             onClick={handleGenerate} 
-                            disabled={isLoading || !prompt || !turnstileToken} 
+                            disabled={isLoading || isLimitReached || (!originalImage && !originalImagePreview) || !prompt} 
                             variant="primary" 
-                            className="shadow-xl"
+                            className="shadow-lg !py-5"
                         >
-                            {isLoading ? t.generator.btn_generating : t.image_editor.btn_generate}
-                            <MagicWandIcon className="w-6 h-6"/>
+                            {isLoading ? t.image_editor.creating_magic : t.image_editor.btn_generate}
+                            <MagicWandIcon className="w-5 h-5"/>
                         </Button>
                     ) : (
-                        <>
-                            <Button onClick={handleDownload} variant="secondary" className="shadow-md">
-                                {t.image_editor.download}
-                                <DownloadIcon className="w-6 h-6"/>
-                            </Button>
-                            <Button 
-                                onClick={() => { 
-                                    setGeneratedImage(null); 
-                                    setTurnstileToken(null); 
-                                    if(window.turnstile) window.turnstile.reset(); 
-                                }} 
-                                variant="primary" 
-                                className="btn-surprise"
-                            >
-                                {t.image_editor.create_another}
-                                <MagicWandIcon className="w-6 h-6"/>
-                            </Button>
-                        </>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Button onClick={handleDownload} variant="secondary" className="flex-1"> {t.image_editor.download} <DownloadIcon className="w-5 h-5"/> </Button>
+                        </div>
                     )}
                 </div>
+                {error && <p className="text-red-500 text-center mt-2 font-bold">{error}</p>}
             </div>
-
             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-
-            <Modal
-                isOpen={quotaModal.isOpen}
-                onClose={() => setQuotaModal({ ...quotaModal, isOpen: false })}
-                title={quotaModal.title}
-                confirmText={t.quota.btn_dismiss}
-                onConfirm={() => setQuotaModal({ ...quotaModal, isOpen: false })}
-            >
-                <div className="flex flex-col items-center text-center py-4">
-                    <PetCharacter pet="cat" className="w-32 h-32 mb-6" />
-                    <p className="text-lg leading-relaxed font-medium">
-                        {quotaModal.desc}
-                    </p>
-                </div>
-            </Modal>
         </Card>
     );
 };
