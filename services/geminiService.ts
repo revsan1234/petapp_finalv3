@@ -1,3 +1,4 @@
+// v2.4.5
 import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
