@@ -2,15 +2,20 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
 const nameGenerationSchema = {
-    type: Type.ARRAY,
-    items: {
-        type: Type.OBJECT,
-        properties: {
-            name: { type: Type.STRING },
-            meaning: { type: Type.STRING },
-            style: { type: Type.STRING }
-        },
-        required: ["name", "meaning", "style"],
+    type: Type.OBJECT,
+    properties: {
+        names: {
+            type: Type.ARRAY,
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    name: { type: Type.STRING },
+                    meaning: { type: Type.STRING },
+                    style: { type: Type.STRING }
+                },
+                required: ["name", "meaning", "style"],
+            }
+        }
     }
 };
 
@@ -24,7 +29,7 @@ const consultantSchema = {
 };
 
 const cleanJsonString = (str: string): string => {
-    if (!str) return "[]";
+    if (!str) return "{}";
     return str.replace(/```json\n?|```/g, '').trim();
 };
 
@@ -38,14 +43,14 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
             model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
-                systemInstruction: "You are a professional pet naming expert. You always return strictly valid JSON data as an array of objects.",
+                systemInstruction: "You are a professional pet naming expert. You always return strictly valid JSON data containing a 'names' array.",
                 responseMimeType: 'application/json',
                 responseSchema: nameGenerationSchema,
             }
         });
 
-        const jsonStr = cleanJsonString(response.text || "[]");
-        const names = JSON.parse(jsonStr);
+        const data = JSON.parse(cleanJsonString(response.text || '{"names":[]}'));
+        const names = data.names || [];
         return Array.isArray(names) ? names.map((n: any, i: number) => ({
             id: `gen-${Date.now()}-${i}`,
             name: n.name || "Unknown",
@@ -66,12 +71,14 @@ export const editPetImage = async (base64Image: string, mimeType: string, prompt
             contents: {
                 parts: [
                     { inlineData: { data: base64Image, mimeType: mimeType } },
-                    { text: `Edit this pet image: ${prompt}. Style: ${style}. GUIDELINES: 1. Ensure the scene is G-rated and wholesome for children. 2. No violence, maturity, or inappropriate costumes. 3. If the request is inappropriate, transform it into something cute and innocent instead.` }
+                    { text: `Edit this pet image: ${prompt}. Style: ${style}. Wholesome content only.` }
                 ]
             },
         });
-        for (const part of response.candidates[0].content.parts) {
-            if (part.inlineData) return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+        if (response.candidates?.[0]?.content?.parts) {
+            for (const part of response.candidates[0].content.parts) {
+                if (part.inlineData) return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+            }
         }
         throw new Error("No image generated.");
     } catch (error: any) {
@@ -92,12 +99,12 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
             model: 'gemini-3-flash-preview',
             contents: contents,
             config: { 
-                systemInstruction: "You are a world-class pet consultant for a family-friendly app. GUIDELINES: 1. You only talk about pets. 2. POLITELY REFUSE any inappropriate, harmful, mature, or offensive topics. 3. Keep 'text' under 3 SHORT sentences. 4. 'url' MUST be a valid relevant link for pet care. 5. Respond in JSON. 6. Be friendly and child-friendly.",
+                systemInstruction: "You are a world-class pet consultant. Return JSON with 'text' and 'url'.",
                 responseMimeType: "application/json",
                 responseSchema: consultantSchema
             }
         });
-        return JSON.parse(cleanJsonString(response.text || '{"text":"I can only help with pet-related questions in a friendly way.","url":""}'));
+        return JSON.parse(cleanJsonString(response.text || '{"text":"I can only help with pet-related questions.","url":""}'));
     } catch (error) {
         throw new Error("Chat failed.");
     }
@@ -116,7 +123,7 @@ export const translatePetName = async (name: string, language: Language = 'en') 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Provide a JSON array of objects representing the name "${name}" translated into 10 languages. Each object: "language", "spelling", "meaning", and "flag" (emoji).`,
+        contents: `Provide a JSON array of objects representing the name "${name}" translated into 10 languages.`,
         config: { responseMimeType: 'application/json' }
     });
     return JSON.parse(cleanJsonString(response.text || "[]"));
@@ -159,7 +166,7 @@ export const getPetNameMeaning = async (name: string, language: Language = 'en')
         contents: `Meaning of pet name "${name}". Return JSON: {"meaning": "..."}`,
         config: { responseMimeType: 'application/json' }
     });
-    return JSON.parse(cleanJsonString(response.text || "{}")).meaning;
+    return JSON.parse(cleanJsonString(response.text || '{"meaning":"Unknown"}')).meaning;
 };
 
 export const generatePetPersonality = async (answers: string[], language: Language = 'en') => {

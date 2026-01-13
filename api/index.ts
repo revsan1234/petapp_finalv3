@@ -1,10 +1,8 @@
-
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI, Type } from "@google/genai";
 import { kv } from "@vercel/kv";
 
-// Helper to get Gemini Instance
-// Fix: Exclusively use process.env.API_KEY for Gemini API initialization.
+// Helper to get Gemini Instance using process.env.API_KEY
 const getGemini = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 async function verifyTurnstile(token: string | null) {
@@ -23,10 +21,8 @@ async function verifyTurnstile(token: string | null) {
 
 async function checkAndIncrementGlobalCap() {
   const monthKey = `global:imagecount:${new Date().toISOString().substring(0, 7)}`;
-  // Fix: Use 'kv.get' directly to fix the 'Property get does not exist on type VercelKV' error.
   const count = (await kv.get<number>(monthKey)) || 0;
   if (count >= 2000) return true; 
-  // Fix: Use 'kv.incr' directly.
   await kv.incr(monthKey);
   return false;
 }
@@ -36,7 +32,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { action } = req.query;
   const deviceId = req.headers['x-device-id'] as string || 'unknown';
-  // Fix: Initialize GoogleGenAI right before making the call to ensure up-to-date config.
   const ai = getGemini();
 
   try {
@@ -47,7 +42,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (await checkAndIncrementGlobalCap()) return res.status(403).json({ message: "Monthly limit reached" });
         
         const dailyKey = `daily:image:${deviceId}`;
-        // Fix: Use 'kv.set' directly to fix the 'Property set does not exist on type VercelKV' error.
         if (!(await kv.set(dailyKey, '1', { nx: true, ex: 86400 }))) return res.status(429).json({ message: "1 image per day!" });
 
         const { base64Image, mimeType, prompt, style } = req.body;
@@ -56,14 +50,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           contents: { 
             parts: [
               { inlineData: { data: base64Image, mimeType } }, 
-              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. GUIDELINES: 1. Scene must be G-rated and wholesome. 2. No violence or maturity.` }
+              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. Wholesome only.` }
             ] 
           }
         });
 
         let outputUrl = '';
-        // Fix: Correctly iterate through parts of the first candidate to find the generated image data.
-        if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
+        if (response.candidates?.[0]?.content?.parts) {
             for (const part of response.candidates[0].content.parts) {
                 if (part.inlineData) {
                     outputUrl = `data:image/png;base64,${part.inlineData.data}`;
@@ -95,7 +88,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
           }
         });
-        // Fix: Access .text property directly instead of calling a method.
         return res.status(200).send(response.text);
       }
 
@@ -109,7 +101,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             responseSchema: { type: Type.OBJECT, properties: { bios: { type: Type.ARRAY, items: { type: Type.STRING } } } }
           }
         });
-        // Fix: Access .text property directly.
         return res.status(200).send(response.text);
       }
 
@@ -130,7 +121,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
           }
         });
-        // Fix: Access .text property directly.
         return res.status(200).send(response.text);
       }
 
