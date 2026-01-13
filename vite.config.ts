@@ -1,4 +1,4 @@
-// v2.4.5
+// v2.4.8-build-fix
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 

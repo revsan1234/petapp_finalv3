@@ -1,4 +1,4 @@
-// v2.4.5
+// v2.4.8-build-fix
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI, Type } from "@google/genai";
 import { kv } from "@vercel/kv";
