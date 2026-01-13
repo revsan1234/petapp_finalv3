@@ -1,4 +1,4 @@
-// v2.4.8-build-fix
+// v2.4.9-forced-refresh
 import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 

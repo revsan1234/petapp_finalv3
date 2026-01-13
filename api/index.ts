@@ -1,9 +1,8 @@
-// v2.4.8-build-fix
+// v2.4.9-forced-refresh
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI, Type } from "@google/genai";
 import { kv } from "@vercel/kv";
 
-// Helper to get Gemini Instance using process.env.API_KEY
 const getGemini = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 async function verifyTurnstile(token: string | null) {
@@ -85,39 +84,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING }, style: { type: Type.STRING } }
                   }
                 }
-              }
-            }
-          }
-        });
-        return res.status(200).send(response.text);
-      }
-
-      case 'generate-bio': {
-        const { name, petType, personality, language } = req.body;
-        const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: `Write 3 short social bios for a ${petType} named ${name} (${personality}) in ${language}.`,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: { type: Type.OBJECT, properties: { bios: { type: Type.ARRAY, items: { type: Type.STRING } } } }
-          }
-        });
-        return res.status(200).send(response.text);
-      }
-
-      case 'analyze-personality': {
-        const { quizAnswers, language } = req.body;
-        const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: `Analyze these pet traits: ${quizAnswers.join(', ')}. Determine personality in ${language}.`,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                title: { type: Type.STRING },
-                description: { type: Type.STRING },
-                keywords: { type: Type.OBJECT, properties: { personality: { type: Type.STRING }, style: { type: Type.STRING } } }
               }
             }
           }
