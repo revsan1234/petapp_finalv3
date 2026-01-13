@@ -1,66 +1,84 @@
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI, Type } from "@google/genai";
-import { createClient } from "@vercel/kv";
+import { kv } from "@vercel/kv";
 
-// Connect to Vercel KV Storage to manage limits
-const kv = process.env.KV_REST_API_URL ? createClient({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_TOKEN!,
-}) : null;
+// Helper to get Gemini Instance
+// Fix: Exclusively use process.env.API_KEY for Gemini API initialization.
+const getGemini = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-function cleanJsonResponse(text: string | undefined): string {
-  if (!text) return '{}';
-  return text.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+async function verifyTurnstile(token: string | null) {
+  if (!token || !process.env.TURNSTILE_SECRET_KEY) return false;
+  const formData = new URLSearchParams();
+  formData.append('secret', process.env.TURNSTILE_SECRET_KEY);
+  formData.append('response', token);
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      body: formData, method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+    const outcome = await res.json();
+    return outcome.success;
+  } catch { return false; }
+}
+
+async function checkAndIncrementGlobalCap() {
+  const monthKey = `global:imagecount:${new Date().toISOString().substring(0, 7)}`;
+  // Fix: Use 'kv.get' directly to fix the 'Property get does not exist on type VercelKV' error.
+  const count = (await kv.get<number>(monthKey)) || 0;
+  if (count >= 2000) return true; 
+  // Fix: Use 'kv.incr' directly.
+  await kv.incr(monthKey);
+  return false;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const { action } = req.query;
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   const deviceId = req.headers['x-device-id'] as string || 'unknown';
-  
-  if (!apiKey) return res.status(500).json({ message: "Server error: Missing API Key." });
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Fix: Initialize GoogleGenAI right before making the call to ensure up-to-date config.
+  const ai = getGemini();
 
   try {
     switch (action) {
       case 'generate-image': {
-        // ENFORCE LIMIT: 1 per 24 hours per unique device
-        if (kv) {
-          const limitKey = `limit:img:${deviceId}`;
-          const isLimited = await kv.get(limitKey);
-          if (isLimited) {
-            return res.status(429).json({ message: "Daily limit reached. Magic is recharging! Come back in 24 hours." });
-          }
-          // Set a 24-hour expiration lock for this device
-          await kv.set(limitKey, '1', { ex: 86400 });
-        }
+        const turnstileToken = req.headers['x-turnstile-token'] as string;
+        if (!(await verifyTurnstile(turnstileToken))) return res.status(401).json({ message: "Bot check failed" });
+        if (await checkAndIncrementGlobalCap()) return res.status(403).json({ message: "Monthly limit reached" });
+        
+        const dailyKey = `daily:image:${deviceId}`;
+        // Fix: Use 'kv.set' directly to fix the 'Property set does not exist on type VercelKV' error.
+        if (!(await kv.set(dailyKey, '1', { nx: true, ex: 86400 }))) return res.status(429).json({ message: "1 image per day!" });
 
         const { base64Image, mimeType, prompt, style } = req.body;
-        const result = await ai.models.generateContent({
+        const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash-image',
-          contents: [{ 
+          contents: { 
             parts: [
               { inlineData: { data: base64Image, mimeType } }, 
-              { text: `Edit this pet photo. Instruction: ${prompt}. Style: ${style}. Return only the image data.` }
+              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. GUIDELINES: 1. Scene must be G-rated and wholesome. 2. No violence or maturity.` }
             ] 
-          }]
+          }
         });
-        let imageUrl = '';
-        const parts = result.candidates?.[0]?.content?.parts || [];
-        for (const part of parts) {
-          if (part.inlineData) imageUrl = `data:image/png;base64,${part.inlineData.data}`;
+
+        let outputUrl = '';
+        // Fix: Correctly iterate through parts of the first candidate to find the generated image data.
+        if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
+            for (const part of response.candidates[0].content.parts) {
+                if (part.inlineData) {
+                    outputUrl = `data:image/png;base64,${part.inlineData.data}`;
+                    break;
+                }
+            }
         }
-        return res.status(200).json({ imageUrl });
+        return res.status(200).json({ imageUrl: outputUrl });
       }
 
       case 'generate-names': {
         const { petInfo, language } = req.body;
-        const result = await ai.models.generateContent({
+        const response = await ai.models.generateContent({
           model: 'gemini-3-flash-preview',
-          contents: `Suggest 6 names for a ${petInfo.gender} ${petInfo.type} that is ${petInfo.personality} in ${language}. Style: ${petInfo.style}.`,
+          contents: `Suggest 6 names for a ${petInfo.gender} ${petInfo.type} (${petInfo.personality}) in ${language}. Style: ${petInfo.style}.`,
           config: {
             responseMimeType: "application/json",
             responseSchema: {
@@ -70,35 +88,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                   type: Type.ARRAY,
                   items: {
                     type: Type.OBJECT,
-                    properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING } },
-                    required: ["id", "name", "meaning"]
+                    properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING }, style: { type: Type.STRING } }
                   }
                 }
               }
             }
           }
         });
-        return res.status(200).send(cleanJsonResponse(result.text));
+        // Fix: Access .text property directly instead of calling a method.
+        return res.status(200).send(response.text);
       }
 
       case 'generate-bio': {
         const { name, petType, personality, language } = req.body;
-        const result = await ai.models.generateContent({
+        const response = await ai.models.generateContent({
           model: 'gemini-3-flash-preview',
-          contents: `3 social media bios for a ${petType} named ${name} (${personality}) in ${language}.`,
+          contents: `Write 3 short social bios for a ${petType} named ${name} (${personality}) in ${language}.`,
           config: {
             responseMimeType: "application/json",
             responseSchema: { type: Type.OBJECT, properties: { bios: { type: Type.ARRAY, items: { type: Type.STRING } } } }
           }
         });
-        return res.status(200).send(cleanJsonResponse(result.text));
+        // Fix: Access .text property directly.
+        return res.status(200).send(response.text);
       }
 
       case 'analyze-personality': {
         const { quizAnswers, language } = req.body;
-        const result = await ai.models.generateContent({
+        const response = await ai.models.generateContent({
           model: 'gemini-3-flash-preview',
-          contents: `Analyze traits: ${quizAnswers.join(', ')}. Return personality profile in ${language}.`,
+          contents: `Analyze these pet traits: ${quizAnswers.join(', ')}. Determine personality in ${language}.`,
           config: {
             responseMimeType: "application/json",
             responseSchema: {
@@ -111,26 +130,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
           }
         });
-        return res.status(200).send(cleanJsonResponse(result.text));
-      }
-
-      case 'expert-consultant': {
-        const { message, systemInstruction } = req.body;
-        const result = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: message,
-          config: { systemInstruction, tools: [{ googleSearch: {} }] }
-        });
-        const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks
-          ?.filter((c: any) => c.web)
-          ?.map((c: any) => ({ uri: c.web.uri, title: c.web.title })) || [];
-        return res.status(200).json({ text: result.text || '', sources });
+        // Fix: Access .text property directly.
+        return res.status(200).send(response.text);
       }
 
       default: return res.status(400).json({ message: "Unknown action" });
     }
   } catch (e: any) {
-    console.error("AI Backend Error:", e);
-    return res.status(500).json({ message: "Service busy. Try again." });
+    console.error("Backend Error:", e);
+    return res.status(500).json({ message: "Magic glitch—try again!" });
   }
 }
