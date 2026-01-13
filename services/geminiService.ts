@@ -1,4 +1,4 @@
-// v2.4.9-forced-refresh
+// v2.6.1-enhanced-naming
 import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
@@ -12,9 +12,10 @@ const nameGenerationSchema = {
                 properties: {
                     name: { type: Type.STRING },
                     meaning: { type: Type.STRING },
+                    comment: { type: Type.STRING, description: "A creative reference comment on why this name is a great fit for this specific pet personality and style." },
                     style: { type: Type.STRING }
                 },
-                required: ["name", "meaning", "style"],
+                required: ["name", "meaning", "comment", "style"],
             }
         }
     }
@@ -37,14 +38,21 @@ const cleanJsonString = (str: string): string => {
 export const generatePetNames = async (petInfo: PetInfo, language: Language = 'en'): Promise<GeneratedName[]> => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const { type, gender, personality, style } = petInfo;
-    const prompt = `Generate 10 creative pet names for a ${gender} ${type}. Vibe: ${personality}. Style: ${style}. Respond in ${language}.`;
+    const prompt = `Generate 8 creative and fitting pet names for a ${gender} ${type}. 
+    Vibe: ${personality}. 
+    Style: ${style}. 
+    For each name, provide:
+    1. The name itself.
+    2. A brief meaning or origin.
+    3. A creative 'reference comment' explaining exactly why this name is perfect for a ${personality} ${type}.
+    Respond in ${language}.`;
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-3-pro-preview',
             contents: prompt,
             config: {
-                systemInstruction: "You are a professional pet naming expert. You always return strictly valid JSON data containing a 'names' array.",
+                systemInstruction: "You are a professional pet naming expert. You specialize in unique names with clever reference comments. You always return strictly valid JSON data.",
                 responseMimeType: 'application/json',
                 responseSchema: nameGenerationSchema,
             }
@@ -56,6 +64,7 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
             id: `gen-${Date.now()}-${i}`,
             name: n.name || "Unknown",
             meaning: n.meaning || "A beautiful name for your pet.",
+            comment: n.comment || "", // New field for reference comments
             style: n.style || style
         })) : [];
     } catch (error) {
@@ -97,7 +106,7 @@ export const getPetConsultantResponse = async (history: ChatMessage[], message: 
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-3-flash-preview',
+            model: 'gemini-3-pro-preview',
             contents: contents,
             config: { 
                 systemInstruction: "You are a world-class pet consultant. Return JSON with 'text' and 'url'.",

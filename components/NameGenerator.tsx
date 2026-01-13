@@ -122,13 +122,18 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {generatedNames.map((name, index) => (
                             <div key={name.id} className="bg-white/40 backdrop-blur-sm p-5 rounded-2xl flex justify-between items-center transition-all hover:scale-[1.02] border border-white/50 shadow-sm animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
-                                <div>
+                                <div className="pr-4">
                                     <p className="font-black text-2xl text-[#5D4037]">{name.name}</p>
-                                    <p className="text-sm opacity-80 italic font-medium leading-tight mt-1">{name.meaning}</p>
+                                    <p className="text-sm opacity-90 font-bold text-[#AA336A] mt-0.5">{name.meaning}</p>
+                                    {(name as any).comment && (
+                                        <div className="mt-2 pl-3 border-l-2 border-[#AA336A]/20">
+                                            <p className="text-xs italic opacity-80 font-medium leading-snug">"{ (name as any).comment }"</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <button 
                                     onClick={() => handleSaveName(name)} 
-                                    className="p-3 hover:bg-white/50 rounded-full transition-all active:scale-125"
+                                    className="p-3 hover:bg-white/50 rounded-full transition-all active:scale-125 shrink-0"
                                 >
                                     {isSaved(name.id) ? (
                                         <HeartIconFilled className={`w-8 h-8 text-[#AA336A] ${animatingHeartId === name.id ? 'animate-heart-beat' : ''}`} />

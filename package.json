@@ -1,7 +1,7 @@
 {
   "name": "name-my-pet-refresh",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.6.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
