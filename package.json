@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "head -n 5 index.html && vite build",
+    "prebuild": "node -e \"const fs=require('fs'); const p='index.html'; console.log('PWD',process.cwd()); console.log('--- index.html first 3 lines ---'); console.log(fs.readFileSync(p,'utf8').split('\\n').slice(0,3).join('\\n'));\"",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
