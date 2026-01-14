@@ -1,11 +1,10 @@
 {
-  "name": "name-my-pet-clean-build-v5",
+  "name": "name-my-pet-v5",
   "private": true,
-  "version": "5.1.4",
+  "version": "5.1.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node -e \"const fs=require('fs'); const p='index.html'; console.log('PWD',process.cwd()); console.log('--- index.html first 3 lines ---'); console.log(fs.readFileSync(p,'utf8').split('\\n').slice(0,3).join('\\n'));\"",
     "build": "vite build",
     "preview": "vite preview"
   },

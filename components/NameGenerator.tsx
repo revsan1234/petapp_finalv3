@@ -121,26 +121,33 @@ export const NameGenerator: React.FC<NameGeneratorProps> = ({ addSavedName, save
                     <p className="text-center opacity-70 mb-6 font-medium italic">{t.generator.tap_to_save}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {generatedNames.map((name, index) => (
-                            <div key={name.id} className="bg-white/40 backdrop-blur-sm p-5 rounded-2xl flex justify-between items-center transition-all hover:scale-[1.02] border border-white/50 shadow-sm animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
-                                <div className="pr-4">
-                                    <p className="font-black text-2xl text-[#5D4037]">{name.name}</p>
-                                    <p className="text-sm opacity-90 font-bold text-[#AA336A] mt-0.5">{name.meaning}</p>
-                                    {(name as any).comment && (
-                                        <div className="mt-2 pl-3 border-l-2 border-[#AA336A]/20">
-                                            <p className="text-xs italic opacity-80 font-medium leading-snug">"{ (name as any).comment }"</p>
-                                        </div>
-                                    )}
+                            <div key={name.id} className="bg-white/40 backdrop-blur-sm p-5 rounded-2xl flex flex-col transition-all hover:scale-[1.02] border border-white/50 shadow-sm animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="pr-4">
+                                        <p className="font-black text-3xl text-[#5D4037]">{name.name}</p>
+                                        <p className="text-sm opacity-90 font-bold text-[#AA336A] mt-0.5">{name.meaning}</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => handleSaveName(name)} 
+                                        className="p-3 hover:bg-white/50 rounded-full transition-all active:scale-125 shrink-0"
+                                    >
+                                        {isSaved(name.id) ? (
+                                            <HeartIconFilled className={`w-8 h-8 text-[#AA336A] ${animatingHeartId === name.id ? 'animate-heart-beat' : ''}`} />
+                                        ) : (
+                                            <HeartIconOutline className="w-8 h-8 text-[#AA336A]" />
+                                        )}
+                                    </button>
                                 </div>
-                                <button 
-                                    onClick={() => handleSaveName(name)} 
-                                    className="p-3 hover:bg-white/50 rounded-full transition-all active:scale-125 shrink-0"
-                                >
-                                    {isSaved(name.id) ? (
-                                        <HeartIconFilled className={`w-8 h-8 text-[#AA336A] ${animatingHeartId === name.id ? 'animate-heart-beat' : ''}`} />
-                                    ) : (
-                                        <HeartIconOutline className="w-8 h-8 text-[#AA336A]" />
-                                    )}
-                                </button>
+                                {(name as any).comment && (
+                                    <div className="mt-3 p-3 bg-white/30 rounded-xl border-l-4 border-[#AA336A]">
+                                        <div className="flex items-center gap-1.5 mb-1">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-[#AA336A] opacity-70">AI Reference Note</span>
+                                        </div>
+                                        <p className="text-sm italic opacity-90 font-medium leading-relaxed text-[#5D4037]">
+                                            "{ (name as any).comment }"
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
