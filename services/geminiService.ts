@@ -1,5 +1,4 @@
-// v2.6.1-enhanced-naming
-import { GoogleGenAI, Type } from "@google/genai";
+mport { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
 const nameGenerationSchema = {
@@ -7,7 +6,8 @@ const nameGenerationSchema = {
     properties: {
         names: {
             type: Type.ARRAY,
-            items: {
+ // v2.6.2-enhanced-naming-refresh
+           items: {
                 type: Type.OBJECT,
                 properties: {
                     name: { type: Type.STRING },
