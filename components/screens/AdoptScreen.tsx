@@ -79,10 +79,10 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen">
             <div className="relative z-10">
                 <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-                <main className="py-4 md:py-8 px-4">
+                <main className="py-4 md:py-8 px-4 pb-32">
                     <div className="flex flex-col gap-8 w-full mx-auto max-w-4xl">
                         
                         {/* Back Button */}
@@ -93,25 +93,25 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             >
                                 <BackIcon className="w-4 h-4" />
                                 {t.common.back_home}
-                            </button>
+                             </button>
                         </div>
 
                         <Card>
-                            {/* MASSIVE SIZE CHARACTERS - Re-scaled for impact */}
-                            <div className="flex justify-center items-end -space-x-24 sm:-space-x-36 md:-space-x-52 mb-10 h-64 sm:h-96 md:h-[450px] pt-8">
-                                <PetCharacter pet="dog" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-20 -mb-6 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-30 -mb-4 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-20 -mb-6 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '400ms' }} />
+                            {/* Balanced, sleek pet row */}
+                            <div className="flex justify-center items-end -space-x-4 sm:-space-x-6 md:-space-x-10 mb-8 h-32 sm:h-40 md:h-48 pt-4">
+                                <PetCharacter pet="dog" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-10 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-30 -mb-1 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-10 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '400ms' }} />
                             </div>
 
                             <div className="flex flex-col items-center gap-2 mb-6 text-center">
                                 <div className="bg-[#494d43]/10 p-3 rounded-full mb-2">
-                                    <PawIcon className="w-8 h-8 text-[#AA336A]" />
+                                    <PawIcon className="w-6 h-6 text-[#AA336A]" />
                                 </div>
-                                <h2 className="text-3xl font-bold">{t.adopt.title}</h2>
-                                <p className="opacity-80 max-w-lg text-xl">
+                                <h2 className="text-2xl sm:text-3xl font-bold">{t.adopt.title}</h2>
+                                <p className="opacity-80 max-w-lg text-lg sm:text-xl">
                                     {t.adopt.subtitle}
                                 </p>
                             </div>
@@ -141,7 +141,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {centers.map((center, index) => (
                                 <div 
                                     key={index} 
@@ -175,10 +175,11 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             ))}
                         </div>
                         {hasSearched && !isLoading && centers.length === 0 && !error && (
-                            <div className="text-center opacity-60 mt-8 pb-32"><p className="text-xl">{t.adopt.no_results}</p></div>
+                            <div className="text-center opacity-60 mt-8 pb-12"><p className="text-xl">{t.adopt.no_results}</p></div>
                         )}
                     </div>
                 </main>
             </div>
         </div>
     );
+};

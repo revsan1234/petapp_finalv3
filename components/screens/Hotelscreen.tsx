@@ -77,10 +77,10 @@ export const HotelScreen: React.FC<HotelScreenProps> = ({ goHome }) => {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen">
             <div className="relative z-10">
                 <Header leftPet="bird" rightPet="rabbit" onLogoClick={goHome} />
-                <main className="py-4 md:py-8 px-4">
+                <main className="py-4 md:py-8 px-4 pb-32">
                     <div className="flex flex-col gap-8 w-full mx-auto max-w-4xl">
                         <div className="-mt-4">
                              <button 
@@ -93,20 +93,20 @@ export const HotelScreen: React.FC<HotelScreenProps> = ({ goHome }) => {
                         </div>
 
                         <Card>
-                            <div className="flex justify-center items-end -space-x-16 sm:-space-x-20 md:-space-x-28 mb-6 h-56 sm:h-72 md:h-[340px]">
-                                <PetCharacter pet="dog" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-48 h-48 sm:w-80 sm:h-80 z-30 -mb-2 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-wiggle filter drop-shadow-lg" style={{ animationDelay: '400ms' }} />
+                            <div className="flex justify-center items-end -space-x-8 sm:-space-x-12 md:-space-x-16 mb-6 h-36 sm:h-48 md:h-60 pt-4">
+                                <PetCharacter pet="dog" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-10 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-30 -mb-1 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 z-10 animate-bounce-wiggle filter drop-shadow-md" style={{ animationDelay: '400ms' }} />
                             </div>
 
                             <div className="flex flex-col items-center gap-2 mb-6 text-center">
                                 <div className="bg-[#AA336A]/10 p-4 rounded-full mb-2">
-                                    <HotelIcon className="w-10 h-10 text-[#AA336A]" />
+                                    <HotelIcon className="w-8 h-8 text-[#AA336A]" />
                                 </div>
-                                <h2 className="text-3xl font-bold">{t.hotel.title}</h2>
-                                <p className="opacity-80 text-xl max-w-lg">{t.hotel.subtitle}</p>
+                                <h2 className="text-2xl sm:text-3xl font-bold">{t.hotel.title}</h2>
+                                <p className="opacity-80 text-lg sm:text-xl max-w-lg">{t.hotel.subtitle}</p>
                             </div>
 
                             <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 items-end max-w-md mx-auto">
@@ -132,7 +132,7 @@ export const HotelScreen: React.FC<HotelScreenProps> = ({ goHome }) => {
 
                         {isLoading && (
                             <div className="flex flex-col items-center py-12 gap-4">
-                                 <PetCharacter pet="bird" className="w-24 h-24 animate-bounce" />
+                                 <PetCharacter pet="bird" className="w-16 h-16 animate-bounce" />
                                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#AA336A]"></div>
                             </div>
                         )}
@@ -172,7 +172,7 @@ export const HotelScreen: React.FC<HotelScreenProps> = ({ goHome }) => {
                         </div>
                         
                         {hasSearched && !isLoading && hotels.length === 0 && !error && (
-                            <div className="text-center opacity-60 mt-8">
+                            <div className="text-center opacity-60 mt-8 pb-12">
                                 <p className="text-xl">{t.hotel.no_results}</p>
                             </div>
                         )}

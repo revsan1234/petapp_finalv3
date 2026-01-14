@@ -36,10 +36,10 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen">
         <div className="relative z-10">
             <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
-            <main className="py-4 md:py-8 px-4">
+            <main className="py-4 md:py-8 px-4 pb-32">
                 <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
                     
                      {/* Back Button */}
@@ -68,17 +68,17 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
                         </div>
                         
                         <div className="flex flex-col items-center justify-center gap-8 mt-4 mb-8">
-                            {/* Larger Grouped Characters */}
-                            <div className="flex items-end justify-center -space-x-12 sm:-space-x-16 md:-space-x-24">
-                                <PetCharacter pet="dog" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-10 drop-shadow-xl" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-20 -mb-4 drop-shadow-xl" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-30 drop-shadow-xl" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-20 -mb-4 drop-shadow-xl" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-10 drop-shadow-xl" style={{ animationDelay: '400ms' }} />
+                            {/* Smaller, balanced decorative elements */}
+                            <div className="flex items-end justify-center -space-x-4 sm:-space-x-8 md:-space-x-12">
+                                <PetCharacter pet="dog" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-lg" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-30 drop-shadow-lg" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-lg" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '400ms' }} />
                             </div>
 
-                            <Button onClick={() => setActiveTab('bio')} className="shadow-2xl scale-125 z-40 border-2 border-white/50 px-10 py-5 text-xl">
-                                <BioIcon className="w-6 h-6" />
+                            <Button onClick={() => setActiveTab('bio')} className="shadow-lg scale-105 z-40 border-2 border-white/50 px-6 py-3 text-lg">
+                                <BioIcon className="w-5 h-5" />
                                 {t.bio.go_to_creator}
                             </Button>
                         </div>
