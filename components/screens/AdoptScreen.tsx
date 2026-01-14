@@ -1,13 +1,18 @@
-
 import React, { useState } from 'react';
 import { Header } from '../Header';
 import { Card } from '../ui/Card';
-import { Button, BackToHomeButton } from '../ui/Button';
+import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { findAdoptionCenters } from '../../services/geminiService';
 import type { AdoptionCenter } from '../../types';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
+
+const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+);
 
 const PawIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -80,25 +85,33 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                 <main className="py-4 md:py-8 px-4">
                     <div className="flex flex-col gap-8 w-full mx-auto max-w-4xl">
                         
+                        {/* Back Button */}
                         <div className="-mt-4">
-                             <BackToHomeButton onClick={goHome} />
+                             <button 
+                                onClick={goHome} 
+                                className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                            >
+                                <BackIcon className="w-4 h-4" />
+                                {t.common.back_home}
+                            </button>
                         </div>
 
                         <Card>
-                            <div className="flex justify-center items-end -space-x-16 sm:-space-x-20 md:-space-x-28 mb-6 h-56 sm:h-72 md:h-[340px] overflow-visible">
-                                <PetCharacter pet="dog" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-48 h-48 sm:w-80 sm:h-80 z-30 -mb-2 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-48 h-48 sm:w-80 sm:h-80 z-20 -mb-4 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-48 h-48 sm:w-80 sm:h-80 z-10 animate-bounce-entry filter drop-shadow-lg opacity-0" style={{ animationDelay: '400ms' }} />
+                            {/* MASSIVE SIZE CHARACTERS - Re-scaled for impact */}
+                            <div className="flex justify-center items-end -space-x-24 sm:-space-x-36 md:-space-x-52 mb-10 h-64 sm:h-96 md:h-[450px] pt-8">
+                                <PetCharacter pet="dog" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-20 -mb-6 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-30 -mb-4 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-20 -mb-6 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '400ms' }} />
                             </div>
 
                             <div className="flex flex-col items-center gap-2 mb-6 text-center">
                                 <div className="bg-[#494d43]/10 p-3 rounded-full mb-2">
                                     <PawIcon className="w-8 h-8 text-[#AA336A]" />
                                 </div>
-                                <h2 className="text-3xl font-bold text-[var(--text-main)]">{t.adopt.title}</h2>
-                                <p className="opacity-95 max-w-lg text-xl text-[var(--text-main)]">
+                                <h2 className="text-3xl font-bold">{t.adopt.title}</h2>
+                                <p className="opacity-80 max-w-lg text-xl">
                                     {t.adopt.subtitle}
                                 </p>
                             </div>
@@ -117,11 +130,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                                     variant="primary"
                                 >
                                     {isLoading ? t.generator.btn_generating : t.adopt.btn_search}
-                                    {isLoading ? (
-                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent ml-2" />
-                                    ) : (
-                                        <SearchIcon className="w-5 h-5 ml-1" />
-                                    )}
+                                    <SearchIcon className="w-5 h-5" />
                                 </Button>
                             </form>
                         </Card>
@@ -132,21 +141,21 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
                             {centers.map((center, index) => (
                                 <div 
                                     key={index} 
-                                    className="bg-[var(--card-bg)] backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/50 flex flex-col h-full transform hover:-translate-y-1 transition-transform duration-300"
+                                    className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/50 flex flex-col h-full transform hover:-translate-y-1 transition-transform duration-300"
                                 >
-                                    <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">{center.name}</h3>
-                                    <p className="text-sm mb-4 flex-grow italic font-bold text-[var(--text-main)] opacity-90">"{center.mission}"</p>
-                                    <div className="space-y-3 text-sm text-[var(--text-main)] font-semibold opacity-90">
+                                    <h3 className="text-xl font-bold text-[#2d4a2d] mb-2">{center.name}</h3>
+                                    <p className="text-sm mb-4 flex-grow italic font-medium text-[#2d4a2d]">"{center.mission}"</p>
+                                    <div className="space-y-3 text-sm text-[#2d4a2d] font-semibold">
                                         <div className="flex items-start gap-2">
-                                            <LocationIcon className="w-5 h-5 shrink-0 opacity-70" />
+                                            <LocationIcon className="w-5 h-5 shrink-0 opacity-70 text-[#2d4a2d]" />
                                             <span>{center.address}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <PhoneIcon className="w-5 h-5 shrink-0 opacity-70" />
+                                            <PhoneIcon className="w-5 h-5 shrink-0 opacity-70 text-[#2d4a2d]" />
                                             <span>{center.phone}</span>
                                         </div>
                                     </div>
@@ -166,12 +175,10 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
                             ))}
                         </div>
                         {hasSearched && !isLoading && centers.length === 0 && !error && (
-                            <div className="text-center opacity-60 mt-8"><p className="text-xl text-[var(--text-main)] font-bold">{t.adopt.no_results}</p></div>
+                            <div className="text-center opacity-60 mt-8 pb-32"><p className="text-xl">{t.adopt.no_results}</p></div>
                         )}
                     </div>
                 </main>
             </div>
         </div>
     );
-};
-

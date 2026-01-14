@@ -1,24 +1,20 @@
-
 import React, { useState, useRef } from 'react';
 import { PetCharacter } from '../assets/pets/PetCharacter';
-import type { PetKind } from '../../types';
+import type { PetKind, Tab } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
-
-export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotels';
 
 interface TabNavigatorProps {
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
 }
 
-// Helper config to map IDs to their mascots
 const TAB_CONFIG: { id: Tab; pet: PetKind }[] = [
   { id: 'generate', pet: 'dog' },
   { id: 'bio', pet: 'cat' },
   { id: 'play', pet: 'hamster' },
   { id: 'photo', pet: 'lizard' },
   { id: 'adopt', pet: 'rabbit' },
-  { id: 'hotels', pet: 'bird' },
+  { id: 'hotel', pet: 'bird' },
 ];
 
 export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActiveTab }) => {
@@ -30,9 +26,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   if (activeTab === 'home') return null;
 
   const tabs = TAB_CONFIG.map(config => {
-      // @ts-ignore
-      const textData = t.navigation[config.id];
-      
+      const textData = (t.navigation as any)[config.id] || { label: config.id, desc: "" };
       return {
           ...config,
           label: textData.label,
@@ -59,10 +53,6 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
     setActiveDescription(null);
   };
 
-  const handleInteractionEnd = () => {
-      endPress();
-  };
-  
   const handleClick = (id: Tab) => {
       if (isLongPress.current) {
           isLongPress.current = false;
@@ -74,7 +64,7 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
   return (
     <>
         {activeDescription && (
-            <div className="fixed bottom-44 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
+            <div className="fixed bottom-32 left-0 right-0 px-4 z-[100] pointer-events-none flex justify-center">
                 <div className="bg-black/80 text-white p-4 rounded-xl backdrop-blur-md border border-white/20 shadow-2xl max-w-sm text-center animate-fade-in">
                     <p className="font-bold text-lg mb-1 text-[#e889b5]">{activeDescription.title}</p>
                     <p className="text-sm leading-relaxed">{activeDescription.desc}</p>
@@ -82,8 +72,8 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
             </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 h-36 sm:h-40 bg-gradient-to-t from-black/95 to-black/40 backdrop-blur-xl border-t border-white/20 z-50 pb-2 animate-fade-in select-none">
-        <div className="flex justify-around items-end h-full max-w-6xl mx-auto px-1 w-full">
+        <div className="fixed bottom-0 left-0 right-0 h-28 sm:h-32 bg-gradient-to-t from-black/80 to-black/20 backdrop-blur-xl border-t border-white/20 z-50 pb-4 animate-fade-in select-none">
+        <div className="flex justify-around items-end h-full max-w-7xl mx-auto px-1 w-full overflow-x-auto overflow-y-hidden custom-scrollbar">
             {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
 
@@ -91,27 +81,26 @@ export const TabNavigator: React.FC<TabNavigatorProps> = ({ activeTab, setActive
                 <button
                 key={tab.id}
                 onMouseDown={() => startPress(tab.label, tab.description)}
-                onMouseUp={handleInteractionEnd}
-                onMouseLeave={handleInteractionEnd}
+                onMouseUp={endPress}
+                onMouseLeave={endPress}
                 onTouchStart={() => startPress(tab.label, tab.description)}
-                onTouchEnd={handleInteractionEnd}
-                onTouchCancel={handleInteractionEnd}
+                onTouchEnd={endPress}
+                onTouchCancel={endPress}
                 onClick={() => handleClick(tab.id)}
-                onContextMenu={(e) => e.preventDefault()}
-                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[60px] sm:min-w-[110px] w-full ${
-                    isActive ? '-translate-y-4' : 'hover:-translate-y-1 opacity-90 hover:opacity-100'
+                className={`group flex flex-col items-center justify-end pb-4 gap-1 transition-all duration-300 min-w-[70px] sm:min-w-[100px] w-full ${
+                    isActive ? '-translate-y-4' : 'hover:-translate-y-2 opacity-90 hover:opacity-100'
                 }`}
                 >
-                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_20px_rgba(255,255,255,0.75)] scale-110' : 'scale-100 opacity-80'}`}>
+                <div className={`transition-all duration-300 ${isActive ? 'filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] scale-125' : 'scale-100 opacity-80'}`}>
                     <PetCharacter
                         pet={tab.pet}
-                        className={`transition-all duration-300 object-contain ${isActive ? 'w-24 h-24 sm:w-32 sm:h-32' : 'w-20 h-20 sm:w-28 sm:h-28'}`}
+                        className={`transition-all duration-300 object-contain ${isActive ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-12 h-12 sm:w-14 sm:h-14'}`}
                     />
                 </div>
                 
                 <span 
-                    className={`text-[12px] sm:text-base md:text-lg font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-xl leading-none truncate w-full mt-2 ${
-                    isActive ? 'text-white scale-105' : 'text-white/60'
+                    className={`text-[10px] sm:text-[11px] font-black tracking-tighter transition-all duration-200 uppercase drop-shadow-lg leading-none ${
+                    isActive ? 'text-white scale-110 mt-1' : 'text-white/90'
                 }`}>
                     {tab.label}
                 </span>

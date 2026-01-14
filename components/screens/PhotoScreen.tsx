@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Header } from '../Header';
 import { ImageEditor } from '../ImageEditor';
 import { VideoGenerator } from '../VideoGenerator';
 import { Card } from '../ui/Card';
-import { Button, BackToHomeButton } from '../ui/Button';
-import { Tab } from '../layout/TabNavigator';
+import { Button } from '../ui/Button';
+import { Tab } from '../../types';
 import { PetCharacter } from '../assets/pets/PetCharacter';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -27,117 +26,65 @@ interface PhotoScreenProps {
     goHome: () => void;
 }
 
-type PhotoMode = 'menu' | 'scene' | 'video';
-
 export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImageForBio, goHome }) => {
   const { t } = useLanguage();
-  const [mode, setMode] = useState<PhotoMode>('menu');
   const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
 
   const handleImageUpdate = (image: string | null) => {
       setCurrentPhoto(image);
-      setImageForBio(image); 
+      setImageForBio(image); // Also update Bio screen state
   };
-
-  const handleBackToMenu = () => setMode('menu');
-
-  if (mode === 'menu') {
-    return (
-        <div className="relative min-h-screen">
-            <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
-            <main className="px-4 pb-24 max-w-lg mx-auto w-full flex flex-col gap-6 animate-fade-in mt-2">
-                 <div className="-mt-4">
-                    <BackToHomeButton onClick={goHome} />
-                </div>
-
-                <div className="flex flex-col gap-6">
-                    <button 
-                        onClick={() => setMode('scene')}
-                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
-                    >
-                        <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
-                            <PetCharacter pet="lizard" className="w-28 h-28 drop-shadow-md" />
-                        </div>
-                        <h3 className="text-3xl font-black text-[var(--text-main)]">{t.image_editor.title}</h3>
-                        <p className="text-[var(--text-main)] font-bold leading-relaxed text-lg px-4 opacity-100">
-                            {t.image_editor.subtitle}
-                        </p>
-                    </button>
-
-                    <button 
-                        onClick={() => setMode('video')}
-                        className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-md border-2 border-white/40 flex flex-col items-center text-center gap-3 transition-all hover:scale-[1.02] hover:shadow-xl active:scale-95 group focus:outline-none focus:ring-4 focus:ring-[#AA336A]/20"
-                    >
-                        <div className="mb-2 transform group-hover:-translate-y-2 transition-transform duration-300">
-                             <PetCharacter pet="rabbit" className="w-28 h-28 drop-shadow-md" />
-                        </div>
-                        <h3 className="text-3xl font-black text-[var(--text-main)]">{t.video_studio.title}</h3>
-                        <p className="text-[var(--text-main)] font-bold leading-relaxed text-lg px-4 opacity-100">
-                             {t.video_studio.subtitle}
-                        </p>
-                    </button>
-                </div>
-            </main>
-        </div>
-    );
-  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
         <div className="relative z-10">
-            <Header leftPet="lizard" rightPet="rabbit" onLogoClick={handleBackToMenu} />
-            <main className="py-2 md:py-4 px-4">
-                <div className="flex flex-col gap-6 w-full mx-auto max-w-7xl">
+            <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
+            <main className="py-4 md:py-8 px-4">
+                <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
                     
-                     <div className="-mt-4 flex gap-3">
+                     {/* Back Button */}
+                     <div className="-mt-4">
                         <button 
-                            onClick={handleBackToMenu} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30 active:scale-95"
+                            onClick={goHome} 
+                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
                         >
                             <BackIcon className="w-4 h-4" />
-                            {t.common.menu_label} {t.navigation.photo.label}
+                            {t.common.back_home}
                         </button>
-                        <BackToHomeButton onClick={goHome} />
                     </div>
 
-                    {mode === 'scene' ? (
-                        <>
-                            <ImageEditor 
-                                setImageForBio={handleImageUpdate} 
-                                sharedImage={currentPhoto}
-                            />
+                    <ImageEditor 
+                        setImageForBio={handleImageUpdate} 
+                        sharedImage={currentPhoto}
+                        setActiveTab={setActiveTab}
+                    />
 
-                            <Card>
-                                <div className="flex flex-col items-center gap-2 mb-6 text-center">
-                                    <h2 className="text-4xl font-black text-[var(--text-main)]">{t.bio.turn_photo_into_card}</h2>
-                                    <p className="opacity-100 text-xl font-bold text-[var(--text-main)]">
-                                        {t.bio.turn_photo_desc}
-                                    </p>
-                                </div>
-                                
-                                <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 mt-2 mb-4">
-                                    <div className="flex items-end -space-x-6">
-                                        <PetCharacter pet="dog" className="w-20 h-20 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '0ms' }} />
-                                        <PetCharacter pet="cat" className="w-20 h-20 animate-bounce-wiggle z-20 drop-shadow-lg" style={{ animationDelay: '100ms' }} />
-                                        <PetCharacter pet="rabbit" className="w-20 h-20 animate-bounce-wiggle z-30 drop-shadow-lg" style={{ animationDelay: '200ms' }} />
-                                    </div>
+                    <Card>
+                        <div className="flex flex-col items-center gap-2 mb-6 text-center">
+                            <h2 className="text-3xl font-bold">{t.bio.turn_photo_into_card}</h2>
+                            <p className="opacity-80 text-xl">
+                                {t.bio.turn_photo_desc}
+                            </p>
+                        </div>
+                        
+                        <div className="flex flex-col items-center justify-center gap-8 mt-4 mb-8">
+                            {/* Larger Grouped Characters */}
+                            <div className="flex items-end justify-center -space-x-12 sm:-space-x-16 md:-space-x-24">
+                                <PetCharacter pet="dog" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-10 drop-shadow-xl" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-20 -mb-4 drop-shadow-xl" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-30 drop-shadow-xl" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-20 -mb-4 drop-shadow-xl" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 animate-bounce-wiggle z-10 drop-shadow-xl" style={{ animationDelay: '400ms' }} />
+                            </div>
 
-                                    <Button onClick={() => setActiveTab('bio')} className="shadow-xl scale-110 z-40 border-2 border-white/50">
-                                        <BioIcon className="w-5 h-5" />
-                                        {t.bio.go_to_creator}
-                                    </Button>
+                            <Button onClick={() => setActiveTab('bio')} className="shadow-2xl scale-125 z-40 border-2 border-white/50 px-10 py-5 text-xl">
+                                <BioIcon className="w-6 h-6" />
+                                {t.bio.go_to_creator}
+                            </Button>
+                        </div>
+                    </Card>
 
-                                    <div className="flex items-end -space-x-6">
-                                        <PetCharacter pet="hamster" className="w-20 h-20 animate-bounce-wiggle z-30 drop-shadow-lg" style={{ animationDelay: '300ms' }} />
-                                        <PetCharacter pet="bird" className="w-20 h-20 animate-bounce-wiggle z-20 drop-shadow-lg" style={{ animationDelay: '400ms' }} />
-                                        <PetCharacter pet="lizard" className="w-20 h-20 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '500ms' }} />
-                                    </div>
-                                </div>
-                            </Card>
-                        </>
-                    ) : (
-                        <VideoGenerator sharedImage={currentPhoto} />
-                    )}
+                    <VideoGenerator sharedImage={currentPhoto} />
                 </div>
             </main>
         </div>
