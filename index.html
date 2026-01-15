@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- BUILD_SIGNATURE: 2025-05-20-PROD-READY-V5-CLEAN -->
+    <!-- BUILD_SIGNATURE: 2025-05-20-CLEAN-BUILD-V6 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Name My Pet - AI Powered ✨</title>
@@ -20,7 +20,8 @@
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "@vercel/node": "https://esm.sh/@vercel/node@^5.5.19",
-    "@vercel/kv": "https://esm.sh/@vercel/kv@^3.0.0"
+    "@vercel/kv": "https://esm.sh/@vercel/kv@^3.0.0",
+    "path": "https://esm.sh/path@^0.12.7"
   }
 }
 </script>
@@ -28,9 +29,9 @@
   <body>
     <div id="root"></div>
     <!-- 
-      Vite entry point: using absolute path to ensure correct resolution 
-      in the Vercel build environment.
+      Using a relative path for the entry point. 
+      This is the standard and most compatible way for Vite to resolve the root file.
     -->
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
