@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- BUILD_SIGNATURE: 2025-05-20-PROD-READY-V3 -->
+    <!-- BUILD_SIGNATURE: 2025-05-20-PROD-READY-V5-CLEAN -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Name My Pet - AI Powered ✨</title>
@@ -28,9 +28,9 @@
   <body>
     <div id="root"></div>
     <!-- 
-      The entry point for the application. 
-      Vite will automatically find and process this file during the build.
+      Vite entry point: using absolute path to ensure correct resolution 
+      in the Vercel build environment.
     -->
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
