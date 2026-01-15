@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- BUILD_SIGNATURE: 2025-05-20-CLEAN-BUILD-V6 -->
+    <!-- VERCEL_BUILD_FORCE: 2025-05-20-CLEAN-V8 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Name My Pet - AI Powered ✨</title>
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Fredoka:wght@700;900&display=swap" rel="stylesheet" />
   <script type="importmap">
 {
@@ -20,8 +18,7 @@
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "@vercel/node": "https://esm.sh/@vercel/node@^5.5.19",
-    "@vercel/kv": "https://esm.sh/@vercel/kv@^3.0.0",
-    "path": "https://esm.sh/path@^0.12.7"
+    "@vercel/kv": "https://esm.sh/@vercel/kv@^3.0.0"
   }
 }
 </script>
@@ -29,9 +26,9 @@
   <body>
     <div id="root"></div>
     <!-- 
-      Using a relative path for the entry point. 
-      This is the standard and most compatible way for Vite to resolve the root file.
+      Using absolute root path '/index.tsx' to bypass any relative path 
+      resolution issues in the Vercel/Vite environment. 
     -->
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
