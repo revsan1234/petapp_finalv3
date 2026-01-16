@@ -50,7 +50,7 @@ export const translations = {
       btn_change: "Change Photo",
       btn_upload: "Upload",
       sharing: "Sharing...",
-      limit_reached: "You've used your magic for today! ✨ Please come back tomorrow to create a new AI pet photo. We can't wait to see what you dream up next!",
+      limit_reached: "You've used your magic for today! ✨ Please come back tomorrow to create a new AI pet photo.",
       limit_reached_generic: "Magic Limit Reached! ✨ Please come back tomorrow.",
       limit_title: "Daily Limit Reached"
     },
