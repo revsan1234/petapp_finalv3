@@ -34,7 +34,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
         <div className="relative min-h-screen pt-[max(1rem,env(safe-area-inset-top))]">
             <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
             
-            <main className="px-4 pb-48 sm:pb-56 max-w-2xl mx-auto w-full flex flex-col gap-8 animate-fade-in mt-6">
+            <main className="px-4 pb-80 sm:pb-96 max-w-2xl mx-auto w-full flex flex-col gap-8 animate-fade-in mt-6">
                 <div className="-mt-4">
                     <button 
                         onClick={goHome} 
@@ -75,7 +75,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onQuizComplete, addSaved
   return (
     <div className="relative min-h-screen pt-[max(1rem,env(safe-area-inset-top))]">
         <Header leftPet="dog" rightPet="cat" onLogoClick={() => setMode('menu')} />
-        <main className="px-4 pb-48 sm:pb-56 max-w-4xl mx-auto w-full animate-fade-in mt-6">
+        <main className="px-4 pb-80 sm:pb-96 max-w-4xl mx-auto w-full animate-fade-in mt-6">
             <div className="mb-8">
                 <button 
                     onClick={() => setMode('menu')}

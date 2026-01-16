@@ -39,7 +39,7 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
     <div className="relative min-h-screen">
         <div className="relative z-10">
             <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
-            <main className="py-4 md:py-8 px-4 pb-32 sm:pb-40">
+            <main className="py-4 md:py-8 px-4 pb-80 sm:pb-96">
                 <div className="flex flex-col gap-10 w-full mx-auto max-w-7xl">
                      <div className="-mt-4">
                         <button 

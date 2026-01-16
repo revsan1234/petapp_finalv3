@@ -1,167 +1,176 @@
 import React, { useState, useEffect } from 'react';
-import { MainView } from './components/MainView';
-import { PrivacyPolicy } from './components/PrivacyPolicy';
-import { TermsAndConditions } from './components/TermsAndConditions';
-import { TabNavigator } from './components/layout/TabNavigator';
+import { LandingPage } from './components/LandingPage';
+import { MainView } from './components/layout/mainview';
 import { PhotoScreen } from './components/screens/PhotoScreen';
-import { PlayScreen } from './components/screens/PlayScreen';
 import { BioScreen } from './components/screens/BioScreen';
 import { AdoptScreen } from './components/screens/AdoptScreen';
 import { HotelScreen } from './components/screens/HotelScreen';
-import { LandingPage } from './components/LandingPage';
-import { GeneratedName, PetInfo, Tab, View, PetPersonalityResult } from './types';
+import { PlayScreen } from './components/screens/PlayScreen';
+import { TabNavigator } from './components/TabNavigator';
 import { BackgroundPattern } from './components/ui/BackgroundPattern';
 import { CustomCursor } from './components/ui/CustomCursor';
-import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsAndConditions } from './components/TermsAndConditions';
+import { ContactUs } from './components/ContactUs';
+import type { Tab, PetInfo, GeneratedName, PetPersonalityResult, View } from './types';
 
-const CURRENT_VERSION = '2.4.0';
+const INITIAL_PET_INFO: PetInfo = {
+  type: 'Dog',
+  gender: 'Any',
+  personality: 'Playful',
+  style: 'Trending'
+};
 
-const AppContent: React.FC = () => {
-  const [view, setView] = useState<View>('app');
+const AppContent = () => {
   const [activeTab, setActiveTab] = useState<Tab>('home');
-  const [isChillMode, setIsChillMode] = useState(false);
-  const { language, setLanguage, t } = useLanguage();
-  
-  useEffect(() => {
-    const savedVersion = localStorage.getItem('petapp_version');
-    if (savedVersion !== CURRENT_VERSION) {
-        localStorage.setItem('petapp_version', CURRENT_VERSION);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isChillMode) document.body.classList.add('chill-mode');
-    else document.body.classList.remove('chill-mode');
-  }, [isChillMode]);
-
-  useEffect(() => { document.title = t.common.app_title; }, [t.common.app_title, language]);
-
+  const [currentView, setCurrentView] = useState<View>('app');
+  const [isChillMode, setIsChillMode] = useState(() => {
+    return localStorage.getItem('petapp_chill_mode') === 'true';
+  });
+  const [petInfo, setPetInfo] = useState<PetInfo>(INITIAL_PET_INFO);
   const [savedNames, setSavedNames] = useState<GeneratedName[]>(() => {
-    try {
-        const saved = localStorage.getItem('petapp_saved_names');
-        if (!saved) return [];
-        const parsed = JSON.parse(saved);
-        return Array.isArray(parsed) ? parsed : [];
-    } catch (e) { return []; }
+    const saved = localStorage.getItem('petapp_saved_names');
+    return saved ? JSON.parse(saved) : [];
   });
-
-  const [petInfo, setPetInfo] = useState<PetInfo>(() => {
-    const defaultInfo: PetInfo = { type: 'Dog', gender: 'Any', personality: 'Playful', style: 'Trending', name: '' };
-    try {
-        const saved = localStorage.getItem('petapp_pet_info');
-        if (!saved) return defaultInfo;
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object' && parsed.type) {
-            return { ...defaultInfo, ...parsed };
-        }
-        return defaultInfo;
-    } catch (e) { return defaultInfo; }
-  });
-
   const [imageForBio, setImageForBio] = useState<string | null>(null);
 
-  useEffect(() => { localStorage.setItem('petapp_saved_names', JSON.stringify(savedNames)); }, [savedNames]);
-  useEffect(() => { localStorage.setItem('petapp_pet_info', JSON.stringify(petInfo)); }, [petInfo]);
+  useEffect(() => {
+    localStorage.setItem('petapp_saved_names', JSON.stringify(savedNames));
+  }, [savedNames]);
 
-  const handleSetTab = (tab: Tab) => { 
-    setView('app'); 
-    setActiveTab(tab); 
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-  };
-
-  const goHome = () => { handleSetTab('home'); };
-
-  const handleResetApp = () => {
-      if (window.confirm(t.common.reset_confirm || "Reset all data and start fresh?")) {
-          localStorage.clear();
-          window.location.reload();
-      }
-  };
+  useEffect(() => {
+    localStorage.setItem('petapp_chill_mode', String(isChillMode));
+    if (isChillMode) {
+      document.body.classList.add('chill-mode');
+    } else {
+      document.body.classList.remove('chill-mode');
+    }
+  }, [isChillMode]);
 
   const addSavedName = (name: GeneratedName) => {
-    setSavedNames((prev) => {
-      const current = Array.isArray(prev) ? prev : [];
-      if (!current.find(n => n.id === name.id)) return [...current, name];
-      return current;
-    });
+    if (!savedNames.find(n => n.id === name.id)) {
+      setSavedNames(prev => [...prev, name]);
+    }
   };
 
-  const removeSavedName = (nameId: string) => { 
-    setSavedNames((prev) => Array.isArray(prev) ? prev.filter(n => n.id !== nameId) : []); 
+  const removeSavedName = (id: string) => {
+    setSavedNames(prev => prev.filter(n => n.id !== id));
   };
 
   const handleQuizComplete = (result: PetPersonalityResult) => {
-    setPetInfo(prev => ({ 
-        ...prev, 
-        personality: result.keywords.personality, 
-        style: result.keywords.style 
+    setPetInfo(prev => ({
+      ...prev,
+      personality: result.keywords.personality,
+      style: result.keywords.style
     }));
   };
 
-  const renderActiveTab = () => {
-    switch(activeTab) {
-      case 'home': return <LandingPage setTab={handleSetTab} />;
-      case 'generate': return <MainView savedNames={savedNames} addSavedName={addSavedName} removeSavedName={removeSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
-      case 'bio': return <BioScreen petInfo={petInfo} imageForBio={imageForBio} setImageForBio={setImageForBio} goHome={goHome} />;
-      case 'play': return <PlayScreen onQuizComplete={handleQuizComplete} savedNames={savedNames} addSavedName={addSavedName} petInfo={petInfo} setPetInfo={setPetInfo} goHome={goHome} />;
-      case 'photo': return <PhotoScreen setActiveTab={handleSetTab} setImageForBio={setImageForBio} goHome={goHome} />;
-      case 'adopt': return <AdoptScreen goHome={goHome} />;
-      case 'hotel': return <HotelScreen goHome={goHome} />;
-      default: return <LandingPage setTab={handleSetTab} />;
+  if (currentView === 'privacy') {
+    return (
+      <div className="min-h-screen relative">
+        <CustomCursor />
+        <BackgroundPattern />
+        <PrivacyPolicy onBack={() => setCurrentView('app')} />
+      </div>
+    );
+  }
+
+  if (currentView === 'terms') {
+    return (
+      <div className="min-h-screen relative">
+        <CustomCursor />
+        <BackgroundPattern />
+        <TermsAndConditions onBack={() => setCurrentView('app')} />
+      </div>
+    );
+  }
+
+  if (currentView === 'contact') {
+    return (
+      <div className="min-h-screen relative">
+        <CustomCursor />
+        <BackgroundPattern />
+        <ContactUs onBack={() => setCurrentView('app')} />
+      </div>
+    );
+  }
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return (
+          <LandingPage 
+            setTab={setActiveTab} 
+            setView={setCurrentView} 
+            isChillMode={isChillMode} 
+            setIsChillMode={setIsChillMode} 
+          />
+        );
+      case 'generate':
+        return (
+          <MainView 
+            savedNames={savedNames}
+            addSavedName={addSavedName}
+            removeSavedName={removeSavedName}
+            petInfo={petInfo}
+            setPetInfo={setPetInfo}
+            goHome={() => setActiveTab('home')}
+          />
+        );
+      case 'photo':
+        return (
+          <PhotoScreen 
+            setActiveTab={setActiveTab} 
+            setImageForBio={setImageForBio}
+            goHome={() => setActiveTab('home')}
+          />
+        );
+      case 'bio':
+        return (
+          <BioScreen 
+            petInfo={petInfo}
+            imageForBio={imageForBio}
+            setImageForBio={setImageForBio}
+            goHome={() => setActiveTab('home')}
+          />
+        );
+      case 'adopt':
+        return <AdoptScreen goHome={() => setActiveTab('home')} />;
+      case 'hotel':
+        return <HotelScreen goHome={() => setActiveTab('home')} />;
+      case 'play':
+        return (
+          <PlayScreen 
+            onQuizComplete={handleQuizComplete}
+            addSavedName={addSavedName}
+            savedNames={savedNames}
+            petInfo={petInfo}
+            setPetInfo={setPetInfo}
+            goHome={() => setActiveTab('home')}
+          />
+        );
+      default:
+        return <LandingPage setTab={setActiveTab} setView={setCurrentView} isChillMode={isChillMode} setIsChillMode={setIsChillMode} />;
     }
   };
 
-  if (view === 'privacy') return <PrivacyPolicy onBack={() => setView('app')} />;
-  if (view === 'terms') return <TermsAndConditions onBack={() => setView('app')} />;
-
   return (
-    <>
+    <div className="min-h-screen relative transition-colors duration-700">
       <CustomCursor />
       <BackgroundPattern />
-      <div className="relative min-h-[100dvh] pb-24 transition-colors duration-500">
-          {renderActiveTab()}
-          
-          <footer className="relative z-10 text-center my-8 space-y-6 w-full max-w-7xl mx-auto px-4 pb-12">
-            <div className="flex flex-col items-center gap-6">
-                <div className="flex flex-col items-center gap-4">
-                    <button 
-                        onClick={() => setIsChillMode(!isChillMode)} 
-                        className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transform active:scale-95 transition-all hover:bg-white/60"
-                        title={isChillMode ? t.common.chill_mode_off : t.common.chill_mode_on}
-                    >
-                        <span className="text-xl">{isChillMode ? '☀️' : '🌙'}</span>
-                    </button>
-                    
-                    <div className="bg-white/40 backdrop-blur-md border border-white/50 px-6 py-2 rounded-full shadow-lg flex items-center gap-4 text-sm font-bold">
-                        <button onClick={() => setLanguage('en')} className={`transition-all ${language === 'en' ? 'text-[#AA336A] scale-110' : 'text-[#666666] opacity-60 hover:opacity-100'}`}>ENGLISH</button>
-                        <span className="text-black/10">|</span>
-                        <button onClick={() => setLanguage('es')} className={`transition-all ${language === 'es' ? 'text-[#AA336A] scale-110' : 'text-[#666666] opacity-60 hover:opacity-100'}`}>ESPAÑOL</button>
-                        <span className="text-black/10">|</span>
-                        <button onClick={() => setLanguage('fr')} className={`transition-all ${language === 'fr' ? 'text-[#AA336A] scale-110' : 'text-[#666666] opacity-60 hover:opacity-100'}`}>FRANÇAIS</button>
-                    </div>
-                </div>
-
-                <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 text-sm opacity-80 items-center font-bold">
-                    <a href="https://namemypet.org" target="_blank" rel="noopener noreferrer" className="hover:underline">namemypet.org</a>
-                    <span className="hidden sm:inline">|</span>
-                    <button onClick={() => setView('privacy')} className="hover:underline">{t.common.privacy}</button>
-                    <span className="hidden sm:inline">|</span>
-                    <button onClick={() => setView('terms')} className="hover:underline">{t.common.terms}</button>
-                    <span className="hidden sm:inline">|</span>
-                    <button onClick={handleResetApp} className="text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-widest text-[10px]">{t.common.reset_btn}</button>
-                </div>
-            </div>
-          </footer>
-      </div>
-      <TabNavigator activeTab={activeTab} setActiveTab={handleSetTab} />
-    </>
+      {renderContent()}
+      {activeTab !== 'home' && (
+        <TabNavigator activeTab={activeTab} setActiveTab={setActiveTab} />
+      )}
+    </div>
   );
 };
 
-const App: React.FC = () => (
-  <LanguageProvider>
-    <AppContent />
-  </LanguageProvider>
-);
-
-export default App;
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+}

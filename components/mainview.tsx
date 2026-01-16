@@ -1,12 +1,12 @@
 import React from 'react';
-import { Header } from './Header';
-import { NameGenerator } from './NameGenerator';
-import { SavedNames } from './SavedNames';
-import type { GeneratedName, PetInfo } from '../types';
-import { NameOfTheDay } from './NameOfTheDay';
-import { NameMeaningFinder } from './NameMeaningFinder';
-import { TrendingTicker } from './TrendingTicker';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Header } from '../Header';
+import { NameGenerator } from '../NameGenerator';
+import { SavedNames } from '../SavedNames';
+import type { GeneratedName, PetInfo } from '../../types';
+import { NameOfTheDay } from '../NameOfTheDay';
+import { NameMeaningFinder } from '../NameMeaningFinder';
+import { TrendingTicker } from '../TrendingTicker';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
@@ -29,7 +29,7 @@ export const MainView: React.FC<MainViewProps> = ({ savedNames, addSavedName, re
   return (
     <div className="min-h-screen">
       <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-      <main className="py-4 md:py-8 px-4 pb-48 sm:pb-56">
+      <main className="py-4 md:py-8 px-4 pb-80 sm:pb-96">
         <div className="flex flex-col gap-10 w-full mx-auto max-w-7xl">
           {goHome && (
             <div className="-mt-4">
