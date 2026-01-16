@@ -32,23 +32,21 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
 
   const handleImageUpdate = (image: string | null) => {
       setCurrentPhoto(image);
-      setImageForBio(image); // Also update Bio screen state
+      setImageForBio(image); 
   };
 
   return (
     <div className="relative min-h-screen">
         <div className="relative z-10">
             <Header leftPet="lizard" rightPet="rabbit" onLogoClick={goHome} />
-            <main className="py-4 md:py-8 px-4 pb-32">
-                <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl">
-                    
-                     {/* Back Button */}
+            <main className="py-4 md:py-8 px-4 pb-48 sm:pb-56">
+                <div className="flex flex-col gap-10 w-full mx-auto max-w-7xl">
                      <div className="-mt-4">
                         <button 
                             onClick={goHome} 
-                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-md font-bold text-sm w-fit shadow-sm hover:bg-white/30"
+                            className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-5 py-2.5 rounded-full backdrop-blur-md font-black text-[10px] uppercase tracking-widest w-fit shadow-lg border border-white/10"
                         >
-                            <BackIcon className="w-4 h-4" />
+                            <BackIcon className="w-3 h-3" />
                             {t.common.back_home}
                         </button>
                     </div>
@@ -61,24 +59,23 @@ export const PhotoScreen: React.FC<PhotoScreenProps> = ({ setActiveTab, setImage
 
                     <Card>
                         <div className="flex flex-col items-center gap-2 mb-6 text-center">
-                            <h2 className="text-3xl font-bold">{t.bio.turn_photo_into_card}</h2>
-                            <p className="opacity-80 text-xl">
+                            <h2 className="text-3xl font-black">{t.bio.turn_photo_into_card}</h2>
+                            <p className="opacity-60 text-xl font-medium">
                                 {t.bio.turn_photo_desc}
                             </p>
                         </div>
                         
-                        <div className="flex flex-col items-center justify-center gap-8 mt-4 mb-8">
-                            {/* Smaller, balanced decorative elements */}
+                        <div className="flex flex-col items-center justify-center gap-10 mt-6 mb-10">
                             <div className="flex items-end justify-center -space-x-4 sm:-space-x-8 md:-space-x-12">
-                                <PetCharacter pet="dog" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-lg" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-30 drop-shadow-lg" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-lg" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 animate-bounce-wiggle z-10 drop-shadow-lg" style={{ animationDelay: '400ms' }} />
+                                <PetCharacter pet="dog" className="w-20 h-20 sm:w-28 sm:h-28 animate-bounce-wiggle z-10 drop-shadow-2xl" style={{ animationDelay: '0ms' }} />
+                                <PetCharacter pet="cat" className="w-20 h-20 sm:w-28 sm:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-2xl" style={{ animationDelay: '100ms' }} />
+                                <PetCharacter pet="rabbit" className="w-20 h-20 sm:w-28 sm:h-28 animate-bounce-wiggle z-30 drop-shadow-2xl" style={{ animationDelay: '200ms' }} />
+                                <PetCharacter pet="bird" className="w-20 h-20 sm:w-28 sm:h-28 animate-bounce-wiggle z-20 -mb-2 drop-shadow-2xl" style={{ animationDelay: '300ms' }} />
+                                <PetCharacter pet="hamster" className="w-20 h-20 sm:w-28 sm:h-28 animate-bounce-wiggle z-10 drop-shadow-2xl" style={{ animationDelay: '400ms' }} />
                             </div>
 
-                            <Button onClick={() => setActiveTab('bio')} className="shadow-lg scale-105 z-40 border-2 border-white/50 px-6 py-3 text-lg">
-                                <BioIcon className="w-5 h-5" />
+                            <Button onClick={() => setActiveTab('bio')} className="shadow-2xl scale-110 z-40 border-2 border-white/20 px-8 py-4 text-xl">
+                                <BioIcon className="w-6 h-6" />
                                 {t.bio.go_to_creator}
                             </Button>
                         </div>

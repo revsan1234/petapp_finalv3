@@ -1,4 +1,5 @@
-mport { GoogleGenAI, Type } from "@google/genai";
+
+import { GoogleGenAI, Type } from "@google/genai";
 import type { PetInfo, GeneratedName, ImageStyle, Language, ChatMessage } from '../types';
 
 const nameGenerationSchema = {
@@ -6,18 +7,30 @@ const nameGenerationSchema = {
     properties: {
         names: {
             type: Type.ARRAY,
- // v2.6.2-enhanced-naming-refresh
-           items: {
+            items: {
                 type: Type.OBJECT,
                 properties: {
                     name: { type: Type.STRING },
                     meaning: { type: Type.STRING },
-                    comment: { type: Type.STRING, description: "A creative reference comment on why this name is a great fit for this specific pet personality and style." },
                     style: { type: Type.STRING }
                 },
-                required: ["name", "meaning", "comment", "style"],
+                required: ["name", "meaning", "style"],
             }
         }
+    }
+};
+
+const translatorSchema = {
+    type: Type.ARRAY,
+    items: {
+        type: Type.OBJECT,
+        properties: {
+            language: { type: Type.STRING },
+            spelling: { type: Type.STRING },
+            meaning: { type: Type.STRING },
+            flag: { type: Type.STRING }
+        },
+        required: ["language", "spelling", "meaning", "flag"]
     }
 };
 
@@ -44,15 +57,14 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
     For each name, provide:
     1. The name itself.
     2. A brief meaning or origin.
-    3. A creative 'reference comment' explaining exactly why this name is perfect for a ${personality} ${type}.
-    Respond in ${language}.`;
+    Keep meanings concise. Do not include any extra commentary. Respond in ${language}.`;
 
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-3-pro-preview',
             contents: prompt,
             config: {
-                systemInstruction: "You are a professional pet naming expert. You specialize in unique names with clever reference comments. You always return strictly valid JSON data.",
+                systemInstruction: "You are a professional pet naming expert. You return strictly valid JSON data.",
                 responseMimeType: 'application/json',
                 responseSchema: nameGenerationSchema,
             }
@@ -64,7 +76,6 @@ export const generatePetNames = async (petInfo: PetInfo, language: Language = 'e
             id: `gen-${Date.now()}-${i}`,
             name: n.name || "Unknown",
             meaning: n.meaning || "A beautiful name for your pet.",
-            comment: n.comment || "", // New field for reference comments
             style: n.style || style
         })) : [];
     } catch (error) {
@@ -81,7 +92,7 @@ export const editPetImage = async (base64Image: string, mimeType: string, prompt
             contents: {
                 parts: [
                     { inlineData: { data: base64Image, mimeType: mimeType } },
-                    { text: `Edit this pet image: ${prompt}. Style: ${style}. Wholesome content only.` }
+                    { text: `Modify this specific pet in the image to be in this scene: ${prompt}. Visual Style: ${style}. Maintain the pet's core features but change the environment or outfit. Wholesome content only.` }
                 ]
             },
         });
@@ -133,8 +144,11 @@ export const translatePetName = async (name: string, language: Language = 'en') 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Provide a JSON array of objects representing the name "${name}" translated into 10 languages.`,
-        config: { responseMimeType: 'application/json' }
+        contents: `Translate the pet name "${name}" into 10 diverse global languages. Include a flag emoji, the language name, the spelling, and a brief meaning.`,
+        config: { 
+            responseMimeType: 'application/json',
+            responseSchema: translatorSchema
+        }
     });
     return JSON.parse(cleanJsonString(response.text || "[]"));
 };
@@ -143,8 +157,11 @@ export const generatePetBio = async (name: string, petType: string, personality:
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Generate exactly 4 fun social media bios for a pet. Name: ${name || "Your Pet"}. Type: ${petType}. Vibe: ${personality}. Strictly JSON array of strings. Language: ${language}.`,
-        config: { responseMimeType: 'application/json' }
+        contents: `Generate exactly 4 fun social media bios for a pet. Name: ${name || "Your Pet"}. Type: ${petType}. Vibe: ${personality}. Strictly plain text strings, NO emojis or art symbols. Language: ${language}.`,
+        config: { 
+            responseMimeType: 'application/json',
+            responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
+        }
     });
     return JSON.parse(cleanJsonString(response.text || "[]"));
 };
@@ -161,9 +178,10 @@ export const findPetHotels = async (location: string, language: Language = 'en')
 
 export const generateNameOfTheDay = async (language: Language = 'en') => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const dateStr = new Date().toDateString();
     const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `One trending pet name. Return JSON: {"name": "...", "meaning": "..."}`,
+        contents: `Pick one unique trending pet name for today, ${dateStr}. Return JSON: {"name": "...", "meaning": "..."}`,
         config: { responseMimeType: 'application/json' }
     });
     return JSON.parse(cleanJsonString(response.text || "{}"));

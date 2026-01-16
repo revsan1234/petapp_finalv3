@@ -1,13 +1,24 @@
 :root {
-    --bg-sage: #aab2a1; 
-    --bg-pink: #e889b5;  
+    --bg-sage: #ecf2f7; /* Very light airy blue/sage */
+    --bg-pink: #fef2f2; /* Very light soft pink/white */
     --primary-color: #AA336A;
     --secondary-color: #333333;
     --card-bg: rgba(255, 253, 242, 0.9); 
     --text-main: #333333;
-    --blob-1: rgba(205, 164, 133, 0.6);
-    --blob-2: rgba(255, 218, 185, 0.6);
-    --blob-3: rgba(222, 184, 135, 0.6);
+    --blob-1: rgba(184, 197, 214, 0.3);
+    --blob-2: rgba(242, 166, 202, 0.3);
+    --blob-3: rgba(222, 184, 135, 0.3);
+}
+
+body.chill-mode {
+    --bg-sage: #3d5a80; /* Lighter Blue tone for contrast in Chill Mode */
+    --bg-pink: #1b2631; /* Darker Navy contrast */
+    --card-bg: rgba(30, 41, 59, 0.9); /* Deep Slate card */
+    --text-main: #f8fafc;
+    --primary-color: #93c5fd; /* Soft Blue primary for Chill Mode */
+    --blob-1: rgba(30, 58, 138, 0.4);
+    --blob-2: rgba(15, 23, 42, 0.4);
+    --blob-3: rgba(51, 65, 85, 0.4);
 }
 
 body {
@@ -18,6 +29,7 @@ body {
     background: linear-gradient(135deg, var(--bg-sage) 0%, var(--bg-pink) 100%);
     background-attachment: fixed;
     color: var(--text-main);
+    transition: background 0.7s ease-in-out;
 }
 
 .fredoka { font-family: 'Fredoka', sans-serif; }
@@ -42,3 +54,13 @@ body {
 .btn { font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 9999px; transition: all 300ms ease-in-out; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; border: 2px solid transparent; }
 .btn-primary { background-color: var(--primary-color); color: white; font-family: 'Fredoka', sans-serif; text-transform: uppercase; }
 .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid currentColor; }
+
+body.chill-mode .btn-secondary {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+body.chill-mode input, body.chill-mode select, body.chill-mode textarea {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}

@@ -1,3 +1,4 @@
+
 export type PetType = 'Dog' | 'Cat' | 'Bird' | 'Fish' | 'Rabbit' | 'Hamster' | 'Lizard';
 export type PetKind = 'dog' | 'cat' | 'bird' | 'fish' | 'rabbit' | 'hamster' | 'lizard' | 'ferret' | 'other';
 export type PetGender = 'Male' | 'Female' | 'Any';
@@ -69,4 +70,4 @@ export interface ChatMessage {
 export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotel';
 
 // Defines the possible top-level views for the application
-export type View = 'app' | 'privacy' | 'terms';
+export type View = 'app' | 'privacy' | 'terms' | 'contact';
