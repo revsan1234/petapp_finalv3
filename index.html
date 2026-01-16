@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- VERCEL_BUILD_FORCE: 2025-05-20-CLEAN-V8 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Name My Pet - AI Powered ✨</title>
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Fredoka:wght@700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-sage: #aab2a1; 
+        --bg-pink: #e889b5;  
+        --primary-color: #AA336A;
+        --sage-green: #8da38d;
+      }
+    </style>
   <script type="importmap">
 {
   "imports": {
@@ -17,6 +26,7 @@
     "html-to-image": "https://esm.sh/html-to-image@^1.11.13",
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "path": "https://esm.sh/path@^0.12.7",
     "@vercel/node": "https://esm.sh/@vercel/node@^5.5.19",
     "@vercel/kv": "https://esm.sh/@vercel/kv@^3.0.0"
   }
@@ -25,10 +35,6 @@
 </head>
   <body>
     <div id="root"></div>
-    <!-- 
-      Using absolute root path '/index.tsx' to bypass any relative path 
-      resolution issues in the Vercel/Vite environment. 
-    -->
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

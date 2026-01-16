@@ -55,7 +55,7 @@ export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
         <div className="relative min-h-screen">
             <div className="relative z-10">
                 <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-                <main className="py-4 md:py-8 px-4 pb-48 sm:pb-56">
+                <main className="py-4 md:py-8 px-4 pb-32 sm:pb-40">
                     <div className="flex flex-col gap-10 w-full mx-auto max-w-5xl">
                         <div className="-mt-4">
                              <button 

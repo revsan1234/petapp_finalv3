@@ -1,4 +1,3 @@
-
 export const translations = {
   en: {
     navigation: {
@@ -257,9 +256,95 @@ export const translations = {
     }
   },
   es: {
-    // ... Spanish translations remain largely same, omitting for brevity in this XML block but should be kept in full file ...
+    navigation: {
+      generate: { label: "Nombres", desc: "¡Encuentra nombres y compártelos!" },
+      bio: { label: "Perfil", desc: "Crea una tarjeta de personalidad especial." },
+      play: { label: "Jugar", desc: "¡Juegos, cuestionarios y consejos de expertos!" },
+      photo: { label: "Foto", desc: "¡Genera retratos adorables con IA!" },
+      adopt: { label: "Adoptar", desc: "Encuentra refugios en tu zona." },
+      hotel: { label: "Hoteles", desc: "¡Mejores hoteles y residencias para mascotas!" }
+    },
+    landing: {
+      feature1_title: "¡El Nombre Perfecto!",
+      feature1_desc: "¡Maneras divertidas de encontrar nombres y compartirlos!",
+      feature2_title: "¡Crea una Tarjeta!",
+      feature2_desc: "¡Comparte la personalidad de tu mascota!",
+      feature3_title: "¡Juegos y Chat!",
+      feature3_desc: "¡Cuestionarios y consejos de nuestro experto!",
+      feature4_title: "Fotos con IA",
+      feature4_desc: "¡Viste a tu mascota! (1 escena gratis al día)",
+      feature4_desc_used: "¡Magia agotada! ✨ ¡Vuelve mañana!",
+      feature5_title: "Adopta una Mascota",
+      feature5_desc: "Encuentra refugios locales y a tu nuevo mejor amigo.",
+      feature6_title: "Hoteles para Mascotas",
+      feature6_desc: "Encuentra los mejores alojamientos para tu amigo."
+    },
+    translator: { title: "Patas Internacionales", subtitle: "¡Traducciones en 10 idiomas!", label: "Nombre", btn_go: "Traducir", btn_translating: "Viajando...", meaning: "Significado:", spelling: "Escritura:", results_for: "Resultados para", back: "Volver" },
+    image_editor: { title: "Generador de Escenas", subtitle: "¡Sube una foto y mira la magia!", upload_placeholder: "Subir foto", creating_magic: "Creando...", success_title: "¡Genial!", download: "Descargar", share: "Compartir", create_another: "Otro", prompt_label: "Escena", prompt_placeholder: "ej. perro surfista", style_label: "Estilo", btn_generate: "Generar", btn_change: "Cambiar", btn_upload: "Subir", sharing: "Compartiendo...", limit_reached: "¡Vuelve mañana!", limit_reached_generic: "¡Límite alcanzado!", limit_title: "Límite Diario" },
+    hotel: { title: "Hoteles", subtitle: "El lugar perfecto", label_location: "Ubicación", placeholder_location: "ej. Madrid", btn_search: "Buscar", searching: "Buscando...", sources_title: "Fuentes:", no_results: "Sin resultados", back: "Inicio" },
+    generator: { title: "Encuentra el Nombre", subtitle: "¡Ideas personalizadas!", label_type: "Tipo", label_gender: "Género", label_personality: "Vibe", label_style: "Estilo", btn_generate: "Generar", btn_generating: "Generando...", results_title: "¡Ideas!", tap_to_save: "¡Corazón!", loading_text: "Generando..." },
+    options: { types: { Dog: "Perro", Cat: "Gato", Rabbit: "Conejo", Bird: "Pájaro", Hamster: "Hámster", Fish: "Pez", Lizard: "Lagarto" }, genders: { Male: "Macho", Female: "Hembra", Any: "Cualquiera" }, personalities: { Playful: "Juguetón", Calm: "Tranquilo", Mischievous: "Travieso", Elegant: "Elegante", Goofy: "Divertido", Brave: "Valiente" }, styles: { Trending: "Tendencia", Unique: "Único", Classic: "Clásico", Mythological: "Mitológico", "Nature-inspired": "Naturaleza", Funny: "Gracioso" }, image_styles: { Photorealistic: "Realista", Anime: "Anime", Cartoon: "Dibujo" } },
+    quiz: { title: "Test", subtitle: "¡Descubre su vibe!", q1: "¿Cómo juega?", a1_1: "Energía", a1_2: "Relax", a1_3: "Travieso", q2: "¿Gente nueva?", a2_1: "Se esconde", a2_2: "Curioso", a2_3: "Elegante", q3: "¿Objeto nuevo?", a3_1: "Investiga", a3_2: "Ignora", a3_3: "Cauto", result_title: "Su personalidad...", loading: "Analizando...", try_again: "Reintentar", play_again: "Jugar", pick_name: "¡Elige!", intro_title: "Sobre tu amigo:" },
+    bio: { title: "Perfil", subtitle: "¡Crea y comparte!", step1: "1. Detalles", label_name: "Nombre", label_gender: "Género", label_vibe: "Vibe", step2: "2. Foto", btn_upload: "Subir", btn_change: "Cambiar", step3: "3. Bio", btn_generate: "¡Generar!", pick_bio: "Elige:", write_own: "Escribir propia", placeholder_own: "Tu bio...", preview_title: "Previa", zoom: "Zoom", btn_download: "Descargar", btn_share: "Compartir", turn_photo_into_card: "¡Haz tarjeta!", turn_photo_desc: "Mejora tu foto.", go_to_creator: "Ir al creador", generated_by: "por namemypet.org", fallback_bio: "¡Tu bio aquí!", card_pet_name_placeholder: "Nombre" },
+    video_studio: { title: "Estudio Video", subtitle: "¡En movimiento!", upload_placeholder: "Sube foto", prompt_label: "Acción", prompt_placeholder: "ej. volando", how_to_title: "Pasos:", step1: "Sube foto.", step2: "Escribe.", step3: "Copiamos.", step4: "Elige studio.", step5: "Pega.", btn_open: "Ir al estudio", modal_title: "Generación", modal_desc: "Herramientas externas.", modal_note: "¡Copiado!", prompt_copied: "¡Copiado!", auto_copy: "Copia auto." },
+    share_texts: { scene_title: "¡Mira esto!", scene_body: "¡Mira mi mascota!", card_title: "¡Ayúdame!", card_body: "¡Mira estos nombres!", bio_title: "¡Mi mascota!", bio_body: "¡Mira su perfil!" },
+    placeholders: { pet_name: "ej. Luna", location: "Ciudad" },
+    errors: { no_share: "No soportado." },
+    quick_fire: { title: "Batalla", subtitle: "¡Elige rápido!", mode: "Rápido", round: "Ronda", pick_me: "¡Yo!", winner_title: "¡Ganadores!", winner_desc: "Tus favoritos:", btn_preparing: "Preparando...", btn_start: "Empezar", btn_save_all: "Guardar", btn_saved_all: "¡Guardados!", btn_play_again: "Jugar", loading: "Buscando...", generated_meaning_prefix: "Un nombre", generated_meaning_suffix: "para tu amigo.", saved_note: "Guardados." },
+    meaning_finder: { title: "Significado", subtitle: "Descubre historia", label: "Nombre", placeholder: "ej. Felix", btn_search: "Buscar", btn_searching: "Buscando...", loading: "Buscando..." },
+    name_day: { title: "Nombre del Día", fetching: "Buscando...", error: "Error." },
+    horoscope: { title: "Horóscopo", subtitle: "¿Qué dicen astros?", label_name: "Nombre", label_type: "Tipo", label_zodiac: "Signo", btn_read: "Leer", btn_reading: "Consultando...", result_title: "Predicción", lucky_item: "Objeto:" },
+    adopt: { title: "¡Adóptame!", subtitle: "Busca refugios.", label_location: "Ubicación", btn_search: "Buscar", visit_website: "Ver web", no_results: "Sin resultados." },
+    expert: { title: "Chat Experto", subtitle: "Pregunta lo que quieras", welcome: "¡Hola!", typing: "Pensando...", placeholder: "Tu duda...", btn_send: "Enviar", btn_clear: "Limpiar" },
+    common: { back_home: "Inicio", back_internal: "Volver", chill_mode_on: "🌙 Relax", chill_mode_off: "☀️ Día", privacy: "Privacidad", terms: "Términos", contact: "Contacto", follow_us: "¡Síguenos!", app_title: "Name My Pet", reset_btn: "Reiniciar", reset_confirm: "¿Reiniciar?" },
+    saved_names: { title: "Favoritos", empty_title: "¡Vacío!", empty_desc: "¡Usa el corazón!", share_title: "Compartir", btn_copy: "Copiar", btn_copied: "¡Copiado!", btn_create_card: "¡Tarjeta!", card_step1: "1. Foto", btn_change_photo: "Cambiar", btn_upload_photo: "Subir", zoom_label: "Zoom", zoom_hint_drag: "Arrastra", card_step2: "2. Compartir", btn_saving: "Guardando...", btn_download: "Descargar", btn_preparing: "Preparando...", btn_share_card: "Compartir", shareable_title: "¡Elige!", shareable_picks: "Favoritos", shareable_footer: "NAMEMYPET.ORG", text_list_header: "NOMBRES:" },
+    shop: { back: "Volver", subtitle: "¡Para tu mascota!", puppy_kit: "Kit Cachorro", kitten_pack: "Gatito", more_goodies: "Más cositas", product_titles: { id_tags: "Placas", dog_collar: "Collar", glitter_tags: "Placas Brillo", pet_bowls: "Cuencos", pet_blanket: "Manta", cat_collars: "Collares", airtag_holder: "AirTag", bone_tags: "Hueso", pet_leash: "Correa" }, product_desc: { tags: "Seguridad.", collar: "Estilo.", bowls: "Acero.", blanket: "Suave.", airtag: "No lo pierdas.", leash: "Duradera." }, shop_amazon: "Ver Amazon" },
+    age_calc: { title: "Edad", subtitle: "¿Años humanos?", label_pet: "Tipo", label_age: "Edad", btn_calculate: "Calcular", result_prefix: "Tiene", result_suffix: "Años Humanos" }
   },
   fr: {
-    // ... French translations remain largely same, omitting for brevity in this XML block but should be kept in full file ...
+    navigation: {
+      generate: { label: "Noms", desc: "Trouvez des noms et partagez !" },
+      bio: { label: "Profil", desc: "Créez une carte de personnalité." },
+      play: { label: "Jouer", desc: "Jeux, quiz et conseils !" },
+      photo: { label: "Photo", desc: "Portraits IA adorables !" },
+      adopt: { label: "Adopter", desc: "Trouvez des refuges proches." },
+      hotel: { label: "Hôtels", desc: "Meilleurs hôtels pour animaux !" }
+    },
+    landing: {
+      feature1_title: "Le Nom Parfait !",
+      feature1_desc: "Façons fun de trouver des noms !",
+      feature2_title: "Créez une Carte !",
+      feature2_desc: "Partagez la personnalité !",
+      feature3_title: "Jeux & Chat !",
+      feature3_desc: "Quiz et conseils !",
+      feature4_title: "Photos IA",
+      feature4_desc: "Habillez-le ! (1 gratuit par jour)",
+      feature4_desc_used: "Magie épuisée ! ✨ Revenez demain !",
+      feature5_title: "Adoptez",
+      feature5_desc: "Trouvez votre meilleur ami.",
+      feature6_title: "Hôtels",
+      feature6_desc: "Les meilleurs hébergements."
+    },
+    translator: { title: "Pattes Internationales", subtitle: "10 langues", label: "Nom", btn_go: "Traduire", btn_translating: "Voyage...", meaning: "Sens:", spelling: "Orthographe:", results_for: "Résultats", back: "Retour" },
+    image_editor: { title: "Générateur", subtitle: "Voyez la magie !", upload_placeholder: "Télécharger", creating_magic: "Magie...", success_title: "Génial!", download: "Sauver", share: "Partager", create_another: "Autre", prompt_label: "Scène", prompt_placeholder: "ex. chien surf", style_label: "Style", btn_generate: "Générer", btn_change: "Changer", btn_upload: "Télécharger", sharing: "Partage...", limit_reached: "Demain!", limit_reached_generic: "Limite!", limit_title: "Limite" },
+    hotel: { title: "Hôtels", subtitle: "Lieu parfait", label_location: "Lieu", placeholder_location: "ex. Paris", btn_search: "Chercher", searching: "Recherche...", sources_title: "Sources:", no_results: "Aucun", back: "Accueil" },
+    generator: { title: "Nom Parfait", subtitle: "Idées!", label_type: "Type", label_gender: "Sexe", label_personality: "Vibe", label_style: "Style", btn_generate: "Générer", btn_generating: "Génération...", results_title: "Idées!", tap_to_save: "Cœur!", loading_text: "Génération..." },
+    options: { types: { Dog: "Chien", Cat: "Chat", Rabbit: "Lapin", Bird: "Oiseau", Hamster: "Hamster", Fish: "Poisson", Lizard: "Lézard" }, genders: { Male: "Mâle", Female: "Femelle", Any: "Peu importe" }, personalities: { Playful: "Joueur", Calm: "Calme", Mischievous: "Espiègle", Elegant: "Élégant", Goofy: "Rigolo", Brave: "勇敢" }, styles: { Trending: "Tendance", Unique: "Unique", Classic: "Classique", Mythological: "Mythologique", "Nature-inspired": "Nature", Funny: "Drôle" }, image_styles: { Photorealistic: "Réaliste", Anime: "Anime", Cartoon: "Dessin" } },
+    quiz: { title: "Quiz", subtitle: "Sa vibe!", q1: "Jeu?", a1_1: "Énergie", a1_2: "Calme", a1_3: "Gourmand", q2: "Inconnu?", a2_1: "Cache", a2_2: "Curieux", a2_3: "Élégant", q3: "Objet?", a3_1: "Inspecte", a3_2: "Ignore", a3_3: "Prudent", result_title: "Sa vibe...", loading: "Analyse...", try_again: "Réessayer", play_again: "Rejouer", pick_name: "Choisissez!", intro_title: "Sur votre ami:" },
+    bio: { title: "Carte", subtitle: "Partagez!", step1: "1. Détails", label_name: "Nom", label_gender: "Sexe", label_vibe: "Vibe", step2: "2. Photo", btn_upload: "Télécharger", btn_change: "Changer", step3: "3. Bio", btn_generate: "Générer", pick_bio: "Choix:", write_own: "Écrire", placeholder_own: "Votre bio...", preview_title: "Aperçu", zoom: "Zoom", btn_download: "Sauver", btn_share: "Partager", turn_photo_into_card: "Carte!", turn_photo_desc: "Améliorez.", go_to_creator: "Aller", generated_by: "par namemypet.org", fallback_bio: "Votre bio ici!", card_pet_name_placeholder: "Nom" },
+    video_studio: { title: "Studio Vidéo", subtitle: "Mouvement!", upload_placeholder: "Photo", prompt_label: "Action", prompt_placeholder: "ex. vole", how_to_title: "Étapes:", step1: "Photo.", step2: "Écrire.", step3: "Copié.", step4: "Studio.", step5: "Coller.", btn_open: "Vers studio", modal_title: "Vidéo", modal_desc: "Outils externes.", modal_note: "Copié!", prompt_copied: "Copié!", auto_copy: "Copié auto." },
+    share_texts: { scene_title: "Regardez!", scene_body: "Mon animal!", card_title: "Aidez-moi!", card_body: "Ces noms!", bio_title: "Voici!", bio_body: "Son profil!" },
+    placeholders: { pet_name: "ex. Luna", location: "Ville" },
+    errors: { no_share: "Non supporté." },
+    quick_fire: { title: "Bataille", subtitle: "Rapide!", mode: "Rapide", round: "Tour", pick_me: "Moi!", winner_title: "Gagnants!", winner_desc: "Vos favoris:", btn_preparing: "Prépare...", btn_start: "Démarrer", btn_save_all: "Sauver", btn_saved_all: "Sauvé!", btn_play_again: "Rejouer", loading: "Cherche...", generated_meaning_prefix: "Un nom", generated_meaning_suffix: "pour vous.", saved_note: "Sauvé." },
+    meaning_finder: { title: "Signification", subtitle: "Histoire", label: "Nom", placeholder: "ex. Felix", btn_search: "Chercher", btn_searching: "Recherche...", loading: "Recherche..." },
+    name_day: { title: "Nom du Jour", fetching: "Recherche...", error: "Erreur." },
+    horoscope: { title: "Horoscope", subtitle: "Étoiles?", label_name: "Nom", label_type: "Type", label_zodiac: "Signe", btn_read: "Lire", btn_reading: "Consultation...", result_title: "Prédiction", lucky_item: "Objet:" },
+    adopt: { title: "Adoptez-moi!", subtitle: "Refuges.", label_location: "Lieu", btn_search: "Chercher", visit_website: "Site", no_results: "Aucun." },
+    expert: { title: "Chat Expert", subtitle: "Posez questions", welcome: "Bonjour!", typing: "Reflexion...", placeholder: "Votre question...", btn_send: "Envoyer", btn_clear: "Effacer" },
+    common: { back_home: "Accueil", back_internal: "Retour", chill_mode_on: "🌙 Chill", chill_mode_off: "☀️ Jour", privacy: "Vie Privée", terms: "Termes", contact: "Contact", follow_us: "Suivez-nous!", app_title: "Name My Pet", reset_btn: "Reset", reset_confirm: "Tout effacer?" },
+    saved_names: { title: "Favoris", empty_title: "Vide!", empty_desc: "Cœur!", share_title: "Partager", btn_copy: "Copier", btn_copied: "Copié!", btn_create_card: "Carte!", card_step1: "1. Photo", btn_change_photo: "Changer", btn_upload_photo: "Photo", zoom_label: "Zoom", zoom_hint_drag: "Glisser", card_step2: "2. Partager", btn_saving: "Sauve...", btn_download: "Sauver", btn_preparing: "Prépare...", btn_share_card: "Partager", shareable_title: "Choisis!", shareable_picks: "Favoris", shareable_footer: "NAMEMYPET.ORG", text_list_header: "NOMS:" },
+    shop: { back: "Retour", subtitle: "Pour votre ami!", puppy_kit: "Kit Chiot", kitten_pack: "Chaton", more_goodies: "Plus", product_titles: { id_tags: "Médailles", dog_collar: "Collier", glitter_tags: "Médailles Pailletées", pet_bowls: "Gamelles", pet_blanket: "Couverture", cat_collars: "Colliers", airtag_holder: "AirTag", bone_tags: "Os", pet_leash: "Laisse" }, product_desc: { tags: "Sécurité.", collar: "Style.", bowls: "Acier.", blanket: "Doux.", airtag: "Localisation.", leash: "Durable." }, shop_amazon: "Sur Amazon" },
+    age_calc: { title: "Âge", subtitle: "Âge humain?", label_pet: "Type", label_age: "Âge", btn_calculate: "Calculer", result_prefix: "Il a", result_suffix: "Ans Humains" }
   }
 };
