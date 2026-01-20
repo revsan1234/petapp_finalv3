@@ -1,7 +1,7 @@
-import React, { forwardRef, MouseEvent } from 'react';
-import { PetCharacter } from '../assets/pets/PetCharacter';
-import type { PetKind, PetGender } from '../../types';
-import { useLanguage } from '../../contexts/LanguageContext';
+import React, { forwardRef, MouseEvent } from "react";
+import { PetCharacter } from "../assets/pets/PetCharacter";
+import type { PetKind, PetGender } from "../../types";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface BioCardProps {
   imagePreview: string | null;
@@ -15,72 +15,81 @@ interface BioCardProps {
   gender?: PetGender;
 }
 
-export const BioCard = forwardRef<HTMLDivElement, BioCardProps>(({ 
-    imagePreview, 
-    petName, 
-    bio, 
-    defaultPetKind = 'cat',
-    imageZoom,
-    imagePosition,
-    onImageMouseDown,
-    isDragging,
-    gender = 'Any',
-}, ref) => {
-  const { t } = useLanguage();
-  
-  const imageStyle: React.CSSProperties = {
-    transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
-    transition: isDragging ? 'none' : 'transform 0.1s linear',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  };
+export const BioCard = forwardRef<HTMLDivElement, BioCardProps>(
+  (
+    {
+      imagePreview,
+      petName,
+      bio,
+      defaultPetKind = "cat",
+      imageZoom,
+      imagePosition,
+      onImageMouseDown,
+      isDragging,
+      gender = "Any",
+    },
+    ref,
+  ) => {
+    const { t } = useLanguage();
 
-  let bgClass = "bg-gradient-to-b from-[#e889b5] to-[#ffc4d6]"; // Female Default
-  if (gender === 'Male') {
-      bgClass = "bg-gradient-to-b from-[#aab2a1] to-[#8da38d]";
-  } else if (gender === 'Any') {
-      bgClass = "bg-gradient-to-b from-[#d4c4e0] to-[#bca6c9]";
-  }
+    const imageStyle: React.CSSProperties = {
+      transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+      transition: isDragging ? "none" : "transform 0.1s linear",
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    };
 
-  return (
-    <div 
-        ref={ref} 
-        className={`${bgClass} p-6 text-[#666666] flex flex-col items-center justify-between w-full max-w-[480px] min-h-[600px] shadow-2xl rounded-3xl overflow-hidden relative`}
-        style={{ fontFamily: "'Fredoka', sans-serif" }} 
-    >
-        {/* HEADLINE */}
-        <h2 className="text-6xl font-bold text-center text-white drop-shadow-md z-10 mt-4 tracking-wide leading-tight">{petName || t.bio.card_pet_name_placeholder}</h2>
+    let bgColor = "#d4c4e0";
+    if (gender === "Male") bgColor = "#aab2a1";
+    if (gender === "Female") bgColor = "#e889b5";
 
-        <div className="flex flex-col items-center gap-4 w-full z-10 flex-grow justify-center">
-             {/* PHOTO FRAME */}
-             <div className="relative w-72 h-72">
-                 <div 
-                    className="w-full h-full overflow-hidden flex items-center justify-center relative rounded-2xl bg-black/5"
-                    onMouseDown={onImageMouseDown}
-                  >
-                     {imagePreview ? (
-                        <img 
-                          src={imagePreview} 
-                          alt={petName || 'Your pet'} 
-                          className="pointer-events-none select-none"
-                          style={imageStyle}
-                          draggable="false"
-                        />
-                     ) : (
-                        <PetCharacter pet="cat" className="w-full h-full opacity-80 p-4" />
-                     )}
-                </div>
+    return (
+      <div
+        ref={ref}
+        style={{ backgroundColor: bgColor }}
+        className="p-10 flex flex-col items-center w-full max-w-[500px] min-h-[700px] shadow-2xl rounded-[3.5rem] overflow-hidden relative border-[12px] border-white/20 select-none"
+      >
+        <h2 className="text-white text-7xl mb-8 tracking-tighter leading-none text-center font-heading drop-shadow-md">
+          {petName || t.bio.card_pet_name_placeholder}
+        </h2>
+
+        <div className="flex flex-col items-center w-full flex-grow">
+          <div className="relative w-full aspect-square max-w-[340px] shadow-2xl rounded-[2.5rem] overflow-hidden bg-black/10 border-4 border-white/10 mb-8">
+            <div
+              className="w-full h-full flex items-center justify-center relative cursor-grab active:cursor-grabbing"
+              onMouseDown={onImageMouseDown}
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt={petName || "Your pet"}
+                  className="pointer-events-none select-none"
+                  style={imageStyle}
+                  draggable="false"
+                />
+              ) : (
+                <PetCharacter
+                  pet="cat"
+                  className="w-[80%] h-[80%] opacity-80 drop-shadow-2xl animate-bounce-wiggle"
+                />
+              )}
             </div>
+          </div>
 
-            <p className="text-2xl font-medium text-center leading-snug px-6 text-white drop-shadow-md flex items-center justify-center mt-4">
-                {bio || t.bio.fallback_bio}
+          <div className="flex-grow flex items-center justify-center px-4 w-full">
+            <p className="text-white text-3xl font-semibold text-center leading-snug drop-shadow-md font-heading">
+              {bio || t.bio.fallback_bio}
             </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 text-sm font-bold text-white/60 tracking-wider text-center z-10 mb-4">
-            <span>{t.bio.generated_by}</span>
+        <div className="mt-8 text-[10px] font-bold text-white/40 uppercase tracking-[0.4em] font-heading">
+          {t.bio.generated_by}
         </div>
-    </div>
-  );
-});
+      </div>
+    );
+  },
+);
+
+BioCard.displayName = "BioCard";

@@ -1,77 +1,56 @@
-// v2.5.0-forced-refresh
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI, Type } from "@google/genai";
-import { kv } from "@vercel/kv";
-
-const getGemini = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-
-async function verifyTurnstile(token: string | null) {
-  if (!token || !process.env.TURNSTILE_SECRET_KEY) return false;
-  const formData = new URLSearchParams();
-  formData.append('secret', process.env.TURNSTILE_SECRET_KEY);
-  formData.append('response', token);
-  try {
-    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      body: formData, method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    });
-    const outcome = await res.json();
-    return outcome.success;
-  } catch { return false; }
-}
-
-async function checkAndIncrementGlobalCap() {
-  const monthKey = `global:imagecount:${new Date().toISOString().substring(0, 7)}`;
-  const count = (await kv.get<number>(monthKey)) || 0;
-  if (count >= 2000) return true; 
-  await kv.incr(monthKey);
-  return false;
-}
+import { getKV, cleanJsonResponse } from './lib/common.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const { action } = req.query;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   const deviceId = req.headers['x-device-id'] as string || 'unknown';
-  const ai = getGemini();
+
+  if (!apiKey) return res.status(500).json({ message: "Server error: Missing API Key." });
+
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
+    const kv = await getKV();
     switch (action) {
       case 'generate-image': {
-        const turnstileToken = req.headers['x-turnstile-token'] as string;
-        if (!(await verifyTurnstile(turnstileToken))) return res.status(401).json({ message: "Bot check failed" });
-        if (await checkAndIncrementGlobalCap()) return res.status(403).json({ message: "Monthly limit reached" });
-        
-        const dailyKey = `daily:image:${deviceId}`;
-        if (!(await kv.set(dailyKey, '1', { nx: true, ex: 86400 }))) return res.status(429).json({ message: "1 image per day!" });
+        // ENFORCE LIMIT: 1 per 24 hours per unique device
+        if (kv) {
+          const limitKey = `limit:img:${deviceId}`;
+          const isLimited = await kv.get(limitKey);
+          if (isLimited) {
+            return res.status(429).json({ message: "Daily limit reached. Magic is recharging! Come back in 24 hours." });
+          }
+          // Set a 24-hour expiration lock for this device
+          await kv.set(limitKey, '1', { NX: true, EX: 86400 });
+        }
 
         const { base64Image, mimeType, prompt, style } = req.body;
-        const response = await ai.models.generateContent({
+        const result = await ai.models.generateContent({
           model: 'gemini-2.5-flash-image',
-          contents: { 
+          contents: [{
             parts: [
-              { inlineData: { data: base64Image, mimeType } }, 
-              { text: `Edit this pet image to show: ${prompt}. Style: ${style}. Wholesome content only.` }
-            ] 
-          }
+              { inlineData: { data: base64Image, mimeType } },
+              { text: `Edit this pet photo. Instruction: ${prompt}. Style: ${style}. Return only the image data.` }
+            ]
+          }]
         });
-
-        let outputUrl = '';
-        if (response.candidates?.[0]?.content?.parts) {
-            for (const part of response.candidates[0].content.parts) {
-                if (part.inlineData) {
-                    outputUrl = `data:image/png;base64,${part.inlineData.data}`;
-                    break;
-                }
-            }
+        let imageUrl = '';
+        const parts = result.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+          if (part.inlineData) imageUrl = `data:image/png;base64,${part.inlineData.data}`;
         }
-        return res.status(200).json({ imageUrl: outputUrl });
+        return res.status(200).json({ imageUrl });
       }
 
       case 'generate-names': {
         const { petInfo, language } = req.body;
-        const response = await ai.models.generateContent({
+        const result = await ai.models.generateContent({
           model: 'gemini-3-flash-preview',
-          contents: `Suggest 6 names for a ${petInfo.gender} ${petInfo.type} (${petInfo.personality}) in ${language}. Style: ${petInfo.style}.`,
+          contents: `Suggest exactly 6 unique pet names for a ${petInfo.gender} ${petInfo.type} with a ${petInfo.personality} personality in ${language}. Style: ${petInfo.style}. Provide name and meaning. Response must be in ${language}.`,
           config: {
             responseMimeType: "application/json",
             responseSchema: {
@@ -81,20 +60,76 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                   type: Type.ARRAY,
                   items: {
                     type: Type.OBJECT,
-                    properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING }, style: { type: Type.STRING } }
+                    properties: { id: { type: Type.STRING }, name: { type: Type.STRING }, meaning: { type: Type.STRING } },
+                    required: ["id", "name", "meaning"]
                   }
                 }
               }
             }
           }
         });
-        return res.status(200).send(response.text);
+        return res.status(200).send(cleanJsonResponse(result.text));
+      }
+
+      case 'generate-bio': {
+        const { name, petType, personality, language } = req.body;
+        const result = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: `Write 3 short, fun social media bios for a ${petType} named ${name} who is ${personality}. Language: ${language}.`,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: { type: Type.OBJECT, properties: { bios: { type: Type.ARRAY, items: { type: Type.STRING } } } }
+          }
+        });
+        return res.status(200).send(cleanJsonResponse(result.text));
+      }
+
+      case 'analyze-personality': {
+        const { quizAnswers, language } = req.body;
+        const result = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: `Based on these traits: ${quizAnswers.join(', ')}, describe the pet's personality in ${language}.`,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                description: { type: Type.STRING },
+                keywords: {
+                  type: Type.OBJECT,
+                  properties: {
+                    personality: { type: Type.STRING },
+                    style: { type: Type.STRING }
+                  }
+                }
+              }
+            }
+          }
+        });
+        return res.status(200).send(cleanJsonResponse(result.text));
+      }
+
+      case 'expert-consultant': {
+        const { message, systemInstruction, language } = req.body;
+        const result = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: message,
+          config: {
+            systemInstruction,
+            tools: [{ googleSearch: {} }]
+          }
+        });
+        const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks
+          ?.filter((c: any) => c.web)
+          ?.map((c: any) => ({ uri: c.web.uri, title: c.web.title })) || [];
+        return res.status(200).json({ text: result.text || '', sources });
       }
 
       default: return res.status(400).json({ message: "Unknown action" });
     }
   } catch (e: any) {
-    console.error("Backend Error:", e);
-    return res.status(500).json({ message: "Magic glitch—try again!" });
+    console.error("AI Backend Error:", e);
+    return res.status(500).json({ message: "Service busy. Try again." });
   }
 }

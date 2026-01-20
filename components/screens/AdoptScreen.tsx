@@ -1,145 +1,151 @@
-import React, { useState } from 'react';
-import { Header } from '../Header';
-import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { findAdoptionCenters } from '../../services/geminiService';
-import type { AdoptionCenter } from '../../types';
-import { PetCharacter } from '../assets/pets/PetCharacter';
-import { useLanguage } from '../../contexts/LanguageContext';
+import React, { useState } from "react";
+import { Header } from "../Header";
+import { Card } from "../ui/Card";
+import { Button, BackToHomeButton } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { findAdoptionCenters } from "../../services/geminiService";
+import type { AdoptionCenter } from "../../types";
+import { PetCharacter } from "../assets/pets/PetCharacter";
+import { useLanguage } from "../../contexts/LanguageContext";
 
-const BackIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-    </svg>
+const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+      clipRule="evenodd"
+    />
+  </svg>
 );
 
-const PawIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 13.5c1.933 0 3.5 1.567 3.5 3.5s-1.567 3.5-3.5 3.5-3.5-1.567-3.5-3.5 1.567-3.5 3.5-3.5Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 8.25a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0ZM8.625 9.75a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0ZM19.875 9.75a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 18c0-2.25 1.5-4.5 2.25-4.5s2.25 2.25 2.25 4.5" />
-    </svg>
-);
+export const AdoptScreen: React.FC<{ goHome: () => void }> = ({ goHome }) => {
+  const { t, language } = useLanguage();
+  const [location, setLocation] = useState("");
+  const [centers, setCenters] = useState<AdoptionCenter[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-interface AdoptScreenProps {
-    goHome: () => void;
-}
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!location.trim()) return;
+    setIsLoading(true);
+    setError(null);
+    setCenters([]);
+    try {
+      const results = await findAdoptionCenters(location, language);
+      setCenters(results);
+    } catch (err: any) {
+      setError(t.adopt.no_results);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-export const AdoptScreen: React.FC<AdoptScreenProps> = ({ goHome }) => {
-    const { t, language } = useLanguage();
-    const [location, setLocation] = useState('');
-    const [centers, setCenters] = useState<AdoptionCenter[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [hasSearched, setHasSearched] = useState(false);
-
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!location.trim()) return;
-        setIsLoading(true);
-        setError(null);
-        setCenters([]);
-        setHasSearched(true);
-        try {
-            const results = await findAdoptionCenters(location, language);
-            setCenters(results);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className="relative min-h-screen">
-            <div className="relative z-10">
-                <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
-                <main className="py-4 md:py-8 px-4 pb-32 sm:pb-40">
-                    <div className="flex flex-col gap-10 w-full mx-auto max-w-5xl">
-                        <div className="-mt-4">
-                             <button 
-                                onClick={goHome} 
-                                className="flex items-center gap-2 text-white hover:scale-105 transition-all bg-white/20 px-5 py-2.5 rounded-full backdrop-blur-md font-black text-[10px] uppercase tracking-widest w-fit shadow-lg border border-white/10"
-                            >
-                                <BackIcon className="w-3 h-3" />
-                                {t.common.back_home}
-                             </button>
-                        </div>
-
-                        <Card>
-                            <div className="flex justify-center items-end -space-x-4 sm:-space-x-10 mb-8 h-40 pt-4">
-                                <PetCharacter pet="dog" className="w-16 h-16 sm:w-28 sm:h-28 z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '0ms' }} />
-                                <PetCharacter pet="cat" className="w-16 h-16 sm:w-28 sm:h-28 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '100ms' }} />
-                                <PetCharacter pet="rabbit" className="w-16 h-16 sm:w-28 sm:h-28 z-30 -mb-1 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '200ms' }} />
-                                <PetCharacter pet="bird" className="w-16 h-16 sm:w-28 sm:h-28 z-20 -mb-2 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '300ms' }} />
-                                <PetCharacter pet="hamster" className="w-16 h-16 sm:w-28 sm:h-28 z-10 animate-bounce-wiggle filter drop-shadow-2xl" style={{ animationDelay: '400ms' }} />
-                            </div>
-
-                            <div className="flex flex-col items-center gap-2 mb-8 text-center">
-                                <div className="bg-[#AA336A]/10 p-4 rounded-full mb-2">
-                                    <PawIcon className="w-8 h-8 text-[#AA336A]" />
-                                </div>
-                                <h2 className="text-3xl font-black">{t.adopt.title}</h2>
-                                <p className="opacity-60 max-w-lg text-xl font-medium">
-                                    {t.adopt.subtitle}
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 items-end max-w-md mx-auto">
-                                <Input
-                                    id="location-search"
-                                    label={t.adopt.label_location}
-                                    value={location}
-                                    onChange={e => setLocation(e.target.value)}
-                                    placeholder={t.placeholders.location}
-                                />
-                                <Button 
-                                    type="submit" 
-                                    disabled={isLoading || !location.trim()}
-                                    variant="primary"
-                                    className="shadow-xl"
-                                >
-                                    {isLoading ? t.generator.btn_generating : t.adopt.btn_search}
-                                </Button>
-                            </form>
-                        </Card>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {centers.map((center, index) => (
-                                <div 
-                                    key={index} 
-                                    className="bg-[var(--card-bg)] backdrop-blur-md rounded-[2rem] p-8 shadow-xl border border-white/20 flex flex-col h-full transform hover:-translate-y-2 transition-all duration-500"
-                                >
-                                    <h3 className="text-2xl font-black text-[#AA336A] mb-4">{center.name}</h3>
-                                    <p className="text-lg mb-6 flex-grow italic font-medium opacity-70">"{center.mission}"</p>
-                                    <div className="space-y-4 text-base font-bold opacity-60">
-                                        <div className="flex items-start gap-4">
-                                            <span className="shrink-0 text-[#AA336A]">📍</span>
-                                            <span>{center.address}</span>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <span className="shrink-0 text-[#AA336A]">📞</span>
-                                            <span>{center.phone}</span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-8 pt-6 border-t border-black/5">
-                                        <Button 
-                                            href={center.website} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            variant="secondary"
-                                            className="w-full !py-4"
-                                        >
-                                            {t.adopt.visit_website}
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </main>
-            </div>
+  return (
+    <div className="relative min-h-screen">
+      <Header leftPet="dog" rightPet="cat" onLogoClick={goHome} />
+      <main className="py-8 px-6 max-w-5xl mx-auto w-full flex flex-col gap-12 pb-48">
+        <div className="-mt-12">
+          <BackToHomeButton onClick={goHome} />
         </div>
-    );
+
+        <Card className="!bg-[#fffdf2] !p-12 sm:!p-20 border-none relative overflow-visible shadow-premium mt-32 text-center">
+          <div className="absolute -top-48 left-0 right-0 flex justify-center items-end -space-x-12 sm:-space-x-20 pointer-events-none overflow-visible">
+            <PetCharacter
+              pet="dog"
+              className="w-40 h-40 sm:w-64 sm:h-64 animate-bounce-entry"
+              style={{ animationDelay: "0s" }}
+            />
+            <PetCharacter
+              pet="cat"
+              className="w-40 h-40 sm:w-64 sm:h-64 animate-bounce-entry -mb-6"
+              style={{ animationDelay: "0.1s" }}
+            />
+            <PetCharacter
+              pet="rabbit"
+              className="w-40 h-40 sm:w-64 sm:h-64 animate-bounce-entry"
+              style={{ animationDelay: "0.2s" }}
+            />
+            <PetCharacter
+              pet="bird"
+              className="w-40 h-40 sm:w-64 sm:h-64 animate-bounce-entry -mb-4"
+              style={{ animationDelay: "0.3s" }}
+            />
+            <PetCharacter
+              pet="hamster"
+              className="w-40 h-40 sm:w-64 sm:h-64 animate-bounce-entry"
+              style={{ animationDelay: "0.4s" }}
+            />
+          </div>
+
+          <div className="flex flex-col items-center gap-8 mb-16 pt-16">
+            <h2 className="text-6xl sm:text-7xl font-bold text-[#333] uppercase tracking-tight font-heading leading-none">
+              {t.adopt.title}
+            </h2>
+            <p className="text-[#333] font-bold text-2xl sm:text-3xl opacity-70 max-w-2xl mx-auto leading-tight">
+              {t.adopt.subtitle}
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleSearch}
+            className="flex flex-col items-center gap-12 max-w-2xl mx-auto w-full"
+          >
+            <div className="w-full">
+              <Input
+                label={t.adopt.label_location}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder={t.adopt.placeholder}
+                className="!bg-zinc-200 !border-none !text-4xl !p-10 text-center !rounded-[2.5rem] shadow-inner font-bold placeholder:opacity-40 !text-[#333]"
+              />
+              <style>{`
+                                label[for="Location"] { color: #333 !important; opacity: 0.6; font-size: 1.2rem; margin-bottom: 1rem; }
+                            `}</style>
+            </div>
+            <Button
+              type="submit"
+              disabled={isLoading || !location.trim()}
+              variant="primary"
+              className="!bg-[#AA336A] !text-white !py-8 !px-16 !text-3xl font-bold shadow-2xl uppercase rounded-full flex items-center gap-6 transition-transform hover:scale-105 active:scale-95 disabled:!bg-gray-300 disabled:!text-gray-500"
+            >
+              {isLoading ? t.adopt.btn_searching : t.adopt.btn_search}
+              {!isLoading && <SearchIcon className="w-10 h-10" />}
+            </Button>
+          </form>
+        </Card>
+
+        {centers.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mt-16 animate-fade-in">
+            {centers.map((center, index) => (
+              <div
+                key={index}
+                className="bg-white/95 rounded-[4rem] p-12 shadow-premium border-none flex flex-col h-full group"
+              >
+                <h3 className="text-4xl font-bold text-[#AA336A] mb-8 uppercase leading-tight font-heading">
+                  {center.name}
+                </h3>
+                <p className="text-2xl sm:text-3xl mb-12 flex-grow italic font-bold text-[#666] leading-relaxed opacity-90">
+                  "{center.mission}"
+                </p>
+                <Button
+                  href={center.website}
+                  target="_blank"
+                  variant="secondary"
+                  className="w-full !bg-[#8da38d] !text-white !py-6 !text-3xl font-bold rounded-[2rem] shadow-xl hover:!bg-[#7a8e7a] transition-colors"
+                >
+                  {t.adopt.visit_website}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
 };

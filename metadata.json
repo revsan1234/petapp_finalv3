@@ -1,10 +1,5 @@
 {
-  "name": "petapp_finalv3",
-  "description": "Generate unique and fun names for your new pet, and create funny edited pictures of them in costumes. Get name ideas based on personality, trends, and meanings, then save and share your favorites!",
-  "requestFramePermissions": [
-    "camera"
-  ],
-  "permissionsDescription": {
-    "camera": "Name My Pet uses your camera so you can take a photo of your pet to upload into the app and create personalized pet cards and AI-generated artwork."
-  }
+  "name": "Copy of petapp_final_v1.1.25",
+  "description": "AI-Powered Pet Naming and Portrait Studio.",
+  "requestFramePermissions": ["camera"]
 }

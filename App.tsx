@@ -1,176 +1,200 @@
-import React, { useState, useEffect } from 'react';
-import { LandingPage } from './components/LandingPage';
-import { MainView } from './components/layout/mainview';
-import { PhotoScreen } from './components/screens/PhotoScreen';
-import { BioScreen } from './components/screens/BioScreen';
-import { AdoptScreen } from './components/screens/AdoptScreen';
-import { HotelScreen } from './components/screens/HotelScreen';
-import { PlayScreen } from './components/screens/PlayScreen';
-import { TabNavigator } from './components/TabNavigator';
-import { BackgroundPattern } from './components/ui/BackgroundPattern';
-import { CustomCursor } from './components/ui/CustomCursor';
-import { LanguageProvider } from './contexts/LanguageContext';
-import { PrivacyPolicy } from './components/PrivacyPolicy';
-import { TermsAndConditions } from './components/TermsAndConditions';
-import { ContactUs } from './components/ContactUs';
-import type { Tab, PetInfo, GeneratedName, PetPersonalityResult, View } from './types';
+import React, { useState, useEffect } from "react";
+import { LandingPage } from "./components/LandingPage";
+import { MainView } from "./components/ui/MainView";
+import { BioScreen } from "./components/screens/BioScreen";
+import { PhotoScreen } from "./components/screens/PhotoScreen";
+import { PlayScreen } from "./components/screens/PlayScreen";
+import { AdoptScreen } from "./components/screens/AdoptScreen";
+import { HotelScreen } from "./components/screens/HotelScreen";
+import { TabNavigator, Tab } from "./components/layout/TabNavigator";
+import { CustomCursor } from "./components/ui/CustomCursor";
+import { BackgroundPattern } from "./components/ui/BackgroundPattern";
+import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
+import { ContactUs } from "./components/screens/ContactUs";
+import type {
+  GeneratedName,
+  PetInfo,
+  PetPersonalityResult,
+  Language,
+} from "./types";
 
-const INITIAL_PET_INFO: PetInfo = {
-  type: 'Dog',
-  gender: 'Any',
-  personality: 'Playful',
-  style: 'Trending'
-};
-
-const AppContent = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('home');
-  const [currentView, setCurrentView] = useState<View>('app');
-  const [isChillMode, setIsChillMode] = useState(() => {
-    return localStorage.getItem('petapp_chill_mode') === 'true';
-  });
-  const [petInfo, setPetInfo] = useState<PetInfo>(INITIAL_PET_INFO);
+const AppContent: React.FC = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const [activeTab, setActiveTab] = useState<Tab>("home");
   const [savedNames, setSavedNames] = useState<GeneratedName[]>(() => {
-    const saved = localStorage.getItem('petapp_saved_names');
+    const saved = localStorage.getItem("pet_saved_names");
     return saved ? JSON.parse(saved) : [];
   });
+
+  const [petInfo, setPetInfo] = useState<PetInfo>({
+    type: "Dog",
+    gender: "Any",
+    personality: "Playful",
+    style: "Trending",
+  });
+
   const [imageForBio, setImageForBio] = useState<string | null>(null);
+  const [isChillMode, setIsChillMode] = useState(false);
+  const [footerView, setFooterView] = useState<
+    "none" | "contact" | "privacy" | "terms"
+  >("none");
 
   useEffect(() => {
-    localStorage.setItem('petapp_saved_names', JSON.stringify(savedNames));
+    localStorage.setItem("pet_saved_names", JSON.stringify(savedNames));
   }, [savedNames]);
 
   useEffect(() => {
-    localStorage.setItem('petapp_chill_mode', String(isChillMode));
     if (isChillMode) {
-      document.body.classList.add('chill-mode');
+      document.body.classList.add("chill-mode");
     } else {
-      document.body.classList.remove('chill-mode');
+      document.body.classList.remove("chill-mode");
     }
   }, [isChillMode]);
 
   const addSavedName = (name: GeneratedName) => {
-    if (!savedNames.find(n => n.id === name.id)) {
-      setSavedNames(prev => [...prev, name]);
+    if (!savedNames.find((n) => n.id === name.id)) {
+      setSavedNames((prev) => [name, ...prev]);
     }
   };
 
   const removeSavedName = (id: string) => {
-    setSavedNames(prev => prev.filter(n => n.id !== id));
+    setSavedNames((prev) => prev.filter((n) => n.id !== id));
   };
 
   const handleQuizComplete = (result: PetPersonalityResult) => {
-    setPetInfo(prev => ({
+    setPetInfo((prev) => ({
       ...prev,
       personality: result.keywords.personality,
-      style: result.keywords.style
+      style: result.keywords.style,
     }));
   };
 
-  if (currentView === 'privacy') {
-    return (
-      <div className="min-h-screen relative">
-        <CustomCursor />
-        <BackgroundPattern />
-        <PrivacyPolicy onBack={() => setCurrentView('app')} />
-      </div>
-    );
-  }
+  const goHome = () => {
+    setActiveTab("home");
+    setFooterView("none");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  if (currentView === 'terms') {
-    return (
-      <div className="min-h-screen relative">
-        <CustomCursor />
-        <BackgroundPattern />
-        <TermsAndConditions onBack={() => setCurrentView('app')} />
-      </div>
-    );
-  }
-
-  if (currentView === 'contact') {
-    return (
-      <div className="min-h-screen relative">
-        <CustomCursor />
-        <BackgroundPattern />
-        <ContactUs onBack={() => setCurrentView('app')} />
-      </div>
-    );
-  }
-
-  const renderContent = () => {
+  const renderTabContent = () => {
     switch (activeTab) {
-      case 'home':
+      case "home":
+        return <LandingPage setTab={setActiveTab} />;
+      case "generate":
         return (
-          <LandingPage 
-            setTab={setActiveTab} 
-            setView={setCurrentView} 
-            isChillMode={isChillMode} 
-            setIsChillMode={setIsChillMode} 
-          />
-        );
-      case 'generate':
-        return (
-          <MainView 
+          <MainView
             savedNames={savedNames}
             addSavedName={addSavedName}
             removeSavedName={removeSavedName}
             petInfo={petInfo}
             setPetInfo={setPetInfo}
-            goHome={() => setActiveTab('home')}
+            goHome={goHome}
           />
         );
-      case 'photo':
+      case "bio":
         return (
-          <PhotoScreen 
-            setActiveTab={setActiveTab} 
-            setImageForBio={setImageForBio}
-            goHome={() => setActiveTab('home')}
-          />
-        );
-      case 'bio':
-        return (
-          <BioScreen 
+          <BioScreen
             petInfo={petInfo}
             imageForBio={imageForBio}
             setImageForBio={setImageForBio}
-            goHome={() => setActiveTab('home')}
+            goHome={goHome}
           />
         );
-      case 'adopt':
-        return <AdoptScreen goHome={() => setActiveTab('home')} />;
-      case 'hotel':
-        return <HotelScreen goHome={() => setActiveTab('home')} />;
-      case 'play':
+      case "play":
         return (
-          <PlayScreen 
+          <PlayScreen
             onQuizComplete={handleQuizComplete}
-            addSavedName={addSavedName}
             savedNames={savedNames}
+            addSavedName={addSavedName}
             petInfo={petInfo}
             setPetInfo={setPetInfo}
-            goHome={() => setActiveTab('home')}
+            goHome={goHome}
           />
         );
+      case "photo":
+        return (
+          <PhotoScreen
+            setActiveTab={setActiveTab}
+            setImageForBio={setImageForBio}
+            goHome={goHome}
+          />
+        );
+      case "adopt":
+        return <AdoptScreen goHome={goHome} />;
+      case "hotels":
+        return <HotelScreen goHome={goHome} />;
       default:
-        return <LandingPage setTab={setActiveTab} setView={setCurrentView} isChillMode={isChillMode} setIsChillMode={setIsChillMode} />;
+        return <LandingPage setTab={setActiveTab} />;
     }
   };
 
   return (
-    <div className="min-h-screen relative transition-colors duration-700">
+    <div className="min-h-screen flex flex-col transition-colors duration-500">
       <CustomCursor />
       <BackgroundPattern />
-      {renderContent()}
-      {activeTab !== 'home' && (
-        <TabNavigator activeTab={activeTab} setActiveTab={setActiveTab} />
-      )}
+
+      <div className="flex-grow">
+        {footerView === "contact" ? (
+          <ContactUs onBack={() => setFooterView("none")} />
+        ) : (
+          renderTabContent()
+        )}
+      </div>
+
+      <TabNavigator activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      <footer className="py-12 px-6 bg-black/10 backdrop-blur-md border-t border-white/10 mt-auto pb-48 sm:pb-64">
+        <div className="max-w-4xl mx-auto flex flex-col items-center gap-8 text-center">
+          <div className="flex flex-col items-center gap-6">
+            <button
+              onClick={() => setIsChillMode(!isChillMode)}
+              className="text-white font-bold hover:scale-105 transition-all bg-white/20 px-6 py-2 rounded-full shadow-md active:scale-95"
+            >
+              {isChillMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            </button>
+
+            <div className="flex flex-wrap justify-center gap-3">
+              {(["en", "es", "fr"] as Language[]).map((langCode) => (
+                <button
+                  key={langCode}
+                  onClick={() => setLanguage(langCode)}
+                  className={`text-white font-bold px-5 py-2 rounded-full shadow-sm active:scale-95 transition-all ${
+                    language === langCode
+                      ? "bg-[#AA336A] ring-2 ring-white/50 scale-110 z-10"
+                      : "bg-white/10 opacity-70"
+                  }`}
+                >
+                  {langCode === "en"
+                    ? "English"
+                    : langCode === "es"
+                      ? "Español"
+                      : "Français"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6 text-white/60 text-sm font-bold uppercase tracking-widest">
+            <button
+              onClick={() => setFooterView("contact")}
+              className="hover:text-white transition-colors"
+            >
+              Contact Us
+            </button>
+          </div>
+
+          <p className="text-white/40 text-xs font-medium">
+            © 2025 NAMEMYPET.ORG • ALL RIGHTS RESERVED
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
 
-export default function App() {
-  return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
-  );
-}
+const App: React.FC = () => (
+  <LanguageProvider>
+    <AppContent />
+  </LanguageProvider>
+);
+
+export default App;

@@ -1,4 +1,3 @@
-
 export type PetType = 'Dog' | 'Cat' | 'Bird' | 'Fish' | 'Rabbit' | 'Hamster' | 'Lizard';
 export type PetKind = 'dog' | 'cat' | 'bird' | 'fish' | 'rabbit' | 'hamster' | 'lizard' | 'ferret' | 'other';
 export type PetGender = 'Male' | 'Female' | 'Any';
@@ -12,7 +11,6 @@ export interface PetInfo {
   gender: PetGender;
   personality: PetPersonality;
   style: NameStyle;
-  name?: string;
 }
 
 export interface GeneratedName {
@@ -50,24 +48,18 @@ export interface AdoptionCenter {
   website: string;
 }
 
-export interface PetHotel {
-  name: string;
-  summary: string;
-  address: string;
-  phone: string;
-  website: string;
-}
-
-/**
- * Interface for chat messages used in the Pet Consultant screen.
- */
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
   timestamp: number;
 }
 
-export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotel';
+export type Tab = 'home' | 'generate' | 'bio' | 'play' | 'photo' | 'adopt' | 'hotels';
 
-// Defines the possible top-level views for the application
-export type View = 'app' | 'privacy' | 'terms' | 'contact';
+// New specialized error for quota limits
+export class QuotaError extends Error {
+  constructor(public message: string, public code: 'LIMIT_REACHED' | 'RATE_LIMITED' | 'BUSY' | 'GLOBAL_CAP_REACHED') {
+    super(message);
+    this.name = 'QuotaError';
+  }
+}
