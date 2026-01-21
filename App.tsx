@@ -183,7 +183,7 @@ const AppContent: React.FC = () => {
           </div>
 
           <p className="text-white/40 text-xs font-medium">
-            © 2025 NAMEMYPET.ORG • ALL RIGHTS RESERVED
+            © 2026 NAMEMYPET.ORG • ALL RIGHTS RESERVED
           </p>
         </div>
       </footer>
